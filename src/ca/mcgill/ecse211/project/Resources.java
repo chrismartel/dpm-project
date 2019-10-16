@@ -57,7 +57,7 @@ public class Resources {
   /**
    * The acceleration.
    */
-  public static final int ACCELERATION = 3000;
+  public static final int ACCELERATION = 9999;
 
   
   
@@ -104,6 +104,11 @@ public class Resources {
    * Threshold value to determine if a black line is detected or not
    */
   public static final int LINE_THRESHOLD = 35;
+  
+  /**
+   * Differential value to determine if a black line is detected or not
+   */
+  public static final int DIFFERENTIAL_LINE_THRESHOLD = 7;
 
   /*
    * Width of the black lines (cm)
@@ -129,19 +134,19 @@ public class Resources {
   /**
    * Angle of rotation of the launching motors during launch
    */
-  public static final int LAUNCHING_ANGLE = 90;
+  public static final int LAUNCHING_ANGLE = 360;
   
   // MOTORS AND SENSORS
 
   /**
    * The left motor.
    */
-  public static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(MotorPort.A);
+  public static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(MotorPort.D);
 
   /**
    * The right motor.
    */
-  public static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(MotorPort.D);
+  public static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(MotorPort.A);
   
   /**
    * The left ballistic motor.

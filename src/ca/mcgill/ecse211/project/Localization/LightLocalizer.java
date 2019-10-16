@@ -1,31 +1,48 @@
 package ca.mcgill.ecse211.project.Localization;
 
 import static ca.mcgill.ecse211.project.Resources.*;
+import ca.mcgill.ecse211.project.Navigation.Turn;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.robotics.SampleProvider;
 
 public class LightLocalizer {
 
+  /**
+   * last and current sensor color readings used for comparison in each line detection loop
+   */
+  private float currentColorValue;
 
+  private float lastColorValue;
 
   // Variables and values to operate color sensor
-  private static SampleProvider color_sensor = colorSensor.getRedMode();
-  private static float[] sensor_data = new float[color_sensor.sampleSize()]; // array of sensor readings
-  private static int current_color_value = 1000;
+  private float[] sensorData = new float[colorSensor.sampleSize()]; // array of sensor readings
+
 
   // Array holds angle values
-  private static double[] angles = new double[4];
+  private double[] angles = new double[4];
+  
+  /**
+   * Constructor of the light localization class
+   */
+  public LightLocalizer() {
+    // set sensor to use red light alone
+    colorSensor.setCurrentMode("Red");
+    sensorData = new float[colorSensor.sampleSize()];
+    // initiate the current readings of the sensor
+    colorSensor.fetchSample(sensorData, 0);
+    // initialize the sensor readings
+    currentColorValue = (sensorData[0] * 100);
+    lastColorValue = currentColorValue;
+  }
 
   /**
    * Method performs the light localization routine. Robot rotates 360 degrees around center of rotation on point (1,1).
    * The angle values recorded when a black line is detected is used to correct the robots heading and position on the
    * point (1,1). The robot returns to a 0 degree stop at the end of the process.
    * 
-   * @author Abhimukth Chaudhuri, Aly Elgharabawy
-   * 
    */
-  public static void lightLocalize() {
+  public void lightLocalize() {
 
     // Set motion towards point (1,1)
     navigation.turnTo(45);
@@ -34,52 +51,46 @@ public class LightLocalizer {
     leftMotor.forward();
     rightMotor.forward();
 
-    while (true) {
-      // Stop as soon as first black line is detected by the light sensor
-      if (LightLocalizer.blackLineTrigger()) {
-        Sound.beep();
-        leftMotor.setSpeed(0);
-        rightMotor.setSpeed(0);
-        break;
-      }
-    }
-
+    while (!this.lineDetected());
+    // Stop as soon as first black line is detected by the light sensor
+    Sound.beep();
+    navigation.stopMotors();
     // Make robot move back such that the center of roation is somewhat close to the point (1,1)
     navigation.backUp(OFFSET_FROM_WHEELBASE);
 
     // Perform full rotation to record angle values at each black line
-    navigation.turn(-360);
+    navigation.rotate(Turn.COUNTER_CLOCK_WISE);
 
-    int lineCounter = 0;
     double tempTheta = 0;
     double deltaTheta;
     double thetaYMinus = 0;
 
-    while (true) {
-      if (LightLocalizer.blackLineTrigger()) {
 
-        if (lineCounter == 0) {
-          thetaYMinus = odometer.getTheta();
-        }
-        if (lineCounter == 0 || lineCounter == 1 || lineCounter == 2) {
-          tempTheta = tempTheta - 180;
-        }
-        if (lineCounter == 3) {
-          tempTheta = tempTheta + 180;
-        }
-        // adjust each angle so there are not bigger than 360 or smaller than -360
-        tempTheta = tempTheta % 360;
-        if (tempTheta < 0) {
-          tempTheta = 360 + tempTheta;
-        }
-        angles[lineCounter] = tempTheta;
-        Sound.beep();
-        lineCounter++;
+    for (int lineCounter = 0; lineCounter < 5; lineCounter++) {
+
+      while (!this.lineDetected());
+      Sound.beep();
+
+      if (lineCounter == 0) {
+        thetaYMinus = odometer.getTheta();
       }
-      // Break after 4 angle values have been recorded
-      if (lineCounter == 4)
-        break;
+      if (lineCounter == 0 || lineCounter == 1 || lineCounter == 2) {
+        tempTheta = tempTheta - 180;
+      }
+      if (lineCounter == 3) {
+        tempTheta = tempTheta + 180;
+      }
+      // adjust each angle so there are not bigger than 360 or smaller than -360
+      tempTheta = tempTheta % 360;
+      if (tempTheta < 0) {
+        tempTheta = 360 + tempTheta;
+      }
+
+      if (lineCounter != 4) {
+        angles[lineCounter] = tempTheta;
+      }
     }
+    navigation.stopMotors();
 
     // Calculations to know current robot location and corrections to make accordingly
     double thetaY = angles[0] - angles[2];
@@ -120,14 +131,14 @@ public class LightLocalizer {
    * 
    * @return true iff black line is detected
    */
-  public static boolean blackLineTrigger() {
+  public boolean blackLineTrigger() {
     // tools to manage the sensor period
     long positioningStart;
     long positioningEnd;
     positioningStart = System.currentTimeMillis();
 
-    color_sensor.fetchSample(sensor_data, 0);
-    current_color_value = (int) (sensor_data[0] * 100);
+    colorSensor.fetchSample(sensorData, 0);
+    currentColorValue = (int) (sensorData[0] * 100);
     positioningEnd = System.currentTimeMillis();
 
     // Manage the light sensor period
@@ -141,10 +152,46 @@ public class LightLocalizer {
 
     }
     // When recorded color intensity is below threshold
-    if (current_color_value < LINE_THRESHOLD) {
+    if (currentColorValue < LINE_THRESHOLD) {
       return true;
     } else {
       return false;
     }
+  }
+
+  /**
+   * Method determining if a line is detected
+   * 
+   * @return : true if a line is detected and false if no lines are detected
+   */
+  public boolean lineDetected() {
+    long positioningStart;
+    long positioningEnd;
+    positioningStart = System.currentTimeMillis();
+    // no line detected initially
+    boolean line = false;
+    // fetch sample from the light sensor
+    colorSensor.fetchSample(sensorData, 0);
+    currentColorValue = sensorData[0] * 100;
+    // Check if the difference between the previous reading and the current reading is bigger than the line threshold
+    if ((this.lastColorValue - this.currentColorValue) >= DIFFERENTIAL_LINE_THRESHOLD) {
+      Sound.beep();
+      // a line is detected
+      line = true;
+    }
+    // update the last reading of the light sensor
+    lastColorValue = currentColorValue;
+    // pause the thread to respect the line detection period
+    positioningEnd = System.currentTimeMillis();
+    if (positioningEnd - positioningStart < LIGHT_SENSOR_PERIOD) {
+      try {
+        Thread.sleep(LIGHT_SENSOR_PERIOD - (positioningEnd - positioningStart));
+      } catch (InterruptedException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+
+    }
+    return line;
   }
 }
