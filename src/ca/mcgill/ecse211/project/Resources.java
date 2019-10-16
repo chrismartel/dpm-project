@@ -58,7 +58,7 @@ public class Resources {
   /**
    * Window size for the ultrasonic sensor data polling
    */
-  public static final int WINDOW = 5;
+  public static final int US_WINDOW = 5;
 
   /**
    * The ultrasonic sensor update period in ms. Was calculated in order to have approximately 3 pollings per degree of
@@ -66,21 +66,24 @@ public class Resources {
    */
   public static final long US_PERIOD = 23;
 
+  
   /**
-   * Ultrasonic poller counter constant
+   * Arbitrary threshold constant for rising and falling edge cases for the ultrasonic localizer
    */
-  public static final int USCC = 15;
-
-
-  /**
-   * The rising/falling wall threshold
-   */
-  public static final double WALL_THRESHOLD = 30;// home 35
+  public static final int COMMON_D = 40;
 
   /**
-   * The wall threshold error
+   * Noise margin constant for falling edge ultrasonic localizer
    */
-  public static final double WALL_THRESHOLD_ERROR = 2;
+  public static final int FALLINGEDGE_K = 1;
+
+  /**
+   * Noise margin constant for rising edge ultrasonic localizer
+   */
+  public static final int RISINGEDGE_K = 3;
+
+
+
 
 
   /**
@@ -146,6 +149,11 @@ public class Resources {
    * The navigation singleton.
    */
   public static Navigation navigation = Navigation.getNavigation();
+  
+  /**
+   * The ultrasonic poller singleton.
+   */
+  public static UltrasonicPoller ultrasonicPoller = UltrasonicPoller.getUltrasonicPoller();
 
 
 }
