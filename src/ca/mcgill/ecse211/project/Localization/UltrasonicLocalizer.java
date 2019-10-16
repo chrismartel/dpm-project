@@ -9,7 +9,7 @@ import static ca.mcgill.ecse211.project.Resources.*;
  *
  */
 public class UltrasonicLocalizer {
-  
+
   /**
    * angle at which back wall is detected
    */
@@ -18,17 +18,15 @@ public class UltrasonicLocalizer {
    * angle at which left wall is detected
    */
   public double beta;
-  
+
 
   /**
    * Method performs the falling edge localization. Robot always completes an clockwise rotation around its center of
    * rotation to record the value for alpha. Then it rotates in the anti-clockwise direction to record value for beta.
    * Using the values recorded, the robot will then appropriately orient itself accordingly along the 0 degree y-axis.
-   * 
-   * @author Abhimukth Chaudhuri, Aly Elgharabawy
    */
   public void fallingEdge() {
-    
+
     double angleAdjustment = 0;
 
     // clockwise rotation to record value for alpha
@@ -72,12 +70,9 @@ public class UltrasonicLocalizer {
    * Method performs the rising edge localization. Robot always completes an clockwise rotation around its center of
    * rotation to record the value for alpha. Then it rotates in the anti-clockwise direction to record value for beta.
    * Using the values recorded, the robot will then appropriately orient itself accordingly along the 0 degree y-axis.
-   * 
-   * @author Abhimukth Chaudhuri, Aly Elgharabawy
-   * 
    */
   public void risingEdge() {
-    
+
     double angleAdjustment = 0;
 
     // clockwise rotation to record alpha value
@@ -118,7 +113,7 @@ public class UltrasonicLocalizer {
     odometer.setTheta(odometer.getTheta() + angleAdjustment);
     navigation.turnTo(0);
   }
-  
+
   /**
    * Computes the heading to add to the odometer current angle considering the two angles obtained by rising or falling
    * edge routines

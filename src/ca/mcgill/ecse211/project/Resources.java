@@ -15,8 +15,9 @@ import lejos.hardware.sensor.EV3UltrasonicSensor;
  * codebase.
  */
 
-//NEED TO BE ORGANIZED
 public class Resources {
+
+  // HARDWARE DESIGN CONSTANTS
 
   /**
    * The wheel radius.
@@ -28,11 +29,14 @@ public class Resources {
    */
   public static final double TRACK = 13.3;
 
+  // ENVIRONMENT CONSTANTS
+
   /**
    * The tile size in centimeters.
    */
   public static final double TILE_SIZE = 30.48;
 
+  // MOTORS CONSTANTS
 
   /**
    * The speed at which the robot moves forward in degrees per second.
@@ -55,6 +59,8 @@ public class Resources {
    */
   public static final int ACCELERATION = 3000;
 
+  // ULTRASONIC POLLER CONSTANTS
+
   /**
    * Window size for the ultrasonic sensor data polling
    */
@@ -66,7 +72,14 @@ public class Resources {
    */
   public static final long US_PERIOD = 23;
 
-  
+  /**
+   * Filter out constant to filter the distance seen by the us sensor
+   */
+  public static final int FILTER_OUT = 5;
+
+
+  // ULTRASONIC LOCALIZATION CONSTANTS
+
   /**
    * Arbitrary threshold constant for rising and falling edge cases for the ultrasonic localizer
    */
@@ -82,19 +95,12 @@ public class Resources {
    */
   public static final int RISINGEDGE_K = 3;
 
-
-
-
+  // LIGHT LOCALIZATION CONSTANTS
 
   /**
-   * Filter out constant to filter the distance seen by the us sensor
+   * Threshold value to determine if a black line is detected or not
    */
-  public static final int FILTER_OUT = 5;
-
-  /**
-   * The black line detection threshold
-   */
-  public static final double LINE_THRESHOLD = 6; // home 8
+  public static final int LINE_THRESHOLD = 35;
 
   /*
    * Width of the black lines (cm)
@@ -104,16 +110,13 @@ public class Resources {
   /**
    * Period of the light sensor operations
    */
-  public static final long LIGHT_SENSOR_PERIOD = 150;// home 175
+  public static final long LIGHT_SENSOR_PERIOD = 150;
   /**
-   * Distance between center of rotation and light sensor
+   * Light sensor to center of wheel-base distance
    */
-  public static final double LIGHT_SENSOR_OFFSET = 13.8;
+  public static final int OFFSET_FROM_WHEELBASE = 12;
 
-  /**
-   * Distance that the robot needs to be from the wall before light localizing
-   */
-  public static final double INITIAL_POSITIONING_WALL_DISTANCE = 10;
+  // MOTORS AND SENSORS
 
   /**
    * The left motor.
@@ -140,6 +143,8 @@ public class Resources {
    */
   public static final TextLCD LCD = LocalEV3.get().getTextLCD();
 
+  // SINGLETONS
+
   /**
    * The odometer singleton.
    */
@@ -149,7 +154,7 @@ public class Resources {
    * The navigation singleton.
    */
   public static Navigation navigation = Navigation.getNavigation();
-  
+
   /**
    * The ultrasonic poller singleton.
    */
