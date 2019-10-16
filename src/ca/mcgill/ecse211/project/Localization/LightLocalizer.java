@@ -2,9 +2,7 @@ package ca.mcgill.ecse211.project.Localization;
 
 import static ca.mcgill.ecse211.project.Resources.*;
 import ca.mcgill.ecse211.project.Navigation.Turn;
-import lejos.hardware.Button;
 import lejos.hardware.Sound;
-import lejos.robotics.SampleProvider;
 
 public class LightLocalizer {
 
