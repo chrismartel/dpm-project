@@ -28,7 +28,7 @@ public class UltrasonicPoller implements Runnable {
   /**
    * current distance processed by the ultrasonic sensor poller
    */
-  private int currentDistance;
+  private int distance;
 
 
   /**
@@ -61,50 +61,62 @@ public class UltrasonicPoller implements Runnable {
     // initialize the data lists
     usDataQueue = new LinkedList<Float>();
     usDataSortedList = new LinkedList<Float>();
-
     // acquire distance data in meters
     usSensor.getDistanceMode().fetchSample(usData, 0);
-
-    // set the initial and last distances seen by the sensor
-    this.currentDistance = (int) usData[0];
+    // set the initial distance seen by the sensor
+    this.distance = (int) usData[0];
   }
 
   /**
    * procedure to run once the thread is started
    */
   public void run() {
-
+    // variables to control the period
+    long updateStart, updateEnd;
+    
+    // temporary distance to use before the filter
     int temporaryDistance;
+    
     // element used for the transfers between queue and sorted list
     float element;
     while (true) {
+      updateStart = System.currentTimeMillis();
 
-      // acquire distance data in meters
+
+      // acquire distance data in meters from the sensor and store it in float array
       usSensor.getDistanceMode().fetchSample(usData, 0);
 
-      // remove the oldest sample from the queue and from the sorted list
+      // if the lists are full remove the oldest sample from the queue and from the sorted list
       if (usDataQueue.size() == WINDOW) {
+        // retrieves the element at head of the queue
         element = usDataQueue.element();
+        // removes the element at top of the queue from the sorted list
         usDataSortedList.remove(element);
+        // removes the element at head of the queue
         usDataQueue.remove();
       }
 
-      // add the new fetch sample to the queue and to the sorted list
+      // add the new fetched sample to the end of the queue and to the sorted list
       usDataQueue.add(usData[0]);
       usDataSortedList.add(usData[0]);
 
       // sort the data list
       Collections.sort(usDataSortedList);
 
-        // set the temporary distance to be the median of the sorted list
-        temporaryDistance = (int) (usDataSortedList.get((int) (usDataSortedList.size() / 2)) * 100.0);
+      // set the temporary distance to be the median of the sorted list
+      temporaryDistance = (int) (usDataSortedList.get((int) (usDataSortedList.size() / 2)) * 100.0);
 
-        // filter the temporary distance the get rid of aberrant values and update the current distance
-        filter(temporaryDistance);
-      
-      try {
-        Thread.sleep(US_PERIOD);
-      } catch (Exception e) {
+      // filter the temporary distance the get rid of aberrant values and update the current distance
+      filter(temporaryDistance);
+
+      //record the ending time of the loop and make the thread sleep so the period is respected
+      updateEnd = System.currentTimeMillis();
+      if (updateEnd - updateStart < US_PERIOD) {
+        try {
+          Thread.sleep(US_PERIOD - (updateEnd - updateStart));
+        } catch (InterruptedException e) {
+          // there is nothing to be done
+        }
       }
     }
   }
@@ -115,8 +127,8 @@ public class UltrasonicPoller implements Runnable {
    * 
    * @return the current distance seen by the sensor
    */
-  public int getCurrentDistance() {
-    int currentDistance = this.currentDistance;
+  public int getDistance() {
+    int distance = this.distance;
     lock.lock();
     try {
       while (isResetting) { // If a reset operation is being executed, wait until it is over.
@@ -128,7 +140,7 @@ public class UltrasonicPoller implements Runnable {
     } finally {
       lock.unlock();
     }
-    return currentDistance;
+    return distance;
   }
 
   /**
@@ -142,11 +154,11 @@ public class UltrasonicPoller implements Runnable {
       filterControl++;
     } else if (distance >= 255) {
       // Repeated large values, so there is nothing there: leave the distance alone
-      this.currentDistance = 255;
+      this.distance = 255;
     } else {
       // distance went below 255: reset filter and leave distance alone.
       filterControl = 0;
-      this.currentDistance = distance;
+      this.distance = distance;
     }
   }
 
