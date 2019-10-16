@@ -51,11 +51,13 @@ public class UltrasonicPoller implements Runnable {
    */
   private Condition doneResetting = lock.newCondition();
 
+  
+  private static UltrasonicPoller up; // Returned as singleton
 
   /**
    * constructor of the ultrasonic poller
    */
-  public UltrasonicPoller() {
+  private UltrasonicPoller() {
     // float array to store the data fetched
     usData = new float[usSensor.sampleSize()];
     // initialize the data lists
@@ -65,6 +67,19 @@ public class UltrasonicPoller implements Runnable {
     usSensor.getDistanceMode().fetchSample(usData, 0);
     // set the initial distance seen by the sensor
     this.distance = (int) usData[0];
+  }
+  
+  /**
+   * Returns the UltrasonicPoller Object. Use this method to obtain an instance of UltrasonicPoller.
+   * 
+   * @return the UltrasonicPoller Object
+   */
+  public synchronized static UltrasonicPoller getUltrasonicPoller() {
+    if (up == null) {
+      up = new UltrasonicPoller();
+    }
+
+    return up;
   }
 
   /**
@@ -87,7 +102,7 @@ public class UltrasonicPoller implements Runnable {
       usSensor.getDistanceMode().fetchSample(usData, 0);
 
       // if the lists are full remove the oldest sample from the queue and from the sorted list
-      if (usDataQueue.size() == WINDOW) {
+      if (usDataQueue.size() == US_WINDOW) {
         // retrieves the element at head of the queue
         element = usDataQueue.element();
         // removes the element at top of the queue from the sorted list
