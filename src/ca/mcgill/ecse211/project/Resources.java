@@ -59,6 +59,8 @@ public class Resources {
    */
   public static final int ACCELERATION = 3000;
 
+  
+  
   // ULTRASONIC POLLER CONSTANTS
 
   /**
@@ -78,6 +80,7 @@ public class Resources {
   public static final int FILTER_OUT = 5;
 
 
+  
   // ULTRASONIC LOCALIZATION CONSTANTS
 
   /**
@@ -116,6 +119,18 @@ public class Resources {
    */
   public static final int OFFSET_FROM_WHEELBASE = 12;
 
+  // BALLISTIC LAUNCHER CONSTANTS
+  
+  /**
+   * Coefficient of the launching process to adjust the speed of the motors in function of the distance
+   */
+  public static final int LAUNCH_COEFFICIENT = 12;
+  
+  /**
+   * Angle of rotation of the launching motors during launch
+   */
+  public static final int LAUNCHING_ANGLE = 90;
+  
   // MOTORS AND SENSORS
 
   /**
@@ -127,6 +142,16 @@ public class Resources {
    * The right motor.
    */
   public static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(MotorPort.D);
+  
+  /**
+   * The left ballistic motor.
+   */
+  public static final EV3LargeRegulatedMotor leftBallisticMotor = new EV3LargeRegulatedMotor(MotorPort.B);
+
+  /**
+   * The right ballistic motor.
+   */
+  public static final EV3LargeRegulatedMotor rightBallisticMotor = new EV3LargeRegulatedMotor(MotorPort.C);
 
   /**
    * The ultrasonic sensor.
