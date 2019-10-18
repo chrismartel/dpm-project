@@ -75,6 +75,23 @@ public class Navigation {
     travel(dX, dY);
 
   }
+  
+  
+  public void turnTo(double x, double y) {
+    // Convert the coordinates to centimeters
+    x = x * TILE_SIZE;
+    y = y * TILE_SIZE;
+    
+    // Poll the odometer for info about current the position
+    double currentX = odometer.getX();
+    double currentY = odometer.getY();
+
+    // compute the distances to travel in X and Y
+    double dX = x - currentX;
+    double dY = y - currentY;
+	    
+	turnTo(Math.toDegrees(Math.atan2(dX, dY)));
+  }
 
   /**
    * This method causes the robot to turn to a specific orientation using the minimum angle possible
