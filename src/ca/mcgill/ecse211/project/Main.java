@@ -1,7 +1,6 @@
 package ca.mcgill.ecse211.project;
 
-import ca.mcgill.ecse211.project.Localization.LightLocalizer;
-import ca.mcgill.ecse211.project.Localization.UltrasonicLocalizer;
+import ca.mcgill.ecse211.project.Localization.*;
 import lejos.hardware.Button;
 
 import static ca.mcgill.ecse211.project.Resources.*;
@@ -24,9 +23,8 @@ public class Main {
 	Button.waitForAnyPress();
 	
 	localize();
-	Navigation navigator = new Navigation();
-	navigator.travelTo(2,2);
-	navigator.turnTo(2, 3);
+	navigation.travelTo(2,2);
+	navigation.turnTo(2, 3);
 	
 	
     BallisticLauncher launcher = new BallisticLauncher();
@@ -42,6 +40,7 @@ private static void localize() {
 	usLocalizer.fallingEdge();
 	
 	LightLocalizer lightLocalizer = new LightLocalizer();
+	lightLocalizer.initialPositioning();
 	lightLocalizer.lightLocalize();
 	
 }

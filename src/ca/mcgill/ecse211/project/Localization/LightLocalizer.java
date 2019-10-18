@@ -19,7 +19,7 @@ public class LightLocalizer {
 
   // Array holds angle values
   private double[] angles = new double[4];
-  
+
   /**
    * Constructor of the light localization class
    */
@@ -33,15 +33,8 @@ public class LightLocalizer {
     currentColorValue = (sensorData[0] * 100);
     lastColorValue = currentColorValue;
   }
-
-  /**
-   * Method performs the light localization routine. Robot rotates 360 degrees around center of rotation on point (1,1).
-   * The angle values recorded when a black line is detected is used to correct the robots heading and position on the
-   * point (1,1). The robot returns to a 0 degree stop at the end of the process.
-   * 
-   */
-  public void lightLocalize() {
-
+  
+  public void initialPositioning() {
     // Set motion towards point (1,1)
     navigation.turnTo(45);
     leftMotor.setSpeed(ROTATE_SPEED);
@@ -55,6 +48,15 @@ public class LightLocalizer {
     navigation.stopMotors();
     // Make robot move back such that the center of roation is somewhat close to the point (1,1)
     navigation.backUp(OFFSET_FROM_WHEELBASE);
+  }
+
+  /**
+   * Method performs the light localization routine. Robot rotates 360 degrees around center of rotation on point (1,1).
+   * The angle values recorded when a black line is detected is used to correct the robots heading and position on the
+   * point (1,1). The robot returns to a 0 degree stop at the end of the process.
+   * 
+   */
+  public void lightLocalize() {
 
     // Perform full rotation to record angle values at each black line
     navigation.rotate(Turn.COUNTER_CLOCK_WISE);
