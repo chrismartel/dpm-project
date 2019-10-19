@@ -20,17 +20,30 @@ public class Main {
 	new Thread(ultrasonicPoller).start();
 	new Thread(new Display()).start();
 	
+	double[] launchArea = new double[2];
+	launchArea[0] = 4.5;
+	launchArea[1] = 6.5;
+	
 	//To remove when running 
 	Button.waitForAnyPress();
+
 	
     initialLocalize();
-	//navigation.travelTo(2,2);
-	//navigation.turnTo(2, 3);
+
+
+	localize();
+	double[] launchLocation = ballisticLauncher.launchLocation(launchArea[0], launchArea[1]);
+
 	
+	navigation.travelTo(launchLocation[0], launchLocation[1]);
 	
-    BallisticLauncher launcher = new BallisticLauncher();
+	navigation.turnTo(launchArea[0], launchArea[1]);
+	
     double distance = 40;
-    //launcher.launch(distance);
+
+    ballisticLauncher.launch(distance);
+    
+
     
 
 
