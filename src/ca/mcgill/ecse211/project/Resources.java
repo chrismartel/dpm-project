@@ -135,7 +135,7 @@ public class Resources {
   /**
    * Angle of rotation of the launching motors during launch
    */
-  public static final int LAUNCHING_ANGLE = 360;
+  public static final int LAUNCHING_ANGLE = 180;
   
   // MOTORS AND SENSORS
 
@@ -186,6 +186,11 @@ public class Resources {
    */
   public static Navigation navigation = Navigation.getNavigation();
 
+  /**
+   * The BallisticLauncher singleton
+   */
+  public static BallisticLauncher ballisticLauncher = BallisticLauncher.getBallisticLauncher();
+  
   /**
    * The ultrasonic poller singleton.
    */
