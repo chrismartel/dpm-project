@@ -31,7 +31,6 @@ public class Main {
     initialLocalize();
 
 
-	localize();
 	double[] launchLocation = ballisticLauncher.launchLocation(launchArea[0], launchArea[1]);
 
 	
