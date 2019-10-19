@@ -17,6 +17,7 @@ public class Main {
 	
   public static void main(String[] args) {
 	new Thread(odometer).start();
+	new Thread(ultrasonicPoller).start();
 	new Thread(new Display()).start();
 	
 	double[] launchArea = new double[2];
@@ -26,22 +27,29 @@ public class Main {
 	//To remove when running 
 	Button.waitForAnyPress();
 
+	
+    initialLocalize();
+
+
 	localize();
 	double[] launchLocation = ballisticLauncher.launchLocation(launchArea[0], launchArea[1]);
+
 	
 	navigation.travelTo(launchLocation[0], launchLocation[1]);
 	
 	navigation.turnTo(launchArea[0], launchArea[1]);
 	
     double distance = 40;
+
     ballisticLauncher.launch(distance);
     
+
     
 
 
   }
 
-private static void localize() {
+private static void initialLocalize() {
 	UltrasonicLocalizer usLocalizer = new UltrasonicLocalizer();
 	usLocalizer.fallingEdge();
 	

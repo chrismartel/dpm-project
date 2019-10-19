@@ -29,6 +29,11 @@ public class UltrasonicPoller implements Runnable {
    * current distance processed by the ultrasonic sensor poller
    */
   private int distance;
+  
+  /**
+   * last distance processed by the ultrasonic sensor poller
+   */
+  private int lastDistance;
 
 
   /**
@@ -117,6 +122,8 @@ public class UltrasonicPoller implements Runnable {
 
       // sort the data list
       Collections.sort(usDataSortedList);
+      
+      this.lastDistance=this.distance;
 
       // set the temporary distance to be the median of the sorted list
       temporaryDistance = (int) (usDataSortedList.get((int) (usDataSortedList.size() / 2)) * 100.0);
@@ -135,7 +142,27 @@ public class UltrasonicPoller implements Runnable {
       }
     }
   }
-
+  /**
+   * method to get the current and last distances seen by the sensor
+   * 
+   * @return an array containing the current and last distances seen by the sensor
+   */
+  public int[] getDistances() {
+    int[] distances = new int[2];
+    lock.lock();
+    try {
+      while (isResetting) { // If a reset operation is being executed, wait until it is over.
+        doneResetting.await(); // Using await() is lighter on the CPU than simple busy wait.
+      }
+      distances[0] = this.distance;
+      distances[1] = this.lastDistance;
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    } finally {
+      lock.unlock();
+    }
+    return distances;
+  }
 
   /**
    * method to get the current distance seen by the sensor
