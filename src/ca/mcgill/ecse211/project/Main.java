@@ -17,25 +17,26 @@ public class Main {
 	
   public static void main(String[] args) {
 	new Thread(odometer).start();
+	new Thread(ultrasonicPoller).start();
 	new Thread(new Display()).start();
 	
 	//To remove when running 
 	Button.waitForAnyPress();
 	
-	localize();
-	navigation.travelTo(2,2);
-	navigation.turnTo(2, 3);
+    initialLocalize();
+	//navigation.travelTo(2,2);
+	//navigation.turnTo(2, 3);
 	
 	
     BallisticLauncher launcher = new BallisticLauncher();
     double distance = 40;
-    launcher.launch(distance);
+    //launcher.launch(distance);
     
 
 
   }
 
-private static void localize() {
+private static void initialLocalize() {
 	UltrasonicLocalizer usLocalizer = new UltrasonicLocalizer();
 	usLocalizer.fallingEdge();
 	

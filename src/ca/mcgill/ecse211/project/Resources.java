@@ -27,7 +27,7 @@ public class Resources {
   /**
    * The robot width.
    */
-  public static final double TRACK = 14.77;
+  public static final double TRACK = 10.4; //14.77
 
   // ENVIRONMENT CONSTANTS
 
@@ -72,7 +72,7 @@ public class Resources {
    * The ultrasonic sensor update period in ms. Was calculated in order to have approximately 3 pollings per degree of
    * rotation during slow rotation
    */
-  public static final long US_PERIOD = 23;
+  public static final long US_PERIOD = 150;
 
   /**
    * Filter out constant to filter the distance seen by the us sensor
@@ -91,12 +91,12 @@ public class Resources {
   /**
    * Noise margin constant for falling edge ultrasonic localizer
    */
-  public static final int FALLINGEDGE_K = 1;
+  public static final int FALLINGEDGE_K = 2;
 
   /**
    * Noise margin constant for rising edge ultrasonic localizer
    */
-  public static final int RISINGEDGE_K = 3;
+  public static final int RISINGEDGE_K = 2;
 
   // LIGHT LOCALIZATION CONSTANTS
 
@@ -123,7 +123,7 @@ public class Resources {
   /**
    * Light sensor to center of wheel-base distance
    */
-  public static final int OFFSET_FROM_WHEELBASE = 12;
+  public static final double OFFSET_FROM_WHEELBASE = 10.6; //12
 
   // BALLISTIC LAUNCHER CONSTANTS
   
