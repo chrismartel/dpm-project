@@ -101,15 +101,16 @@ public class Resources {
   // LIGHT LOCALIZATION CONSTANTS
 
   /**
-   * Threshold value to determine if a black line is detected or not
-   */
-  public static final int LINE_THRESHOLD = 35;
-  
-  /**
    * Differential value to determine if a black line is detected or not
    */
-  public static final int DIFFERENTIAL_LINE_THRESHOLD = 7;
+  public static final int DIFFERENTIAL_LINE_THRESHOLD = 7; //HAS TO BE DETERMINE BY TESTING
 
+  
+  /**
+   * Window size for the ultrasonic sensor data polling
+   */
+  public static final int LL_WINDOW = 3;
+  
   /*
    * Width of the black lines (cm)
    */
@@ -118,7 +119,7 @@ public class Resources {
   /**
    * Period of the light sensor operations
    */
-  public static final long LIGHT_SENSOR_PERIOD = 150;
+  public static final long LIGHT_SENSOR_PERIOD = 150; //HAS TO BE DETERMINED BY TESTING --> EXCEL
   /**
    * Light sensor to center of wheel-base distance
    */
@@ -129,7 +130,7 @@ public class Resources {
   /**
    * Coefficient of the launching process to adjust the speed of the motors in function of the distance
    */
-  public static final int LAUNCH_COEFFICIENT = 12;
+  public static final int LAUNCH_COEFFICIENT = 12; //HAS TO BE DETERMINED BY TESTING
   
   /**
    * Angle of rotation of the launching motors during launch

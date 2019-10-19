@@ -1,10 +1,22 @@
 package ca.mcgill.ecse211.project.Localization;
 
 import static ca.mcgill.ecse211.project.Resources.*;
+import java.util.LinkedList;
+import java.util.Queue;
 import ca.mcgill.ecse211.project.Navigation.Turn;
 import lejos.hardware.Sound;
 
 public class LightLocalizer {
+  
+  /**
+   * window to store the data polled from the color sensor in a queue
+   */
+  private Queue<Float> llDataQueue;
+  
+  /**
+   * linked list to store the data from the window of samples
+   */
+  private LinkedList<Float> llDataList;
 
   /**
    * last and current sensor color readings used for comparison in each line detection loop
@@ -24,6 +36,10 @@ public class LightLocalizer {
    * Constructor of the light localization class
    */
   public LightLocalizer() {
+    // initialize the data list
+    llDataQueue = new LinkedList<Float>();
+    llDataList = new LinkedList<Float>();
+
     // set sensor to use red light alone
     colorSensor.setCurrentMode("Red");
     sensorData = new float[colorSensor.sampleSize()];
@@ -124,40 +140,6 @@ public class LightLocalizer {
     navigation.turnTo(0);
   }
 
-  /**
-   * The method fetches data recorded by the color sensor in RedMode and compares the most recent value to verify if the
-   * robot has traveled over a black line. Method makes use of a fixed threshold value which may not be reliable in
-   * certain conditions, however it has been tested and conditioned to minimize false negatives.
-   * 
-   * @return true iff black line is detected
-   */
-  public boolean blackLineTrigger() {
-    // tools to manage the sensor period
-    long positioningStart;
-    long positioningEnd;
-    positioningStart = System.currentTimeMillis();
-
-    colorSensor.fetchSample(sensorData, 0);
-    currentColorValue = (int) (sensorData[0] * 100);
-    positioningEnd = System.currentTimeMillis();
-
-    // Manage the light sensor period
-    if (positioningEnd - positioningStart < LIGHT_SENSOR_PERIOD) {
-      try {
-        Thread.sleep(LIGHT_SENSOR_PERIOD - (positioningEnd - positioningStart));
-      } catch (InterruptedException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-
-    }
-    // When recorded color intensity is below threshold
-    if (currentColorValue < LINE_THRESHOLD) {
-      return true;
-    } else {
-      return false;
-    }
-  }
 
   /**
    * Method determining if a line is detected
@@ -167,12 +149,25 @@ public class LightLocalizer {
   public boolean lineDetected() {
     long positioningStart;
     long positioningEnd;
+    float temporaryColorValue;
+    
     positioningStart = System.currentTimeMillis();
     // no line detected initially
     boolean line = false;
     // fetch sample from the light sensor
     colorSensor.fetchSample(sensorData, 0);
-    currentColorValue = sensorData[0] * 100;
+    temporaryColorValue = sensorData[0] * 100;
+    
+    // mean estimate of the color sensor reading
+    if(llDataQueue.size()>=LL_WINDOW) {
+      float element = this.llDataQueue.remove();
+      llDataList.remove(element);
+    }
+    this.llDataQueue.add(temporaryColorValue);
+    llDataList.add(temporaryColorValue);
+    
+    this.currentColorValue= this.meanEstimate();
+    
     // Check if the difference between the previous reading and the current reading is bigger than the line threshold
     if ((this.lastColorValue - this.currentColorValue) >= DIFFERENTIAL_LINE_THRESHOLD) {
       Sound.beep();
@@ -193,5 +188,13 @@ public class LightLocalizer {
 
     }
     return line;
+  }
+  /**
+   * Method to compute the mean estimate of the color signals in the window of the color sensor
+   * */
+  public float meanEstimate() {
+    float mean = (this.llDataList.get(0)+ this.llDataList.get(1)+ this.llDataList.get(2))/LL_WINDOW;
+    return mean;
+
   }
 }
