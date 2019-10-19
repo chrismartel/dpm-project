@@ -27,7 +27,7 @@ public class Resources {
   /**
    * The robot width.
    */
-  public static final double TRACK = 10.4; //14.77
+  public static final double TRACK = 14.77;
 
   // ENVIRONMENT CONSTANTS
 
@@ -123,7 +123,7 @@ public class Resources {
   /**
    * Light sensor to center of wheel-base distance
    */
-  public static final double OFFSET_FROM_WHEELBASE = 10.6; //12
+  public static final double OFFSET_FROM_WHEELBASE = 12;
 
   // BALLISTIC LAUNCHER CONSTANTS
   
