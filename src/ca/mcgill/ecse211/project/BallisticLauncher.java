@@ -26,12 +26,23 @@ public class BallisticLauncher {
 
     leftBallisticMotor.setSpeed(motorLaunchingSpeed);
     rightBallisticMotor.setSpeed(motorLaunchingSpeed);
-    leftBallisticMotor.setAcceleration(ACCELERATION);
-    rightBallisticMotor.setAcceleration(ACCELERATION);
+    leftBallisticMotor.setAcceleration(LAUNCH_ACCELERATION);
+    rightBallisticMotor.setAcceleration(LAUNCH_ACCELERATION);
     leftBallisticMotor.rotate(-LAUNCHING_ANGLE, true);
     rightBallisticMotor.rotate(-LAUNCHING_ANGLE, false);
 
 
+  }
+  
+  void reload() {
+    leftBallisticMotor.setSpeed(ROTATE_SPEED_SLOW);
+    rightBallisticMotor.setSpeed(ROTATE_SPEED_SLOW);
+    leftBallisticMotor.setAcceleration(RELOAD_ACCELERATION);
+    rightBallisticMotor.setAcceleration(RELOAD_ACCELERATION);
+    leftBallisticMotor.rotate(LAUNCHING_ANGLE, true);
+    rightBallisticMotor.rotate(LAUNCHING_ANGLE, false);
+    
+    
   }
   
   /**

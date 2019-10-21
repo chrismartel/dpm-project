@@ -123,47 +123,14 @@ public class LightLocalizer {
     double y = (OFFSET_FROM_WHEELBASE * Math.cos(thetaX / 2));
     System.out.println("x: "+x);
     System.out.println("y: "+y);
-
-
-    // formula to compute the angle to add to the odometer
-    // TODO: Debug this formula
+    
     deltaTheta = (255 + (Math.toDegrees(thetaY) / 2) - thetaYMinus);
     System.out.println("deltaTheta: "+ deltaTheta);
     odometer.setTheta(odometer.getTheta()+deltaTheta);
-    //navigation.turn(Math.abs(deltaTheta), ROTATE_SPEED);
-    // navigation.turnTo(angles[0]+180);
     odometer.setXYT(this.getCoordinates()[0]*TILE_SIZE+x, this.getCoordinates()[1]*TILE_SIZE+y, 0);
-   // Button.waitForAnyPress();
-    navigation.travelTo(coordinates[0],coordinates[1]);
+    //navigation.travelTo(coordinates[0],coordinates[1]);
     navigation.turnTo(0);
    
-
-
-    // turn towards the positive x axis
-    // travel the distance x forward or backward depending on the sign of x
-    /*/
-    navigation.turnTo(90);
-    if (x < 0) {
-      navigation.backUp(x);
-    } else {
-      navigation.travel(x);
-    }
-
-    // turn towards the positive y axis
-    // travel the distance y forward or backward depending on the sign of y
-    navigation.turnTo(0);
-    if (y < 0) {
-      navigation.backUp(y);
-    } else {
-      navigation.travel(y);
-    }
-    */
-    // Center the odometer
-    //odometer.setXYT(this.getCoordinates()[0] * TILE_SIZE, this.getCoordinates()[1] * TILE_SIZE, odometer.getTheta());
-
-    // Return to 0 degree y-axis
-    //navigation.turnTo(0);
-    // update the position of the odometer after the localization
 
   }
 
