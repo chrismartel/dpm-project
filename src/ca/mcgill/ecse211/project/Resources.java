@@ -27,7 +27,7 @@ public class Resources {
   /**
    * The robot width.
    */
-  public static final double TRACK = 10.7;//14.77;
+  public static final double TRACK = 15.25;//14.77;
 
   // ENVIRONMENT CONSTANTS
 
@@ -103,7 +103,7 @@ public class Resources {
   /**
    * Differential value to determine if a black line is detected or not
    */
-  public static final int DIFFERENTIAL_LINE_THRESHOLD = 10; //HAS TO BE DETERMINE BY TESTING
+  public static final int DIFFERENTIAL_LINE_THRESHOLD = 14; //HAS TO BE DETERMINE BY TESTING
 
   
   /**
@@ -119,11 +119,11 @@ public class Resources {
   /**
    * Period of the light sensor operations
    */
-  public static final long LIGHT_SENSOR_PERIOD = 300; //HAS TO BE DETERMINED BY TESTING --> EXCEL
+  public static final long LIGHT_SENSOR_PERIOD = 250; //HAS TO BE DETERMINED BY TESTING --> EXCEL
   /**
    * Light sensor to center of wheel-base distance
    */
-  public static final double OFFSET_FROM_WHEELBASE = 12;
+  public static final double OFFSET_FROM_WHEELBASE = 12.6;
 
   // BALLISTIC LAUNCHER CONSTANTS
   

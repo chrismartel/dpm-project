@@ -110,6 +110,7 @@ public class LightLocalizer {
       }
       else {
         navigation.stopMotors();
+        Sound.beep();
 
       }
     }
@@ -126,13 +127,17 @@ public class LightLocalizer {
 
     // formula to compute the angle to add to the odometer
     // TODO: Debug this formula
-    deltaTheta = (270 + (Math.toDegrees(thetaY) / 2) - thetaYMinus);
+    deltaTheta = (255 + (Math.toDegrees(thetaY) / 2) - thetaYMinus);
     System.out.println("deltaTheta: "+ deltaTheta);
-    navigation.turnTo(Math.abs(deltaTheta +180));
+    odometer.setTheta(odometer.getTheta()+deltaTheta);
+    //navigation.turn(Math.abs(deltaTheta), ROTATE_SPEED);
     // navigation.turnTo(angles[0]+180);
     odometer.setXYT(this.getCoordinates()[0]*TILE_SIZE+x, this.getCoordinates()[1]*TILE_SIZE+y, 0);
-    Button.waitForAnyPress();
-    navigation.travelTo(1,1);
+   // Button.waitForAnyPress();
+    navigation.travelTo(coordinates[0],coordinates[1]);
+    navigation.turnTo(0);
+   
+
 
     // turn towards the positive x axis
     // travel the distance x forward or backward depending on the sign of x
@@ -157,7 +162,7 @@ public class LightLocalizer {
     //odometer.setXYT(this.getCoordinates()[0] * TILE_SIZE, this.getCoordinates()[1] * TILE_SIZE, odometer.getTheta());
 
     // Return to 0 degree y-axis
-    navigation.turnTo(0);
+    //navigation.turnTo(0);
     // update the position of the odometer after the localization
 
   }
@@ -196,6 +201,7 @@ public class LightLocalizer {
     if ((this.lastColorValue - this.currentColorValue) >= DIFFERENTIAL_LINE_THRESHOLD) {
       System.out.println("DIFF: "+ (this.lastColorValue-this.currentColorValue));
       Sound.beep();
+      //Sound.beep();
       // a line is detected
       line = true;
     }

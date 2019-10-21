@@ -16,32 +16,36 @@ public class Main {
 	
 	
   public static void main(String[] args) {
+    
 	new Thread(odometer).start();
 	new Thread(ultrasonicPoller).start();
 	new Thread(new Display()).start();
 	
 	double[] launchArea = new double[2];
-	launchArea[0] = 4.5;
-	launchArea[1] = 6.5;
+	launchArea[0] = 5.5;
+	launchArea[1] = 7.5;
 	
 	//To remove when running 
 	Button.waitForAnyPress();
+	navigation.travel(3*TILE_SIZE);
 	// Test1
 	odometer.setXYT(1*TILE_SIZE, 1*TILE_SIZE, 0);
-
+	//navigation.turn(360, ROTATE_SPEED);
 	/*
 	//Test3
 	  UltrasonicLocalizer usLocalizer = new UltrasonicLocalizer();
 	   usLocalizer.fallingEdge();
 	   */
+	/*
 	 // Test 4
 	    LightLocalizer lightLocalizer = new LightLocalizer();
+	    odometer.setTheta(45);
 	    int[] coordinates = {1,1};
 	    lightLocalizer.setCoordinates(coordinates);
 	    lightLocalizer.lightLocalize();
-
+*/
 	    
-	    /*
+	    
     initialLocalize();
 
 
@@ -58,7 +62,7 @@ public class Main {
     
 
     
-*/
+
 
   }
 
