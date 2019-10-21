@@ -33,7 +33,7 @@ public class UltrasonicLocalizer {
     int currentDistance;
     int lastDistance;
     // clockwise rotation to record value for alpha
-    navigation.rotate(Turn.CLOCK_WISE);
+    navigation.rotate(Turn.CLOCK_WISE, ROTATE_SPEED_SLOW);
     while (true) {
       distances = ultrasonicPoller.getDistances();
       currentDistance = distances[0];
@@ -48,8 +48,8 @@ public class UltrasonicLocalizer {
     }
 
     // anti-clockwise rotation to record beta value
-    navigation.turnSlowly(-20);
-    navigation.rotate(Turn.COUNTER_CLOCK_WISE);
+    navigation.turn(-20, ROTATE_SPEED_SLOW);
+    navigation.rotate(Turn.COUNTER_CLOCK_WISE,ROTATE_SPEED_SLOW);
     while (true) {
       distances = ultrasonicPoller.getDistances();
       currentDistance = distances[0];
