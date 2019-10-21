@@ -4,98 +4,92 @@ import ca.mcgill.ecse211.project.Localization.*;
 import lejos.hardware.Button;
 import static ca.mcgill.ecse211.project.Resources.*;
 
-
 /**
  * The main class.
  */
 public class Main {
 
-  // Odometer odometer;
+	// Odometer odometer;
 
+	public static void main(String[] args) {
 
+		int buttonChoice;
+		// Start the odometer and the distance polling threads
+		Thread odometerThread = new Thread(odometer);
+		Thread usPollerThread = new Thread(ultrasonicPoller);
+		usPollerThread.start();
+		odometerThread.start();
 
-  public static void main(String[] args) {
+		buttonChoice = choosePathFirstChoice();
 
-    Thread odometerThread = new Thread(odometer);
-    Thread usPollerThread = new Thread(ultrasonicPoller);
+		// stationary launch
+		if (buttonChoice == Button.ID_LEFT) {
+			LCD.clear();
+			// Launches as many times as the enter button is pressed.
+			while (true) {
+				LCD.drawString("PRESS ENTER ", 1, 2);
+				LCD.drawString("TO LAUNCH ", 1, 3);
+				int buttonChoice3 = Button.waitForAnyPress();
+				if (buttonChoice3 == Button.ID_ENTER) {
+					LCD.clear();
+					ballisticLauncher.launch(120);
+					ballisticLauncher.reload();
+				} else if (buttonChoice3 == Button.ID_ESCAPE) {
+					System.exit(0);
+				}
+			}
+		}
+		// mobile launch
+		else if (buttonChoice == Button.ID_RIGHT) {
+			LCD.clear();
+			new Thread(new Display()).start();
+			double[] targetArea = new double[2];
+			targetArea[0] = 5.5;
+			targetArea[1] = 7.5;
+			double[] launchArea = new double[2];
+			launchArea[0] = 5.5;
+			launchArea[1] = 3.5;
+			initialLocalize();
 
-    LCD.clear();
-    LCD.drawString("PRESS ENTER ", 1, 2);
-    LCD.drawString("TO START ", 1, 3);
+			// double[] launchArea = ballisticLauncher.launchLocation(targetArea[0],
+			// targetArea[1]);
+			navigation.travelTo(launchArea[0], launchArea[1]);
+			navigation.turnTo(targetArea[0], targetArea[1]);
+			ballisticLauncher.launch(LAUNCH_DISTANCE);
 
-    int buttonChoice1 = Button.waitForAnyPress();
-    int buttonChoice2 = 0;
-    if (buttonChoice1 == Button.ID_ENTER) {
+		}
 
-      // Start the odometer and the distance polling threads
-      usPollerThread.start();
-      odometerThread.start();
-      LCD.clear();
-      LCD.drawString("LEFT: STATIONARY ", 1, 2);
-      LCD.drawString("RIGHT: MOBILE", 1, 3);
+	}
 
-      // Selection of the launch to perform
-      buttonChoice2 = Button.waitForAnyPress();
-      LCD.clear();
-    }
+	/**
+	 * Asks the user which launch option to execute.
+	 * 
+	 * @return the user choice
+	 */
+	private static int choosePathFirstChoice() {
+		int buttonChoice;
+		Display.showText("<  Left   |  Right  >",
+						"          |         ",
+						"Stationary|  Mobile ",
+						"  Launch  |  Launch ",
+						"          |         ");
+		do {
+			buttonChoice = Button.waitForAnyPress(); // left or right press
+		} while (buttonChoice != Button.ID_LEFT && buttonChoice != Button.ID_RIGHT);
+		return buttonChoice;
+		
+	}
 
-    // stationary launch
-    if (buttonChoice2 == Button.ID_LEFT) {
-      LCD.clear();
-      while (true) {
-        LCD.drawString("PRESS ENTER ", 1, 2);
-        LCD.drawString("TO LAUNCH ", 1, 3);
-        int buttonChoice3 = Button.waitForAnyPress();
+	private static void initialLocalize() {
+		UltrasonicLocalizer usLocalizer = new UltrasonicLocalizer();
+		usLocalizer.fallingEdge();
 
-        if (buttonChoice3 == Button.ID_ENTER) {
-          LCD.clear();
-          try {
-            Thread.sleep(1000);
-          } catch (InterruptedException e) {
-          }
-          ballisticLauncher.launch(120);
-          try {
-            Thread.sleep(500);
-          } catch (InterruptedException e) {
-          }
-          ballisticLauncher.reload();
-        }
-        else if (buttonChoice3==Button.ID_ESCAPE){
-          System.exit(0);
-        }
-      }
+		LightLocalizer lightLocalizer = new LightLocalizer();
+		int[] coordinates = { 1, 1 };
+		lightLocalizer.setCoordinates(coordinates);
+		lightLocalizer.initialPositioning();
+		lightLocalizer.lightLocalize();
 
-    }
-
-    // mobile launch
-    else if (buttonChoice2 == Button.ID_RIGHT) {
-      LCD.clear();
-      new Thread(new Display()).start();
-      double[] launchArea = new double[2];
-      launchArea[0] = 5.5;
-      launchArea[1] = 7.5;
-      initialLocalize();
-      double[] launchLocation = ballisticLauncher.launchLocation(launchArea[0], launchArea[1]);
-      navigation.travelTo(launchLocation[0], launchLocation[1]);
-      navigation.turnTo(launchArea[0], launchArea[1]);
-      ballisticLauncher.launch(LAUNCH_DISTANCE);
-
-    }
-
-
-
-  }
-
-  private static void initialLocalize() {
-    UltrasonicLocalizer usLocalizer = new UltrasonicLocalizer();
-    usLocalizer.fallingEdge();
-
-    LightLocalizer lightLocalizer = new LightLocalizer();
-    int[] coordinates = {1, 1};
-    lightLocalizer.setCoordinates(coordinates);
-    lightLocalizer.initialPositioning();
-    lightLocalizer.lightLocalize();
-
-  }
+	}
 
 }
