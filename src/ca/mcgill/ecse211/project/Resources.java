@@ -54,10 +54,8 @@ public class Resources {
    */
   public static final int ROTATE_SPEED_SLOW = 50;
 
-  /**
-   * The acceleration.
-   */
-  public static final int ACCELERATION = 9999;
+
+
 
   
   
@@ -136,6 +134,17 @@ public class Resources {
    * Angle of rotation of the launching motors during launch
    */
   public static final int LAUNCHING_ANGLE = 180;
+  
+  /**
+   * Distance to launch the ball
+   */
+  public static final int LAUNCH_DISTANCE = 120;
+  
+  /**
+   * The acceleration.
+   */
+  public static final int LAUNCH_ACCELERATION = 9999;
+  public static final int RELOAD_ACCELERATION = 3000;
   
   // MOTORS AND SENSORS
 
