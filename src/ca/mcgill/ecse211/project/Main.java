@@ -53,6 +53,8 @@ private static void initialLocalize() {
 	usLocalizer.fallingEdge();
 	
 	LightLocalizer lightLocalizer = new LightLocalizer();
+	int[] coordinates = {1,1};
+	lightLocalizer.setCoordinates(coordinates);
 	lightLocalizer.initialPositioning();
 	lightLocalizer.lightLocalize();
 	
