@@ -113,7 +113,7 @@ public class Navigation {
     }
 
     // rotate to the calculated angle
-    turn(rotation);
+    turn(rotation, ROTATE_SPEED);
   }
 
 

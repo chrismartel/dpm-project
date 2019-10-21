@@ -4,6 +4,7 @@ import static ca.mcgill.ecse211.project.Resources.*;
 import java.util.LinkedList;
 import java.util.Queue;
 import ca.mcgill.ecse211.project.Navigation.Turn;
+import lejos.hardware.Button;
 import lejos.hardware.Sound;
 
 public class LightLocalizer {
@@ -84,10 +85,9 @@ public class LightLocalizer {
     double thetaYMinus = 0;
 
 
-    for (int lineCounter = 0; lineCounter < 4; lineCounter++) {
+    for (int lineCounter = 0; lineCounter < 5; lineCounter++) {
 
       while (!this.lineDetected());
-      Sound.beep();
 
       if (lineCounter == 0) {
         thetaYMinus = odometer.getTheta();
@@ -104,25 +104,39 @@ public class LightLocalizer {
       if (tempTheta < 0) {
         tempTheta = 360 + tempTheta;
       }
-      angles[lineCounter] = tempTheta;
-    }
+      if(lineCounter!=4) {
+        angles[lineCounter] = tempTheta;
 
+      }
+      else {
+        navigation.stopMotors();
+
+      }
+    }
     // Calculations to know current robot location and corrections to make accordingly
     double thetaY = Math.toRadians(angles[0] - angles[2]);
     double thetaX = Math.toRadians(angles[3] - angles[1]);
-    double x = (OFFSET_FROM_WHEELBASE * Math.cos(thetaY / 2));
+    System.out.println("thetay: "+thetaY);
+    System.out.println("thetax: "+thetaX);
+    double x = -(OFFSET_FROM_WHEELBASE * Math.cos(thetaY / 2));
     double y = (OFFSET_FROM_WHEELBASE * Math.cos(thetaX / 2));
+    System.out.println("x: "+x);
+    System.out.println("y: "+y);
 
 
     // formula to compute the angle to add to the odometer
     // TODO: Debug this formula
     deltaTheta = (270 + (Math.toDegrees(thetaY) / 2) - thetaYMinus);
-    // System.out.println("x: "+x+ "y: "+y+ "deltaTheta: "+ deltaTheta);
-
-    odometer.setTheta(odometer.getTheta() + deltaTheta);
+    System.out.println("deltaTheta: "+ deltaTheta);
+    navigation.turnTo(Math.abs(deltaTheta +180));
+    // navigation.turnTo(angles[0]+180);
+    odometer.setXYT(this.getCoordinates()[0]*TILE_SIZE+x, this.getCoordinates()[1]*TILE_SIZE+y, 0);
+    Button.waitForAnyPress();
+    navigation.travelTo(1,1);
 
     // turn towards the positive x axis
     // travel the distance x forward or backward depending on the sign of x
+    /*/
     navigation.turnTo(90);
     if (x < 0) {
       navigation.backUp(x);
@@ -138,10 +152,13 @@ public class LightLocalizer {
     } else {
       navigation.travel(y);
     }
+    */
+    // Center the odometer
+    //odometer.setXYT(this.getCoordinates()[0] * TILE_SIZE, this.getCoordinates()[1] * TILE_SIZE, odometer.getTheta());
+
     // Return to 0 degree y-axis
     navigation.turnTo(0);
     // update the position of the odometer after the localization
-    odometer.setXYT(this.getCoordinates()[0] * TILE_SIZE, this.getCoordinates()[1] * TILE_SIZE, 0);
 
   }
 
@@ -164,17 +181,20 @@ public class LightLocalizer {
     temporaryColorValue = sensorData[0] * 100;
 
     // mean estimate of the color sensor reading
-    if (llDataQueue.size() >= LL_WINDOW) {
+   /* if (llDataQueue.size() >= LL_WINDOW) {
       float element = this.llDataQueue.remove();
       llDataList.remove(element);
-    }
-    this.llDataQueue.add(temporaryColorValue);
-    llDataList.add(temporaryColorValue);
+    }*/
+   // this.llDataQueue.add(temporaryColorValue);
+    //llDataList.add(temporaryColorValue);
 
-    this.currentColorValue = this.meanEstimate();
+    //this.currentColorValue = this.meanEstimate();
+    this.currentColorValue = temporaryColorValue;
 
     // Check if the difference between the previous reading and the current reading is bigger than the line threshold
+    //System.out.println("last: "+this.lastColorValue+ "current: "+this.currentColorValue);
     if ((this.lastColorValue - this.currentColorValue) >= DIFFERENTIAL_LINE_THRESHOLD) {
+      System.out.println("DIFF: "+ (this.lastColorValue-this.currentColorValue));
       Sound.beep();
       // a line is detected
       line = true;
@@ -198,14 +218,14 @@ public class LightLocalizer {
   /**
    * Method to compute the mean estimate of the color signals in the window of the color sensor
    */
-  public float meanEstimate() {
+  /*public float meanEstimate() {
     float mean = this.llDataList.get(0);
     if (llDataList.size() == 3) {
       mean = (this.llDataList.get(0) + this.llDataList.get(1) + this.llDataList.get(2)) / LL_WINDOW;
 
     }
     return mean;
-  }
+  }*/
 
   /**
    * getter and setter for the goal coordinates of the light localization [x, y]
