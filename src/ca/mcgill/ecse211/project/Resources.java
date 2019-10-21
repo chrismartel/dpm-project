@@ -27,7 +27,7 @@ public class Resources {
   /**
    * The robot width.
    */
-  public static final double TRACK = 14.77;
+  public static final double TRACK = 10.7;//14.77;
 
   // ENVIRONMENT CONSTANTS
 
@@ -72,7 +72,7 @@ public class Resources {
    * The ultrasonic sensor update period in ms. Was calculated in order to have approximately 3 pollings per degree of
    * rotation during slow rotation
    */
-  public static final long US_PERIOD = 150;
+  public static final long US_PERIOD = 50;
 
   /**
    * Filter out constant to filter the distance seen by the us sensor
@@ -103,13 +103,13 @@ public class Resources {
   /**
    * Differential value to determine if a black line is detected or not
    */
-  public static final int DIFFERENTIAL_LINE_THRESHOLD = 7; //HAS TO BE DETERMINE BY TESTING
+  public static final int DIFFERENTIAL_LINE_THRESHOLD = 10; //HAS TO BE DETERMINE BY TESTING
 
   
   /**
    * Window size for the ultrasonic sensor data polling
    */
-  public static final int LL_WINDOW = 3;
+  public static final int LL_WINDOW = 1;
   
   /*
    * Width of the black lines (cm)
@@ -119,7 +119,7 @@ public class Resources {
   /**
    * Period of the light sensor operations
    */
-  public static final long LIGHT_SENSOR_PERIOD = 150; //HAS TO BE DETERMINED BY TESTING --> EXCEL
+  public static final long LIGHT_SENSOR_PERIOD = 300; //HAS TO BE DETERMINED BY TESTING --> EXCEL
   /**
    * Light sensor to center of wheel-base distance
    */

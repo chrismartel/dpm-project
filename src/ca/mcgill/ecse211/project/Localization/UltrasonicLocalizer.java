@@ -38,7 +38,6 @@ public class UltrasonicLocalizer {
       distances = ultrasonicPoller.getDistances();
       currentDistance = distances[0];
       lastDistance = distances[1];
-      System.out.println(ultrasonicPoller.getDistance());
       //if (ultrasonicPoller.getDistance() < COMMON_D - FALLINGEDGE_K) {
     if (lastDistance>=(COMMON_D+FALLINGEDGE_K) && currentDistance<=(COMMON_D-FALLINGEDGE_K)) {
         this.alpha = odometer.getTheta();
@@ -64,7 +63,8 @@ public class UltrasonicLocalizer {
     // compute the angle heading considering the 2 angles obtained
     angleAdjustment = this.angleHeadingAdjustment();
     // Adjust the current theta of the odometer by adding the computed heading
-    odometer.setTheta(odometer.getTheta() + angleAdjustment);
+    //odometer.setTheta(odometer.getTheta() + angleAdjustment);
+    odometer.update(0, 0, angleAdjustment);
     navigation.turnTo(0);
 
   }
@@ -77,44 +77,45 @@ public class UltrasonicLocalizer {
   public void risingEdge() {
 
     double angleAdjustment = 0;
-
-    // clockwise rotation to record alpha value
-    leftMotor.setSpeed(ROTATE_SPEED);
-    rightMotor.setSpeed(-1 * ROTATE_SPEED);
-    leftMotor.forward();
-    rightMotor.backward();
+    int[] distances;
+    int currentDistance;
+    int lastDistance;
+    // clockwise rotation to record value for alpha
+    navigation.rotate(Turn.CLOCK_WISE, ROTATE_SPEED_SLOW);
     while (true) {
-      if (ultrasonicPoller.getDistance() > COMMON_D + RISINGEDGE_K) {
-        this.alpha = odometer.getXYT()[2];
-        leftMotor.setSpeed(0);
-        rightMotor.setSpeed(0);
+      distances = ultrasonicPoller.getDistances();
+      currentDistance = distances[0];
+      lastDistance = distances[1];
+      //if (ultrasonicPoller.getDistance() < COMMON_D - FALLINGEDGE_K) {
+    if (currentDistance>=(COMMON_D+FALLINGEDGE_K) && lastDistance<=(COMMON_D-FALLINGEDGE_K)) {
+        this.alpha = odometer.getTheta();
+        navigation.stopMotors();
         break;
       }
-
     }
 
     // anti-clockwise rotation to record beta value
-    leftMotor.setSpeed(-1 * ROTATE_SPEED);
-    rightMotor.setSpeed(ROTATE_SPEED);
-    leftMotor.rotate(-70, true);
-    rightMotor.rotate(70);
-    leftMotor.backward();
-    rightMotor.forward();
+    navigation.turn(-20, ROTATE_SPEED_SLOW);
+    navigation.rotate(Turn.COUNTER_CLOCK_WISE,ROTATE_SPEED_SLOW);
     while (true) {
-      if (ultrasonicPoller.getDistance() > COMMON_D + RISINGEDGE_K) {
-        this.beta = odometer.getXYT()[2];
-        leftMotor.setSpeed(0);
-        rightMotor.setSpeed(0);
+      distances = ultrasonicPoller.getDistances();
+      currentDistance = distances[0];
+      lastDistance = distances[1];
+      //if (ultrasonicPoller.getDistance() < COMMON_D - FALLINGEDGE_K) {
+       if (currentDistance>=(COMMON_D+FALLINGEDGE_K) && lastDistance <=(COMMON_D-FALLINGEDGE_K)) {
+        this.beta = odometer.getTheta();
+        navigation.stopMotors();
         break;
-
       }
     }
-
     // compute the angle heading considering the 2 angles obtained
     angleAdjustment = this.angleHeadingAdjustment();
     // Adjust the current theta of the odometer by adding the computed heading
-    odometer.setTheta(odometer.getTheta() + angleAdjustment);
+    odometer.update(0, 0, angleAdjustment);
+
+    //odometer.setTheta(odometer.getTheta() + angleAdjustment);
     navigation.turnTo(0);
+
   }
 
   /**

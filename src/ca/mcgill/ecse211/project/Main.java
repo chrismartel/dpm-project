@@ -26,8 +26,22 @@ public class Main {
 	
 	//To remove when running 
 	Button.waitForAnyPress();
+	// Test1
+	odometer.setXYT(1*TILE_SIZE, 1*TILE_SIZE, 0);
 
-	
+	/*
+	//Test3
+	  UltrasonicLocalizer usLocalizer = new UltrasonicLocalizer();
+	   usLocalizer.fallingEdge();
+	   */
+	 // Test 4
+	    LightLocalizer lightLocalizer = new LightLocalizer();
+	    int[] coordinates = {1,1};
+	    lightLocalizer.setCoordinates(coordinates);
+	    lightLocalizer.lightLocalize();
+
+	    
+	    /*
     initialLocalize();
 
 
@@ -44,7 +58,7 @@ public class Main {
     
 
     
-
+*/
 
   }
 
