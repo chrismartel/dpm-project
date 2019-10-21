@@ -28,7 +28,10 @@ public class LightLocalizer {
   // Variables and values to operate color sensor
   private float[] sensorData = new float[colorSensor.sampleSize()]; // array of sensor readings
 
-
+  /**
+   * coordinates to reach with light localization
+   */
+  private int[] coordinates;
 
 
   /**
@@ -47,6 +50,7 @@ public class LightLocalizer {
     // initialize the sensor readings
     currentColorValue = (sensorData[0] * 100);
     lastColorValue = currentColorValue;
+    coordinates = new int[2];
   }
 
   public void initialPositioning() {
@@ -59,7 +63,7 @@ public class LightLocalizer {
     Sound.beep();
     navigation.stopMotors();
     // Make robot move back such that the center of roation is somewhat close to the point (1,1)
-    navigation.backUp(OFFSET_FROM_WHEELBASE+4);
+    navigation.backUp(OFFSET_FROM_WHEELBASE);
   }
 
   /**
@@ -72,7 +76,7 @@ public class LightLocalizer {
 
     // Perform full rotation to record angle values at each black line
     navigation.rotate(Turn.COUNTER_CLOCK_WISE, ROTATE_SPEED_SLOW);
-    
+
     double angles[] = new double[4];
 
     double tempTheta = 0;
@@ -87,7 +91,7 @@ public class LightLocalizer {
 
       if (lineCounter == 0) {
         thetaYMinus = odometer.getTheta();
-        System.out.println("thetaYMinus: "+ thetaYMinus);
+        System.out.println("thetaYMinus: " + thetaYMinus);
       }
       if (lineCounter == 0 || lineCounter == 1 || lineCounter == 2) {
         tempTheta = odometer.getTheta() - 180;
@@ -100,9 +104,9 @@ public class LightLocalizer {
       if (tempTheta < 0) {
         tempTheta = 360 + tempTheta;
       }
-        angles[lineCounter] = tempTheta;
+      angles[lineCounter] = tempTheta;
     }
-    
+
     // Calculations to know current robot location and corrections to make accordingly
     double thetaY = Math.toRadians(angles[0] - angles[2]);
     double thetaX = Math.toRadians(angles[3] - angles[1]);
@@ -112,10 +116,10 @@ public class LightLocalizer {
 
     // formula to compute the angle to add to the odometer
     // TODO: Debug this formula
-  deltaTheta = (270 + (Math.toDegrees(thetaY) / 2) - thetaYMinus) ;
-  //  System.out.println("x: "+x+ "y: "+y+ "deltaTheta: "+ deltaTheta);
+    deltaTheta = (270 + (Math.toDegrees(thetaY) / 2) - thetaYMinus);
+    // System.out.println("x: "+x+ "y: "+y+ "deltaTheta: "+ deltaTheta);
 
-   odometer.setTheta(odometer.getTheta() + deltaTheta);
+    odometer.setTheta(odometer.getTheta() + deltaTheta);
 
     // turn towards the positive x axis
     // travel the distance x forward or backward depending on the sign of x
@@ -136,11 +140,8 @@ public class LightLocalizer {
     }
     // Return to 0 degree y-axis
     navigation.turnTo(0);
-    navigation.turn(10, ROTATE_SPEED_SLOW);
-    navigation.rotate(Turn.COUNTER_CLOCK_WISE, ROTATE_SPEED_SLOW);
-    while (!this.lineDetected());
-    navigation.stopMotors();
-    odometer.setXYT(TILE_SIZE, TILE_SIZE, 0);
+    // update the position of the odometer after the localization
+    odometer.setXYT(this.getCoordinates()[0] * TILE_SIZE, this.getCoordinates()[1] * TILE_SIZE, 0);
 
   }
 
@@ -204,6 +205,16 @@ public class LightLocalizer {
 
     }
     return mean;
+  }
 
+  /**
+   * getter and setter for the goal coordinates of the light localization [x, y]
+   */
+  public void setCoordinates(int[] coordinates) {
+    this.coordinates = coordinates;
+  }
+
+  public int[] getCoordinates() {
+    return coordinates;
   }
 }
