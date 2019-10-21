@@ -261,21 +261,9 @@ public class Navigation {
    * 
    * @param : angle to turn to. If theta < 0, the robot turns counter clock wise if theta >0, the robot turns clock wise
    */
-  public void turn(double theta) {
-    leftMotor.setSpeed(ROTATE_SPEED);
-    rightMotor.setSpeed(ROTATE_SPEED);
-    leftMotor.rotate(+convertAngle(theta), true);// doesn't wait for the motor to complete the rotation
-    rightMotor.rotate(-convertAngle(theta), false);
-  }
-
-  /**
-   * Turn slowly by a certain amount of degrees
-   * 
-   * @param : angle to turn to. If theta < 0, the robot turns counter clock wise if theta >0, the robot turns clock wise
-   */
-  public void turnSlowly(double theta) {
-    leftMotor.setSpeed(ROTATE_SPEED_SLOW);
-    rightMotor.setSpeed(ROTATE_SPEED_SLOW);
+  public void turn(double theta, int speed) {
+    leftMotor.setSpeed(speed);
+    rightMotor.setSpeed(speed);
     leftMotor.rotate(+convertAngle(theta), true);// doesn't wait for the motor to complete the rotation
     rightMotor.rotate(-convertAngle(theta), false);
   }
@@ -287,10 +275,10 @@ public class Navigation {
    * @param direction Direction which the robot needs to turn (CLOCK_WISE, COUNTER_CLOCK_WISE)
    * 
    */
-  public void rotate(Turn direction) {
+  public void rotate(Turn direction, int speed) {
     navigating = true;
-    leftMotor.setSpeed(ROTATE_SPEED_SLOW);
-    rightMotor.setSpeed(ROTATE_SPEED_SLOW);
+    leftMotor.setSpeed(speed);
+    rightMotor.setSpeed(speed);
     switch (direction) {
       case CLOCK_WISE:
         rightMotor.backward();
@@ -303,6 +291,8 @@ public class Navigation {
     }
     navigating = false;
   }
+  
+  
 
 
   /**
