@@ -79,7 +79,7 @@ public class Main {
       double[] launchLocation = ballisticLauncher.launchLocation(launchArea[0], launchArea[1]);
       navigation.travelTo(launchLocation[0], launchLocation[1]);
       navigation.turnTo(launchArea[0], launchArea[1]);
-//      navigation.turn(-10, 100);
+      navigation.turn(-10, 100);
       ballisticLauncher.launch(LAUNCH_DISTANCE);
 
     }

@@ -27,7 +27,7 @@ public class Resources {
   /**
    * The robot width.
    */
-  public static final double TRACK = 13.97;//14.77;
+  public static final double TRACK = 14;//14.77;
 
   // ENVIRONMENT CONSTANTS
 
