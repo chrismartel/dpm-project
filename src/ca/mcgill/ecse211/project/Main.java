@@ -34,7 +34,7 @@ public class Main {
 				int buttonChoice3 = Button.waitForAnyPress();
 				if (buttonChoice3 == Button.ID_ENTER) {
 					LCD.clear();
-					ballisticLauncher.launch(120);
+					ballisticLauncher.launch(LAUNCH_DISTANCE);
 					ballisticLauncher.reload();
 				} else if (buttonChoice3 == Button.ID_ESCAPE) {
 					System.exit(0);
