@@ -40,7 +40,7 @@ public class BallisticLauncher {
     } catch (InterruptedException e) {
     }
     // set the launching speed to a constant (only for lab 5)
-    motorLaunchingSpeed = LAUNCHING_SPEED;
+    motorLaunchingSpeed = (int)(distance * LAUNCH_COEFFICIENT);
     // set the speeds and accelerations of the launching motors
     leftBallisticMotor.setSpeed(motorLaunchingSpeed);
     rightBallisticMotor.setSpeed(motorLaunchingSpeed);
