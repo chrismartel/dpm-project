@@ -125,12 +125,8 @@ public class Resources {
   /**
    * Coefficient of the launching process to adjust the speed of the motors in function of the distance
    */
-  public static final int LAUNCH_COEFFICIENT = 12; // HAS TO BE DETERMINED BY TESTING
+  public static final double  LAUNCH_COEFFICIENT = 7.1; // HAS TO BE DETERMINED BY TESTING
 
-  /**
-   * launching speed for the ballistic launcher to reach 4 tiles
-   */
-  public static final int LAUNCHING_SPEED = 850; // DETERMINED BY TESTING
 
   /**
    * Angle of rotation of the launching motors during launch
