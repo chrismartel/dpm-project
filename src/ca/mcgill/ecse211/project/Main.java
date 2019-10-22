@@ -2,6 +2,7 @@ package ca.mcgill.ecse211.project;
 
 import ca.mcgill.ecse211.project.Localization.*;
 import lejos.hardware.Button;
+
 import static ca.mcgill.ecse211.project.Resources.*;
 
 /**
@@ -16,11 +17,9 @@ public class Main {
 		int buttonChoice;
 		// Start the odometer and the distance polling threads
 		Thread odometerThread = new Thread(odometer);
-		Thread usPollerThread = new Thread(ultrasonicPoller);
-		usPollerThread.start();
 		odometerThread.start();
 
-		buttonChoice = choosePathFirstChoice();
+		buttonChoice = chooseFirstChoice();
 
 		// stationary launch
 		if (buttonChoice == Button.ID_LEFT) {
@@ -41,7 +40,7 @@ public class Main {
 		}
 		// mobile launch
 		else if (buttonChoice == Button.ID_RIGHT) {
-			LCD.clear();
+			// LCD.clear();
 			new Thread(new Display()).start();
 			double[] targetArea = new double[2];
 			targetArea[0] = 5.5;
@@ -49,14 +48,30 @@ public class Main {
 			double[] launchArea = new double[2];
 			launchArea[0] = 5.5;
 			launchArea[1] = 3.5;
-			initialLocalize();
+			
+			//Draw Launch and Target Location to the LCD
 
-			// double[] launchArea = ballisticLauncher.launchLocation(targetArea[0],
-			// targetArea[1]);
+			LCD.drawString("Target X:" + targetArea[0], 0, 3);
+			LCD.drawString("Target Y:" + targetArea[1], 0, 4);
+			LCD.drawString("Launch X:" + launchArea[0], 0, 5);
+			LCD.drawString("Launch Y:" + launchArea[1], 0, 6);
+			
+			//Localize to 1,1 and point to 0
+			initialLocalize();
+			
 			navigation.travelTo(launchArea[0], launchArea[1]);
 			navigation.turnTo(targetArea[0], targetArea[1]);
-			ballisticLauncher.launch(LAUNCH_DISTANCE);
 
+			// Launches as many times as the enter button is pressed.
+			while (true) {
+				int buttonChoice3 = Button.waitForAnyPress();
+				if (buttonChoice3 == Button.ID_ENTER) {
+					ballisticLauncher.launch(LAUNCH_DISTANCE);
+					ballisticLauncher.reload();
+				} else if (buttonChoice3 == Button.ID_ESCAPE) {
+					System.exit(0);
+				}
+			}
 		}
 
 	}
@@ -66,7 +81,7 @@ public class Main {
 	 * 
 	 * @return the user choice
 	 */
-	private static int choosePathFirstChoice() {
+	private static int chooseFirstChoice() {
 		int buttonChoice;
 		Display.showText("<  Left   |  Right  >",
 						"          |         ",
@@ -81,14 +96,21 @@ public class Main {
 	}
 
 	private static void initialLocalize() {
+		Thread usPollerThread = new Thread(ultrasonicPoller);
+		usPollerThread.start();
 		UltrasonicLocalizer usLocalizer = new UltrasonicLocalizer();
 		usLocalizer.fallingEdge();
-
 		LightLocalizer lightLocalizer = new LightLocalizer();
 		int[] coordinates = { 1, 1 };
 		lightLocalizer.setCoordinates(coordinates);
 		lightLocalizer.initialPositioning();
 		lightLocalizer.lightLocalize();
+		
+		try {
+			usPollerThread.sleep(8888888);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
 	}
 
