@@ -124,7 +124,7 @@ public class LightLocalizer {
     System.out.println("x: "+x);
     System.out.println("y: "+y);
     
-    deltaTheta = (255 + (Math.toDegrees(thetaY) / 2) - thetaYMinus);
+    deltaTheta = (270 + (Math.toDegrees(thetaY) / 2) - thetaYMinus);
     System.out.println("deltaTheta: "+ deltaTheta);
     odometer.setTheta(odometer.getTheta()+deltaTheta);
     odometer.setXYT(this.getCoordinates()[0]*TILE_SIZE+x, this.getCoordinates()[1]*TILE_SIZE+y, 0);

@@ -9,6 +9,8 @@ import static ca.mcgill.ecse211.project.Resources.*;
  */
 public class Main {
 
+
+=======
 	// Odometer odometer;
 
 	public static void main(String[] args) {
@@ -55,6 +57,7 @@ public class Main {
 			// targetArea[1]);
 			navigation.travelTo(launchArea[0], launchArea[1]);
 			navigation.turnTo(targetArea[0], targetArea[1]);
+      navigation.turn(-10, 100);
 			ballisticLauncher.launch(LAUNCH_DISTANCE);
 
 		}
