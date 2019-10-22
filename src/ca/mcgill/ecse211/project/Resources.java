@@ -98,7 +98,7 @@ public class Resources {
   /**
    * Differential value to determine if a black line is detected or not
    */
-  public static final int DIFFERENTIAL_LINE_THRESHOLD = 14; // HAS TO BE DETERMINE BY TESTING
+  public static final int DIFFERENTIAL_LINE_THRESHOLD = 12; // HAS TO BE DETERMINE BY TESTING
 
 
   /**
@@ -125,7 +125,7 @@ public class Resources {
   /**
    * Coefficient of the launching process to adjust the speed of the motors in function of the distance
    */
-  public static final double  LAUNCH_COEFFICIENT = 7.1; // HAS TO BE DETERMINED BY TESTING
+  public static final double  LAUNCH_COEFFICIENT = 6.8; // HAS TO BE DETERMINED BY TESTING
 
 
   /**

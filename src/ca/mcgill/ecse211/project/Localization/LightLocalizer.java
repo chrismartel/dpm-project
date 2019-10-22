@@ -95,7 +95,7 @@ public class LightLocalizer {
       // minus y axis line
       if (lineCounter == 0) {
         thetaYMinus = odometer.getTheta();
-        System.out.println("thetaYMinus: " + thetaYMinus);
+//        System.out.println("thetaYMinus: " + thetaYMinus);
       }
       if (lineCounter == 0 || lineCounter == 1 || lineCounter == 2) {
         tempTheta = odometer.getTheta() - 180;
@@ -122,14 +122,15 @@ public class LightLocalizer {
     // Compute the thetas
     double thetaY = Math.toRadians(angles[0] - angles[2]);
     double thetaX = Math.toRadians(angles[3] - angles[1]);
-    double x = -(OFFSET_FROM_WHEELBASE * Math.cos(thetaY / 2));
     double y = (OFFSET_FROM_WHEELBASE * Math.cos(thetaX / 2));
+    double x = (OFFSET_FROM_WHEELBASE * Math.cos(thetaY / 2));
     // Compute the angle to add to the odometer
     deltaTheta = (270 + (Math.toDegrees(thetaY) / 2) - thetaYMinus);
     // Adjust the odometer angle
     odometer.setTheta(odometer.getTheta() + deltaTheta);
     // Adjust the odometer x and y
     odometer.setXYT(this.getCoordinates()[0] * TILE_SIZE + x, this.getCoordinates()[1] * TILE_SIZE + y, 0);
+    Button.waitForAnyPress();
     navigation.travelTo(coordinates[0], coordinates[1]);
     // turn to 0 degree
     navigation.turnTo(0);

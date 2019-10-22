@@ -43,11 +43,11 @@ public class Main {
 			// LCD.clear();
 			new Thread(new Display()).start();
 			double[] targetArea = new double[2];
-			targetArea[0] = 5.5;
-			targetArea[1] = 7.5;
+			targetArea[0] = 6.5;
+			targetArea[1] = 1.5;
 			double[] launchArea = new double[2];
-			launchArea[0] = 5.5;
-			launchArea[1] = 3.5;
+			launchArea[0] = 2;
+			launchArea[1] = 1.5;
 			
 			//Draw Launch and Target Location to the LCD
 
@@ -58,16 +58,11 @@ public class Main {
 			
 			//Localize to 1,1 and point to 0
 			initialLocalize();
-			//Adjust angle after localization
-			
-//			navigation.turn(-10, ROTATE_SPEED);
-//			odometer.setTheta(0);
 			
 			navigation.travelTo(launchArea[0], launchArea[1]);
 			navigation.turnTo(targetArea[0], targetArea[1]);
-
-			ballisticLauncher.launch(LAUNCH_DISTANCE);
-
+			
+			navigation.turn(-5, ROTATE_SPEED);
 
 			// Launches as many times as the enter button is pressed.
 			while (true) {
@@ -80,7 +75,6 @@ public class Main {
 				}
 			}
 		}
-
 	}
 
 	/**
@@ -90,11 +84,12 @@ public class Main {
 	 */
 	private static int chooseFirstChoice() {
 		int buttonChoice;
-		Display.showText("<  Left   |  Right  >",
-						"          |         ",
-						"Stationary|  Mobile ",
-						"  Launch  |  Launch ",
-						"          |         ");
+		Display.showText(
+						"< Left  | Right  >",
+						"        |         ",
+						"Station-| Mobile  ",
+						"  ary   | Launch  ",
+						"Launch  |         ");
 		do {
 			buttonChoice = Button.waitForAnyPress(); // left or right press
 		} while (buttonChoice != Button.ID_LEFT && buttonChoice != Button.ID_RIGHT);
@@ -102,6 +97,9 @@ public class Main {
 		
 	}
 
+	/**
+	 * Initial Localization at 1,1 coordinate pointing to theta 0.
+	 */
 	private static void initialLocalize() {
 		Thread usPollerThread = new Thread(ultrasonicPoller);
 		usPollerThread.start();
@@ -113,12 +111,12 @@ public class Main {
 		lightLocalizer.initialPositioning();
 		lightLocalizer.lightLocalize();
 		
-		try {
-			usPollerThread.sleep(8888888);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			usPollerThread.sleep(8888888);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
 
 	}
-
+	
 }
