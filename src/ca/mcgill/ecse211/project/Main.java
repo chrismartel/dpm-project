@@ -9,19 +9,19 @@ import static ca.mcgill.ecse211.project.Resources.*;
  */
 public class Main {
 
-
-=======
-	// Odometer odometer;
-
+  /**
+   * The main method
+   */
 	public static void main(String[] args) {
 
 		int buttonChoice;
-		// Start the odometer and the distance polling threads
+		// Initialize the odometer and the distance polling threads
 		Thread odometerThread = new Thread(odometer);
 		Thread usPollerThread = new Thread(ultrasonicPoller);
+	    // Start the odometer and the distance polling threads
 		usPollerThread.start();
 		odometerThread.start();
-
+		
 		buttonChoice = choosePathFirstChoice();
 
 		// stationary launch
