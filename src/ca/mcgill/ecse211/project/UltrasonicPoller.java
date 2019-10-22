@@ -8,6 +8,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import static ca.mcgill.ecse211.project.Resources.*;
 
+/**
+ * Ultrasonic poller class implementing a median filter. Polls data from the ultrasonic sensor in an independent thread
+ */
 public class UltrasonicPoller implements Runnable {
   /**
    * window to store the data polled from the UsSensor in a queue
@@ -29,7 +32,7 @@ public class UltrasonicPoller implements Runnable {
    * current distance processed by the ultrasonic sensor poller
    */
   private int distance;
-  
+
   /**
    * last distance processed by the ultrasonic sensor poller
    */
@@ -56,7 +59,7 @@ public class UltrasonicPoller implements Runnable {
    */
   private Condition doneResetting = lock.newCondition();
 
-  
+
   private static UltrasonicPoller up; // Returned as singleton
 
   /**
@@ -73,7 +76,7 @@ public class UltrasonicPoller implements Runnable {
     // set the initial distance seen by the sensor
     this.distance = (int) usData[0];
   }
-  
+
   /**
    * Returns the UltrasonicPoller Object. Use this method to obtain an instance of UltrasonicPoller.
    * 
@@ -93,10 +96,10 @@ public class UltrasonicPoller implements Runnable {
   public void run() {
     // variables to control the period
     long updateStart, updateEnd;
-    
+
     // temporary distance to use before the filter
     int temporaryDistance;
-    
+
     // element used for the transfers between queue and sorted list
     float element;
     while (true) {
@@ -122,8 +125,8 @@ public class UltrasonicPoller implements Runnable {
 
       // sort the data list
       Collections.sort(usDataSortedList);
-      
-      this.lastDistance=this.distance;
+
+      this.lastDistance = this.distance;
 
       // set the temporary distance to be the median of the sorted list
       temporaryDistance = (int) (usDataSortedList.get((int) (usDataSortedList.size() / 2)) * 100.0);
@@ -131,7 +134,7 @@ public class UltrasonicPoller implements Runnable {
       // filter the temporary distance the get rid of aberrant values and update the current distance
       filter(temporaryDistance);
 
-      //record the ending time of the loop and make the thread sleep so the period is respected
+      // record the ending time of the loop and make the thread sleep so the period is respected
       updateEnd = System.currentTimeMillis();
       if (updateEnd - updateStart < US_PERIOD) {
         try {
@@ -142,6 +145,7 @@ public class UltrasonicPoller implements Runnable {
       }
     }
   }
+
   /**
    * method to get the current and last distances seen by the sensor
    * 

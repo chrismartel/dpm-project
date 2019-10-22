@@ -10,17 +10,17 @@ import static ca.mcgill.ecse211.project.Resources.*;
  */
 public class Main {
 
-	// Odometer odometer;
-
+  /**
+   * The main method
+   */
 	public static void main(String[] args) {
 
 		int buttonChoice;
-		// Start the odometer and the distance polling threads
+		// Initialize the odometer and the distance polling threads
 		Thread odometerThread = new Thread(odometer);
 		odometerThread.start();
 
 		buttonChoice = chooseFirstChoice();
-
 		// stationary launch
 		if (buttonChoice == Button.ID_LEFT) {
 			LCD.clear();
@@ -58,9 +58,16 @@ public class Main {
 			
 			//Localize to 1,1 and point to 0
 			initialLocalize();
+			//Adjust angle after localization
+			
+//			navigation.turn(-10, ROTATE_SPEED);
+//			odometer.setTheta(0);
 			
 			navigation.travelTo(launchArea[0], launchArea[1]);
 			navigation.turnTo(targetArea[0], targetArea[1]);
+
+			ballisticLauncher.launch(LAUNCH_DISTANCE);
+
 
 			// Launches as many times as the enter button is pressed.
 			while (true) {

@@ -9,15 +9,16 @@ import lejos.hardware.Sound;
 
 public class LightLocalizer {
 
+  // TOOLS FOR MEAN ESTIMATE (NOT USED IN LAB 5)
   /**
    * window to store the data polled from the color sensor in a queue
    */
-  private Queue<Float> llDataQueue;
+  // private Queue<Float> llDataQueue;
 
   /**
    * linked list to store the data from the window of samples
    */
-  private LinkedList<Float> llDataList;
+  // private LinkedList<Float> llDataList;
 
   /**
    * last and current sensor color readings used for comparison in each line detection loop
@@ -40,8 +41,8 @@ public class LightLocalizer {
    */
   public LightLocalizer() {
     // initialize the data list
-    llDataQueue = new LinkedList<Float>();
-    llDataList = new LinkedList<Float>();
+    // llDataQueue = new LinkedList<Float>();
+    // llDataList = new LinkedList<Float>();
 
     // set sensor to use red light alone
     colorSensor.setCurrentMode("Red");
@@ -54,23 +55,26 @@ public class LightLocalizer {
     coordinates = new int[2];
   }
 
+  /**
+   * Method implementing the initial positioning of the robot before light localization
+   */
   public void initialPositioning() {
     // Set motion towards point (1,1)
     navigation.turnTo(45);
+    // travel forward until a line is detected
     navigation.travelForward();
-
     while (!this.lineDetected());
     // Stop as soon as first black line is detected by the light sensor
     Sound.beep();
     navigation.stopMotors();
-    // Make robot move back such that the center of roation is somewhat close to the point (1,1)
+    // Make robot move back such that the center of rotation is somewhat close to the point (1,1)
     navigation.backUp(OFFSET_FROM_WHEELBASE);
   }
 
   /**
-   * Method performs the light localization routine. Robot rotates 360 degrees around center of rotation on point (1,1).
-   * The angle values recorded when a black line is detected is used to correct the robots heading and position on the
-   * point (1,1). The robot returns to a 0 degree stop at the end of the process.
+   * Method performs the light localization routine. Robot rotates around center of rotation on point (1,1). The angle
+   * values recorded when a black line is detected is used to correct the robots heading and position on the point
+   * (1,1). The robot returns to a 0 degree stop at the end of the process.
    * 
    */
   public void lightLocalize() {
@@ -84,11 +88,11 @@ public class LightLocalizer {
     double deltaTheta;
     double thetaYMinus = 0;
 
-
+    // Execute until 5 lines are detected
     for (int lineCounter = 0; lineCounter < 5; lineCounter++) {
-
+      // wait until a line is detected
       while (!this.lineDetected());
-
+      // minus y axis line
       if (lineCounter == 0) {
         thetaYMinus = odometer.getTheta();
         System.out.println("thetaYMinus: " + thetaYMinus);
@@ -104,34 +108,31 @@ public class LightLocalizer {
       if (tempTheta < 0) {
         tempTheta = 360 + tempTheta;
       }
-      if(lineCounter!=4) {
+      // stores the angles recorded in the array for the first 4 lines
+      if (lineCounter != 4) {
         angles[lineCounter] = tempTheta;
 
-      }
-      else {
+      } else {
+        // stop motors after 5 lines are detected
         navigation.stopMotors();
         Sound.beep();
-
       }
     }
     // Calculations to know current robot location and corrections to make accordingly
+    // Compute the thetas
     double thetaY = Math.toRadians(angles[0] - angles[2]);
     double thetaX = Math.toRadians(angles[3] - angles[1]);
-    System.out.println("thetay: "+thetaY);
-    System.out.println("thetax: "+thetaX);
     double x = -(OFFSET_FROM_WHEELBASE * Math.cos(thetaY / 2));
     double y = (OFFSET_FROM_WHEELBASE * Math.cos(thetaX / 2));
-    System.out.println("x: "+x);
-    System.out.println("y: "+y);
-    
-    deltaTheta = (255 + (Math.toDegrees(thetaY) / 2) - thetaYMinus);
-    System.out.println("deltaTheta: "+ deltaTheta);
-    odometer.setTheta(odometer.getTheta()+deltaTheta);
-    odometer.setXYT(this.getCoordinates()[0]*TILE_SIZE+x, this.getCoordinates()[1]*TILE_SIZE+y, 0);
-    //navigation.travelTo(coordinates[0],coordinates[1]);
+    // Compute the angle to add to the odometer
+    deltaTheta = (270 + (Math.toDegrees(thetaY) / 2) - thetaYMinus);
+    // Adjust the odometer angle
+    odometer.setTheta(odometer.getTheta() + deltaTheta);
+    // Adjust the odometer x and y
+    odometer.setXYT(this.getCoordinates()[0] * TILE_SIZE + x, this.getCoordinates()[1] * TILE_SIZE + y, 0);
+    navigation.travelTo(coordinates[0], coordinates[1]);
+    // turn to 0 degree
     navigation.turnTo(0);
-   
-
   }
 
 
@@ -145,6 +146,7 @@ public class LightLocalizer {
     long positioningEnd;
     float temporaryColorValue;
 
+    // keep track of the execution time of the method to adjust the period
     positioningStart = System.currentTimeMillis();
     // no line detected initially
     boolean line = false;
@@ -152,38 +154,41 @@ public class LightLocalizer {
     colorSensor.fetchSample(sensorData, 0);
     temporaryColorValue = sensorData[0] * 100;
 
+    // MEAN ESTIMATE CALCULATIONS, NOT USED IN LAB 5
     // mean estimate of the color sensor reading
-   /* if (llDataQueue.size() >= LL_WINDOW) {
-      float element = this.llDataQueue.remove();
-      llDataList.remove(element);
-    }*/
-   // this.llDataQueue.add(temporaryColorValue);
-    //llDataList.add(temporaryColorValue);
+    /*
+     * if (llDataQueue.size() >= LL_WINDOW) { float element = this.llDataQueue.remove(); llDataList.remove(element); }
+     */
+    // this.llDataQueue.add(temporaryColorValue);
+    // llDataList.add(temporaryColorValue);
+    // this.currentColorValue = this.meanEstimate();
 
-    //this.currentColorValue = this.meanEstimate();
+    // set the current color value
     this.currentColorValue = temporaryColorValue;
 
-    // Check if the difference between the previous reading and the current reading is bigger than the line threshold
-    //System.out.println("last: "+this.lastColorValue+ "current: "+this.currentColorValue);
+    // Check if the difference between the previous reading and the current reading is bigger than the differential line
+    // threshold
     if ((this.lastColorValue - this.currentColorValue) >= DIFFERENTIAL_LINE_THRESHOLD) {
-      System.out.println("DIFF: "+ (this.lastColorValue-this.currentColorValue));
+      // System.out.println("DIFF: " + (this.lastColorValue - this.currentColorValue));
       Sound.beep();
-      //Sound.beep();
       // a line is detected
       line = true;
     }
-    // update the last reading of the light sensor
+
+    // update the last reading of the light sensor with the current one
     lastColorValue = currentColorValue;
+
     // pause the thread to respect the line detection period
     positioningEnd = System.currentTimeMillis();
     if (positioningEnd - positioningStart < LIGHT_SENSOR_PERIOD) {
+
+      // Sleep the correct amount of time
       try {
         Thread.sleep(LIGHT_SENSOR_PERIOD - (positioningEnd - positioningStart));
       } catch (InterruptedException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
-
     }
     return line;
   }
@@ -191,14 +196,12 @@ public class LightLocalizer {
   /**
    * Method to compute the mean estimate of the color signals in the window of the color sensor
    */
-  /*public float meanEstimate() {
-    float mean = this.llDataList.get(0);
-    if (llDataList.size() == 3) {
-      mean = (this.llDataList.get(0) + this.llDataList.get(1) + this.llDataList.get(2)) / LL_WINDOW;
-
-    }
-    return mean;
-  }*/
+  /*
+   * public float meanEstimate() { float mean = this.llDataList.get(0); if (llDataList.size() == 3) { mean =
+   * (this.llDataList.get(0) + this.llDataList.get(1) + this.llDataList.get(2)) / LL_WINDOW;
+   * 
+   * } return mean; }
+   */
 
   /**
    * getter and setter for the goal coordinates of the light localization [x, y]
