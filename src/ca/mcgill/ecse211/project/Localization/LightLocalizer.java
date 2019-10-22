@@ -1,8 +1,6 @@
 package ca.mcgill.ecse211.project.Localization;
 
 import static ca.mcgill.ecse211.project.Resources.*;
-import java.util.LinkedList;
-import java.util.Queue;
 import ca.mcgill.ecse211.project.Navigation.Turn;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
@@ -187,7 +185,6 @@ public class LightLocalizer {
       try {
         Thread.sleep(LIGHT_SENSOR_PERIOD - (positioningEnd - positioningStart));
       } catch (InterruptedException e) {
-        // TODO Auto-generated catch block
         e.printStackTrace();
       }
     }

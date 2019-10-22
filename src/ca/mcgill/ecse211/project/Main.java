@@ -62,7 +62,6 @@ public class Main {
 			navigation.travelTo(launchArea[0], launchArea[1]);
 			navigation.turnTo(targetArea[0], targetArea[1]);
 			
-			navigation.turn(-5, ROTATE_SPEED);
 
 			// Launches as many times as the enter button is pressed.
 			while (true) {
