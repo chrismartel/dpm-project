@@ -75,13 +75,13 @@ public class Navigation {
     travel(dX, dY);
 
   }
-  
-  
+
+
   public void turnTo(double x, double y) {
     // Convert the coordinates to centimeters
     x = x * TILE_SIZE;
     y = y * TILE_SIZE;
-    
+
     // Poll the odometer for info about current the position
     double currentX = odometer.getX();
     double currentY = odometer.getY();
@@ -89,8 +89,8 @@ public class Navigation {
     // compute the distances to travel in X and Y
     double dX = x - currentX;
     double dY = y - currentY;
-	    
-	turnTo(Math.toDegrees(Math.atan2(dX, dY)));
+
+    turnTo(Math.toDegrees(Math.atan2(dX, dY)));
   }
 
   /**
@@ -291,8 +291,7 @@ public class Navigation {
     }
     navigating = false;
   }
-  
-  
+
 
 
   /**

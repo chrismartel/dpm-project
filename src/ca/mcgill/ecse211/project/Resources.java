@@ -27,7 +27,7 @@ public class Resources {
   /**
    * The robot width.
    */
-  public static final double TRACK = 14;//14.77;
+  public static final double TRACK = 14;// 14.77;
 
   // ENVIRONMENT CONSTANTS
 
@@ -56,9 +56,6 @@ public class Resources {
 
 
 
-
-  
-  
   // ULTRASONIC POLLER CONSTANTS
 
   /**
@@ -78,7 +75,7 @@ public class Resources {
   public static final int FILTER_OUT = 5;
 
 
-  
+
   // ULTRASONIC LOCALIZATION CONSTANTS
 
   /**
@@ -101,14 +98,14 @@ public class Resources {
   /**
    * Differential value to determine if a black line is detected or not
    */
-  public static final int DIFFERENTIAL_LINE_THRESHOLD = 14; //HAS TO BE DETERMINE BY TESTING
+  public static final int DIFFERENTIAL_LINE_THRESHOLD = 14; // HAS TO BE DETERMINE BY TESTING
 
-  
+
   /**
    * Window size for the ultrasonic sensor data polling
    */
   public static final int LL_WINDOW = 1;
-  
+
   /*
    * Width of the black lines (cm)
    */
@@ -117,35 +114,50 @@ public class Resources {
   /**
    * Period of the light sensor operations
    */
-  public static final long LIGHT_SENSOR_PERIOD = 235; //HAS TO BE DETERMINED BY TESTING --> EXCEL
+  public static final long LIGHT_SENSOR_PERIOD = 235; // HAS TO BE DETERMINED BY TESTING --> EXCEL
   /**
    * Light sensor to center of wheel-base distance
    */
   public static final double OFFSET_FROM_WHEELBASE = 12.6;
 
   // BALLISTIC LAUNCHER CONSTANTS
-  
+
   /**
    * Coefficient of the launching process to adjust the speed of the motors in function of the distance
    */
-  public static final int LAUNCH_COEFFICIENT = 12; //HAS TO BE DETERMINED BY TESTING
-  
+  public static final int LAUNCH_COEFFICIENT = 12; // HAS TO BE DETERMINED BY TESTING
+
+  /**
+   * launching speed for the ballistic launcher to reach 4 tiles
+   */
+  public static final int LAUNCHING_SPEED = 850; // DETERMINED BY TESTING
+
   /**
    * Angle of rotation of the launching motors during launch
    */
   public static final int LAUNCHING_ANGLE = 180;
-  
+
   /**
    * Distance to launch the ball
    */
   public static final int LAUNCH_DISTANCE = 120;
-  
+
+  /**
+   * period of sleeping before launch
+   */
+  public static final int LAUNCH_SLEEP = 5000;
+
+  /**
+   * period of sleeping after launch
+   */
+  public static final int RELOAD_SLEEP = 500;
+
   /**
    * The acceleration.
    */
   public static final int LAUNCH_ACCELERATION = 9999;
   public static final int RELOAD_ACCELERATION = 3000;
-  
+
   // MOTORS AND SENSORS
 
   /**
@@ -157,7 +169,7 @@ public class Resources {
    * The right motor.
    */
   public static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(MotorPort.A);
-  
+
   /**
    * The left ballistic motor.
    */
@@ -199,7 +211,7 @@ public class Resources {
    * The BallisticLauncher singleton
    */
   public static BallisticLauncher ballisticLauncher = BallisticLauncher.getBallisticLauncher();
-  
+
   /**
    * The ultrasonic poller singleton.
    */
