@@ -5,8 +5,7 @@ package ca.mcgill.ecse211.project;
 import static ca.mcgill.ecse211.project.Resources.*;
 
 /**
- * The navigation class is used to define all the navigation movements of the robot. It also acts as a state machine to
- * implement the behavior of the robot when it meets obstacles
+ * The navigation class is used to define all the low level navigation movements of the robot.
  */
 public class Navigation {
 
@@ -15,12 +14,6 @@ public class Navigation {
    */
   private double lastX;
   private double lastY;
-
-  /**
-   * coordinates of the way point to reach
-   */
-  private double finalX;
-  private double finalY;
 
   /**
    * boolean representing if the robot is traveling to a way point it is set to false ONLY when a way point is reached
@@ -123,8 +116,6 @@ public class Navigation {
    * @return navigating : the navigation state of the robot
    */
   public boolean isNavigating() {
-
-
     return navigating;
   }
 
@@ -302,25 +293,6 @@ public class Navigation {
     leftMotor.stop(false);
   }
 
-
-  /*
-   * getters and setters for the coordinates of the way point we want to reach
-   */
-  public double getFinalX() {
-    return this.finalX;
-  }
-
-  public double getFinalY() {
-    return this.finalY;
-  }
-
-  public void setFinalX(double x) {
-    this.finalX = x;
-  }
-
-  public void setFinalY(double y) {
-    this.finalY = y;
-  }
 
 
 }
