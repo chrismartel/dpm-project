@@ -1,4 +1,4 @@
-package ca.mcgill.ecse211.project;
+package ca.mcgill.ecse211.project.sensors;
 
 import static ca.mcgill.ecse211.project.Resources.*;
 import java.util.Collections;
@@ -31,7 +31,6 @@ public class UltrasonicController {
    * filter control value used for the filter method
    */
   private int filterControl;
-  
   
   UltrasonicController(int initialDistance) {
     

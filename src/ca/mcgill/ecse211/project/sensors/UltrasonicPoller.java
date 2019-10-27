@@ -1,4 +1,5 @@
-package ca.mcgill.ecse211.project;
+package ca.mcgill.ecse211.project.sensors;
+
 import static ca.mcgill.ecse211.project.Resources.*;
 
 /**
@@ -9,17 +10,17 @@ public class UltrasonicPoller implements Runnable {
    * Array to store the fetch samples polled from the left us sensor
    */
   private float[] leftUsData;
-  
+
   /**
    * Array to store the fetch samples polled from the right us sensor
    */
   private float[] rightUsData;
-  
+
   /**
    * current distance seen by the left ultrasonic sensor poller
    */
   private int leftDistance;
-  
+
   /**
    * current distance seen by the left ultrasonic sensor poller
    */
@@ -27,22 +28,22 @@ public class UltrasonicPoller implements Runnable {
 
 
 
-
   private static UltrasonicPoller up; // Returned as singleton
-  
-  
+
+
   /**
    * Controllers for the left and right ultrasonic sensors
    */
   private UltrasonicController leftUsController;
   private UltrasonicController rightUsController;
 
-;
+  ;
+
   /**
    * constructor of the ultrasonic poller
    */
   private UltrasonicPoller() {
-    this.pollSensors(); 
+    this.pollSensors();
     leftUsController = new UltrasonicController(this.leftDistance);
     rightUsController = new UltrasonicController(this.rightDistance);
   }
@@ -91,12 +92,20 @@ public class UltrasonicPoller implements Runnable {
     // acquire distance data in meters
     leftUsSensor.getDistanceMode().fetchSample(leftUsData, 0);
     // set the initial distance seen by the sensor
-    this.leftDistance = (int) (leftUsData[0]*100);
-    
+    this.leftDistance = (int) (leftUsData[0] * 100);
+
     // acquire distance data in meters
     rightUsSensor.getDistanceMode().fetchSample(rightUsData, 0);
     // set the initial distance seen by the sensor
-    this.rightDistance = (int) (rightUsData[0]*100);
+    this.rightDistance = (int) (rightUsData[0] * 100);
   }
 
+  public UltrasonicController getRightUsController() {
+    return rightUsController;
+  }
+
+  public UltrasonicController getLeftUsController() {
+    return leftUsController;
+  }
 }
+
