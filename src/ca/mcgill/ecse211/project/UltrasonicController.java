@@ -33,26 +33,25 @@ public class UltrasonicController {
   private int filterControl;
   
   
-  UltrasonicController(int distance) {
+  UltrasonicController(int initialDistance) {
     
     // initialize the data lists
     this.usDataQueue = new LinkedList<Integer>();
     this.usDataSortedList = new LinkedList<Integer>();
     // set the initial distances of the controller
-    this.currentDistance = distance;
-    this.previousDistance = distance;
+    this.currentDistance = initialDistance;
+    this.previousDistance = initialDistance;
   }
   
   
   void processDistance(int distance) {
     this.previousDistance = this.currentDistance;
-    float element;
     int temporaryDistance;
     
     // if the lists are full remove the oldest sample from the queue and from the sorted list
     if (usDataQueue.size() == US_WINDOW) {
       // retrieves the element at head of the queue
-      element = usDataQueue.element();
+      float element = usDataQueue.element();
       // removes the element at top of the queue from the sorted list
       usDataSortedList.remove(element);
       // removes the element at head of the queue

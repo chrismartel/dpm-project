@@ -1,11 +1,4 @@
 package ca.mcgill.ecse211.project;
-
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import static ca.mcgill.ecse211.project.Resources.*;
 
 /**
@@ -13,27 +6,26 @@ import static ca.mcgill.ecse211.project.Resources.*;
  */
 public class UltrasonicPoller implements Runnable {
   /**
-   * Array to store the fetch samples
+   * Array to store the fetch samples polled from the left us sensor
    */
-  private float[] usData;
+  private float[] leftUsData;
+  
   /**
-   * current distance seen by the ultrasonic sensor poller
+   * Array to store the fetch samples polled from the right us sensor
    */
-  private int distance;
+  private float[] rightUsData;
+  
+  /**
+   * current distance seen by the left ultrasonic sensor poller
+   */
+  private int leftDistance;
+  
+  /**
+   * current distance seen by the left ultrasonic sensor poller
+   */
+  private int rightDistance;
 
-  // Thread control tools
-  /**
-   * Fair lock for concurrent writing
-   */
-  private static Lock lock = new ReentrantLock(true);
-  /**
-   * Indicates if a thread is trying to reset any position parameters
-   */
-  private volatile boolean isResetting = false;
-  /**
-   * Lets other threads know that a reset operation is over.
-   */
-  private Condition doneResetting = lock.newCondition();
+
 
 
   private static UltrasonicPoller up; // Returned as singleton
@@ -50,12 +42,9 @@ public class UltrasonicPoller implements Runnable {
    * constructor of the ultrasonic poller
    */
   private UltrasonicPoller() {
-    // acquire distance data in meters
-    usSensor.getDistanceMode().fetchSample(usData, 0);
-    // set the initial distance seen by the sensor
-    this.distance = (int) (usData[0]*100);
-    leftUsController = new UltrasonicController(this.distance);
-    rightUsController = new UltrasonicController(this.distance);
+    this.pollSensors(); 
+    leftUsController = new UltrasonicController(this.leftDistance);
+    rightUsController = new UltrasonicController(this.rightDistance);
   }
 
   /**
@@ -79,14 +68,10 @@ public class UltrasonicPoller implements Runnable {
 
     while (true) {
       updateStart = System.currentTimeMillis();
-      // acquire distance data in meters from the sensor and store it in float array
-      usSensor.getDistanceMode().fetchSample(usData, 0);
-      // scale the distance fetched and update the current distance
-      this.distance = (int) (usData[0]*100);
-      leftUsController.processDistance(this.distance);
-      rightUsController.processDistance(this.distance);
-
-      
+      this.pollSensors();
+      // Process the fetched distance in the controllers
+      leftUsController.processDistance(this.leftDistance);
+      rightUsController.processDistance(this.rightDistance);
       // record the ending time of the loop and make the thread sleep so the period is respected
       updateEnd = System.currentTimeMillis();
       if (updateEnd - updateStart < US_PERIOD) {
@@ -100,24 +85,18 @@ public class UltrasonicPoller implements Runnable {
   }
 
   /**
-   * method to get the current distance seen by the sensor
-   * 
-   * @return the current distance seen by the sensor
+   * Method polling data samples from the ultrasonic sensors
    */
-  public int getDistance() {
-    int distance = this.distance;
-    lock.lock();
-    try {
-      while (isResetting) { // If a reset operation is being executed, wait until it is over.
-        doneResetting.await(); // Using await() is lighter on the CPU than simple busy wait.
-      }
-
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    } finally {
-      lock.unlock();
-    }
-    return distance;
+  private void pollSensors() {
+    // acquire distance data in meters
+    leftUsSensor.getDistanceMode().fetchSample(leftUsData, 0);
+    // set the initial distance seen by the sensor
+    this.leftDistance = (int) (leftUsData[0]*100);
+    
+    // acquire distance data in meters
+    rightUsSensor.getDistanceMode().fetchSample(rightUsData, 0);
+    // set the initial distance seen by the sensor
+    this.rightDistance = (int) (rightUsData[0]*100);
   }
 
 }
