@@ -1,7 +1,9 @@
-package ca.mcgill.ecse211.project;
+package ca.mcgill.ecse211.project.game;
 
 
 
+import ca.mcgill.ecse211.project.odometry.Odometer;
+import ca.mcgill.ecse211.project.sensor.UltrasonicPoller;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
@@ -177,14 +179,24 @@ public class Resources {
   public static final EV3LargeRegulatedMotor rightBallisticMotor = new EV3LargeRegulatedMotor(MotorPort.C);
 
   /**
+   * The left ultrasonic sensor.
+   */
+  public static final EV3UltrasonicSensor leftUsSensor = new EV3UltrasonicSensor(SensorPort.S1);
+  
+  /**
    * The ultrasonic sensor.
    */
-  public static final EV3UltrasonicSensor usSensor = new EV3UltrasonicSensor(SensorPort.S4);
+  public static final EV3UltrasonicSensor rightUsSensor = new EV3UltrasonicSensor(SensorPort.S4);
 
   /**
    * The color sensor.
    */
-  public static final EV3ColorSensor colorSensor = new EV3ColorSensor(SensorPort.S1);
+  public static final EV3ColorSensor leftColorSensor = new EV3ColorSensor(SensorPort.S2);
+  
+  /**
+   * The color sensor.
+   */
+  public static final EV3ColorSensor rightColorSensor = new EV3ColorSensor(SensorPort.S3);
 
   /**
    * The LCD.
@@ -212,6 +224,6 @@ public class Resources {
    * The ultrasonic poller singleton.
    */
   public static UltrasonicPoller ultrasonicPoller = UltrasonicPoller.getUltrasonicPoller();
-
+  
 
 }

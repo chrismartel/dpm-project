@@ -1,9 +1,9 @@
 package ca.mcgill.ecse211.project;
 
-import ca.mcgill.ecse211.project.Localization.*;
+import ca.mcgill.ecse211.project.localization.*;
 import lejos.hardware.Button;
 
-import static ca.mcgill.ecse211.project.Resources.*;
+import static ca.mcgill.ecse211.project.game.Resources.*;
 
 /**
  * The main class.
