@@ -33,7 +33,7 @@ public class UltrasonicLocalizer {
     // clockwise rotation to record value for alpha
     navigation.rotate(Turn.CLOCK_WISE, ROTATE_SPEED_SLOW);
     while (true) {
-      distances = ultrasonicPoller.getDistances();
+      distances = Resources.ultrasonicPoller.getDistances();
       currentDistance = distances[0];
       lastDistance = distances[1];
       // if (ultrasonicPoller.getDistance() < COMMON_D - FALLINGEDGE_K) {
