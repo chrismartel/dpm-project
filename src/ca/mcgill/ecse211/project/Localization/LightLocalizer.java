@@ -1,7 +1,7 @@
 package ca.mcgill.ecse211.project.localization;
 
-import static ca.mcgill.ecse211.project.Resources.*;
-import ca.mcgill.ecse211.project.Navigation.Turn;
+import static ca.mcgill.ecse211.project.game.Resources.*;
+import ca.mcgill.ecse211.project.game.Navigation.Turn;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 

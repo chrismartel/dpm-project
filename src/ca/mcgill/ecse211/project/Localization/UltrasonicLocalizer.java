@@ -1,13 +1,11 @@
 package ca.mcgill.ecse211.project.localization;
 
-import static ca.mcgill.ecse211.project.Resources.*;
-import ca.mcgill.ecse211.project.Navigation.Turn;
+import static ca.mcgill.ecse211.project.game.Resources.*;
+import ca.mcgill.ecse211.project.game.Navigation.Turn;
 
 
 /**
- * This class contains methods for the two ultrasonic localization routines: the falling edge and rising edge
- * localization routines.
- *
+ * This class contains the method for the ultrasonic localization falling edge routine using two ultrasonic sensors
  */
 public class UltrasonicLocalizer {
 

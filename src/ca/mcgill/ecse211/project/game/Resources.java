@@ -1,7 +1,9 @@
-package ca.mcgill.ecse211.project;
+package ca.mcgill.ecse211.project.game;
 
 
 
+import ca.mcgill.ecse211.project.odometry.Odometer;
+import ca.mcgill.ecse211.project.sensor.UltrasonicPoller;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;

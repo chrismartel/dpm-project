@@ -1,10 +1,11 @@
-package ca.mcgill.ecse211.project;
+package ca.mcgill.ecse211.project.odometry;
 
 
 import java.util.concurrent.locks.Condition;
+import ca.mcgill.ecse211.project.game.Resources.*;
+
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import static ca.mcgill.ecse211.project.Resources.*;
 
 public class Odometer implements Runnable {
 

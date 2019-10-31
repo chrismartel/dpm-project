@@ -1,6 +1,6 @@
-package ca.mcgill.ecse211.project.sensors;
+package ca.mcgill.ecse211.project.sensor;
 
-import static ca.mcgill.ecse211.project.Resources.*;
+import static ca.mcgill.ecse211.project.game.Resources.*;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -111,6 +111,11 @@ public class UltrasonicController {
   public int getDistance() {
     int distance = this.currentDistance;
     return distance;
+  }
+  
+  public void checkForObject() {
+    // TODO: check if the robot is in navigation state and if objects are detected while navigating
+    // If object detected switch the state
   }
 
 }

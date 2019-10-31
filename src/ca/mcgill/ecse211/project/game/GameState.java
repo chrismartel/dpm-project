@@ -1,4 +1,4 @@
-package ca.mcgill.ecse211.project;
+package ca.mcgill.ecse211.project.game;
 
 public enum GameState {
 
@@ -14,6 +14,14 @@ public enum GameState {
     public GameState nextState() {
       return Navigation;
     }},
+  
+  Tunnel{
+      @Override
+      public GameState nextState() {
+        return LightLocalization;
+      }
+      
+    },
   Navigation{
 
     @Override
