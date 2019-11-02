@@ -22,6 +22,13 @@ public enum GameState {
       }
       
     },
+  ColorLocalization{
+      @Override
+      public GameState nextState() {
+        return LightLocalization;
+      }
+      
+    },
   Navigation{
 
     @Override

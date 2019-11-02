@@ -181,22 +181,22 @@ public class Resources {
   /**
    * The left ultrasonic sensor.
    */
-  public static final EV3UltrasonicSensor leftUsSensor = new EV3UltrasonicSensor(SensorPort.S1);
+  public static final EV3UltrasonicSensor leftUsSensor = new EV3UltrasonicSensor(SensorPort.S3);
   
   /**
    * The ultrasonic sensor.
    */
-  public static final EV3UltrasonicSensor frontUsSensor = new EV3UltrasonicSensor(SensorPort.S4);
+  public static final EV3UltrasonicSensor frontUsSensor = new EV3UltrasonicSensor(SensorPort.S1);
 
   /**
    * The color sensor.
    */
-  public static final EV3ColorSensor leftColorSensor = new EV3ColorSensor(SensorPort.S2);
+  public static final EV3ColorSensor leftColorSensor = new EV3ColorSensor(SensorPort.S4);
   
   /**
    * The color sensor.
    */
-  public static final EV3ColorSensor rightColorSensor = new EV3ColorSensor(SensorPort.S3);
+  public static final EV3ColorSensor rightColorSensor = new EV3ColorSensor(SensorPort.S2);
 
   /**
    * The LCD.

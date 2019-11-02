@@ -43,6 +43,8 @@ public class UltrasonicPoller implements Runnable {
    * constructor of the ultrasonic poller
    */
   private UltrasonicPoller() {
+    leftUsData = new float[leftUsSensor.sampleSize()];
+    frontUsData = new float[leftUsSensor.sampleSize()];
     this.pollSensors();
     leftUsController = new UltrasonicController(this.leftDistance);
     frontUsController = new UltrasonicController(this.frontDistance);
