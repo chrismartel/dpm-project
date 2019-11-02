@@ -33,7 +33,7 @@ public class BallisticLauncher {
    * 
    * @param : the distance we want the ball to travel
    */
-  void launch(double distance) {
+  public void launch(double distance) {
     // sleeps 5 seconds before launch
     try {
       Thread.sleep(LAUNCH_SLEEP);
@@ -59,7 +59,7 @@ public class BallisticLauncher {
   /**
    * Method implementing the behaviour of the ballistic motors during reload
    */
-  void reload() {
+  public void reload() {
     // set the speed and acceleration of the motors for reload
     leftBallisticMotor.setSpeed(ROTATE_SPEED_SLOW);
     rightBallisticMotor.setSpeed(ROTATE_SPEED_SLOW);

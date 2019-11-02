@@ -186,7 +186,7 @@ public class Resources {
   /**
    * The ultrasonic sensor.
    */
-  public static final EV3UltrasonicSensor rightUsSensor = new EV3UltrasonicSensor(SensorPort.S4);
+  public static final EV3UltrasonicSensor frontUsSensor = new EV3UltrasonicSensor(SensorPort.S4);
 
   /**
    * The color sensor.
@@ -211,19 +211,11 @@ public class Resources {
   public static Odometer odometer = Odometer.getOdometer();
 
   /**
-   * The navigation singleton.
-   */
-  public static Navigation navigation = Navigation.getNavigation();
-
-  /**
-   * The BallisticLauncher singleton
-   */
-  public static BallisticLauncher ballisticLauncher = BallisticLauncher.getBallisticLauncher();
-
-  /**
    * The ultrasonic poller singleton.
    */
   public static UltrasonicPoller ultrasonicPoller = UltrasonicPoller.getUltrasonicPoller();
+  
+ 
   
 
 }
