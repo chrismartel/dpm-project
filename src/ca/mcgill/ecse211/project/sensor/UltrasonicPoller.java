@@ -12,9 +12,9 @@ public class UltrasonicPoller implements Runnable {
   private float[] leftUsData;
 
   /**
-   * Array to store the fetch samples polled from the right us sensor
+   * Array to store the fetch samples polled from the front us sensor
    */
-  private float[] rightUsData;
+  private float[] frontUsData;
 
   /**
    * current distance seen by the left ultrasonic sensor
@@ -22,9 +22,9 @@ public class UltrasonicPoller implements Runnable {
   private int leftDistance;
 
   /**
-   * current distance seen by the left ultrasonic sensor
+   * current distance seen by the front ultrasonic sensor
    */
-  private int rightDistance;
+  private int frontDistance;
 
 
 
@@ -32,10 +32,10 @@ public class UltrasonicPoller implements Runnable {
 
 
   /**
-   * Controllers for the left and right ultrasonic sensors
+   * Controllers for the left and front ultrasonic sensors
    */
   private UltrasonicController leftUsController;
-  private UltrasonicController rightUsController;
+  private UltrasonicController frontUsController;
 
   
 
@@ -45,7 +45,7 @@ public class UltrasonicPoller implements Runnable {
   private UltrasonicPoller() {
     this.pollSensors();
     leftUsController = new UltrasonicController(this.leftDistance);
-    rightUsController = new UltrasonicController(this.rightDistance);
+    frontUsController = new UltrasonicController(this.frontDistance);
   }
 
   /**
@@ -72,9 +72,9 @@ public class UltrasonicPoller implements Runnable {
       this.pollSensors();
       // Process the fetched distance in the controllers
       leftUsController.processDistance(this.leftDistance);
-      rightUsController.processDistance(this.rightDistance);
+      frontUsController.processDistance(this.frontDistance);
       leftUsController.checkForObject();
-      rightUsController.checkForObject();
+      frontUsController.checkForObject();
       // record the ending time of the loop and make the thread sleep so the period is respected
       updateEnd = System.currentTimeMillis();
       if (updateEnd - updateStart < US_PERIOD) {
@@ -97,13 +97,13 @@ public class UltrasonicPoller implements Runnable {
     this.leftDistance = (int) (leftUsData[0] * 100);
 
     // acquire distance data in meters
-    rightUsSensor.getDistanceMode().fetchSample(rightUsData, 0);
+    frontUsSensor.getDistanceMode().fetchSample(frontUsData, 0);
     // set the initial distance seen by the sensor
-    this.rightDistance = (int) (rightUsData[0] * 100);
+    this.frontDistance = (int) (frontUsData[0] * 100);
   }
 
-  public UltrasonicController getRightUsController() {
-    return rightUsController;
+  public UltrasonicController getfrontUsController() {
+    return frontUsController;
   }
 
   public UltrasonicController getLeftUsController() {

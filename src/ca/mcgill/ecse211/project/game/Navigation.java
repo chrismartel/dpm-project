@@ -12,13 +12,13 @@ public class Navigation {
   /**
    * last coordinates recorded from the odometer
    */
-  private double lastX;
-  private double lastY;
+  private static double lastX;
+  private static double lastY;
 
   /**
    * boolean representing if the robot is traveling to a way point it is set to false ONLY when a way point is reached
    */
-  private boolean navigating = false;
+  private static boolean navigating = false;
 
   private static Navigation nav; // Returned as singleton
 
@@ -47,7 +47,7 @@ public class Navigation {
    * @param x : x coordinate of the current way point
    * @param y : y coordinate of the current way point
    */
-  public void travelTo(double x, double y) {
+  public static void travelTo(double x, double y) {
 
     // Convert the coordinates to centimeters
     x = x * TILE_SIZE;
@@ -91,7 +91,7 @@ public class Navigation {
    * 
    * @param theta :
    */
-  public void turnTo(double theta) {
+  public static void turnTo(double theta) {
     double currentTheta = odometer.getTheta();
     // compute the difference between the current orientation and the desired orientation
     double rotation = theta - currentTheta;
@@ -135,7 +135,7 @@ public class Navigation {
    * @param distance : the distance to cover
    * @return the degrees of rotation to cover the distance
    */
-  public int convertDistance(double distance) {
+  public static int convertDistance(double distance) {
     return (int) ((180.0 * distance) / (Math.PI * WHEEL_RADIUS));
   }
 
@@ -145,7 +145,7 @@ public class Navigation {
    * @param angle : the angle to obtain
    * @return the degrees of rotation to reach this angle
    */
-  public int convertAngle(double angle) {
+  public static int convertAngle(double angle) {
     return convertDistance(Math.PI * TRACK * angle / 360.0);
   }
 
@@ -156,7 +156,7 @@ public class Navigation {
    * @param x : the x distance to travel
    * @param y : the y distance to travel
    */
-  public void travel(double x, double y) {
+  public static void travel(double x, double y) {
     travel(Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)));
   }
 
@@ -165,7 +165,7 @@ public class Navigation {
    * 
    * @param travelDistance : the magnitude of the distance to travel
    */
-  public void travel(double travelDistance) {
+  public static void travel(double travelDistance) {
     double dX, dY;
 
     // poll the odometer to get the current X and Y coordinates
@@ -197,7 +197,7 @@ public class Navigation {
    * 
    * @param travelDistance : the magnitude of the distance to travel
    */
-  public void backUp(double travelDistance) {
+  public  static void backUp(double travelDistance) {
     double dX, dY;
 
     // poll the odometer to get the current X and Y coordinates
@@ -228,7 +228,7 @@ public class Navigation {
   /**
    * set both motors forward
    */
-  public void travelForward() {
+  public static void travelForward() {
 
     leftMotor.setSpeed(FORWARD_SPEED);
     rightMotor.setSpeed(FORWARD_SPEED);
@@ -240,7 +240,7 @@ public class Navigation {
   /**
    * Set both motors backward
    */
-  public void travelBackward() {
+  public static void travelBackward() {
     leftMotor.setSpeed(FORWARD_SPEED);
     rightMotor.setSpeed(FORWARD_SPEED);
     rightMotor.backward();
@@ -252,7 +252,7 @@ public class Navigation {
    * 
    * @param : angle to turn to. If theta < 0, the robot turns counter clock wise if theta >0, the robot turns clock wise
    */
-  public void turn(double theta, int speed) {
+  public static  void turn(double theta, int speed) {
     leftMotor.setSpeed(speed);
     rightMotor.setSpeed(speed);
     leftMotor.rotate(+convertAngle(theta), true);// doesn't wait for the motor to complete the rotation
@@ -266,7 +266,7 @@ public class Navigation {
    * @param direction Direction which the robot needs to turn (CLOCK_WISE, COUNTER_CLOCK_WISE)
    * 
    */
-  public void rotate(Turn direction, int speed) {
+  public static void rotate(Turn direction, int speed) {
     navigating = true;
     leftMotor.setSpeed(speed);
     rightMotor.setSpeed(speed);
@@ -288,7 +288,7 @@ public class Navigation {
   /**
    * stop both motors at once
    */
-  public void stopMotors() {
+  public static void stopMotors() {
     rightMotor.stop(true);// does not wait for the motor to actually stop
     leftMotor.stop(false);
   }

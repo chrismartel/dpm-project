@@ -15,7 +15,7 @@ public enum GameState {
       return Navigation;
     }},
   
-  Tunnel{
+  Initialization{
       @Override
       public GameState nextState() {
         return LightLocalization;

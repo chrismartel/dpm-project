@@ -1,6 +1,7 @@
 package ca.mcgill.ecse211.project.localization;
 
 import static ca.mcgill.ecse211.project.game.Resources.*;
+import ca.mcgill.ecse211.project.game.Navigation;
 import ca.mcgill.ecse211.project.game.Navigation.Turn;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
@@ -26,7 +27,7 @@ public class LightLocalizer {
   private float lastColorValue;
 
   // Variables and values to operate color sensor
-  private float[] sensorData = new float[colorSensor.sampleSize()]; // array of sensor readings
+  private float[] sensorData = new float[leftColorSensor.sampleSize()]; // array of sensor readings
 
   /**
    * coordinates to reach with light localization
@@ -43,10 +44,10 @@ public class LightLocalizer {
     // llDataList = new LinkedList<Float>();
 
     // set sensor to use red light alone
-    colorSensor.setCurrentMode("Red");
-    sensorData = new float[colorSensor.sampleSize()];
+    leftColorSensor.setCurrentMode("Red");
+    sensorData = new float[leftColorSensor.sampleSize()];
     // initiate the current readings of the sensor
-    colorSensor.fetchSample(sensorData, 0);
+    leftColorSensor.fetchSample(sensorData, 0);
     // initialize the sensor readings
     currentColorValue = (sensorData[0] * 100);
     lastColorValue = currentColorValue;
@@ -58,15 +59,15 @@ public class LightLocalizer {
    */
   public void initialPositioning() {
     // Set motion towards point (1,1)
-    navigation.turnTo(45);
+    Navigation.turnTo(45);
     // travel forward until a line is detected
-    navigation.travelForward();
+    Navigation.travelForward();
     while (!this.lineDetected());
     // Stop as soon as first black line is detected by the light sensor
     Sound.beep();
-    navigation.stopMotors();
+    Navigation.stopMotors();
     // Make robot move back such that the center of rotation is somewhat close to the point (1,1)
-    navigation.backUp(OFFSET_FROM_WHEELBASE);
+    Navigation.backUp(OFFSET_FROM_WHEELBASE);
   }
 
   /**
@@ -78,7 +79,7 @@ public class LightLocalizer {
   public void lightLocalize() {
 
     // Perform full rotation to record angle values at each black line
-    navigation.rotate(Turn.COUNTER_CLOCK_WISE, ROTATE_SPEED_SLOW);
+    Navigation.rotate(Turn.COUNTER_CLOCK_WISE, ROTATE_SPEED_SLOW);
 
     double angles[] = new double[4];
 
@@ -112,7 +113,7 @@ public class LightLocalizer {
 
       } else {
         // stop motors after 5 lines are detected
-        navigation.stopMotors();
+        Navigation.stopMotors();
         Sound.beep();
       }
     }
@@ -129,9 +130,9 @@ public class LightLocalizer {
     // Adjust the odometer x and y
     odometer.setXYT(this.getCoordinates()[0] * TILE_SIZE + x, this.getCoordinates()[1] * TILE_SIZE + y, 0);
     Button.waitForAnyPress();
-    navigation.travelTo(coordinates[0], coordinates[1]);
+    Navigation.travelTo(coordinates[0], coordinates[1]);
     // turn to 0 degree
-    navigation.turnTo(0);
+    Navigation.turnTo(0);
   }
 
 
@@ -150,7 +151,7 @@ public class LightLocalizer {
     // no line detected initially
     boolean line = false;
     // fetch sample from the light sensor
-    colorSensor.fetchSample(sensorData, 0);
+    leftColorSensor.fetchSample(sensorData, 0);
     temporaryColorValue = sensorData[0] * 100;
 
     // MEAN ESTIMATE CALCULATIONS, NOT USED IN LAB 5

@@ -1,6 +1,7 @@
 package ca.mcgill.ecse211.project.localization;
 
 import static ca.mcgill.ecse211.project.game.Resources.*;
+import ca.mcgill.ecse211.project.game.Navigation;
 import ca.mcgill.ecse211.project.game.Navigation.Turn;
 
 
@@ -31,30 +32,30 @@ public class UltrasonicLocalizer {
     int currentDistance;
     int lastDistance;
     // clockwise rotation to record value for alpha
-    navigation.rotate(Turn.CLOCK_WISE, ROTATE_SPEED_SLOW);
+    Navigation.rotate(Turn.CLOCK_WISE, ROTATE_SPEED_SLOW);
     while (true) {
-      distances = Resources.ultrasonicPoller.getDistances();
+      distances = ultrasonicPoller.getLeftUsController().getDistances();
       currentDistance = distances[0];
       lastDistance = distances[1];
       // if (ultrasonicPoller.getDistance() < COMMON_D - FALLINGEDGE_K) {
       if (lastDistance >= (COMMON_D + FALLINGEDGE_K) && currentDistance <= (COMMON_D - FALLINGEDGE_K)) {
         this.alpha = odometer.getTheta();
-        navigation.stopMotors();
+        Navigation.stopMotors();
         break;
       }
     }
 
     // anti-clockwise rotation to record beta value
-    navigation.turn(-20, ROTATE_SPEED_SLOW);
-    navigation.rotate(Turn.COUNTER_CLOCK_WISE, ROTATE_SPEED_SLOW);
+    Navigation.turn(-20, ROTATE_SPEED_SLOW);
+    Navigation.rotate(Turn.COUNTER_CLOCK_WISE, ROTATE_SPEED_SLOW);
     while (true) {
-      distances = ultrasonicPoller.getDistances();
+      distances = ultrasonicPoller.getLeftUsController().getDistances();
       currentDistance = distances[0];
       lastDistance = distances[1];
       // if (ultrasonicPoller.getDistance() < COMMON_D - FALLINGEDGE_K) {
       if (lastDistance >= (COMMON_D + FALLINGEDGE_K) && currentDistance <= (COMMON_D - FALLINGEDGE_K)) {
         this.beta = odometer.getTheta();
-        navigation.stopMotors();
+        Navigation.stopMotors();
         break;
       }
     }
@@ -63,7 +64,7 @@ public class UltrasonicLocalizer {
     // Adjust the current theta of the odometer by adding the computed heading
     // odometer.setTheta(odometer.getTheta() + angleAdjustment);
     odometer.update(0, 0, angleAdjustment);
-    navigation.turnTo(0);
+    Navigation.turnTo(0);
 
   }
 
@@ -79,30 +80,30 @@ public class UltrasonicLocalizer {
     int currentDistance;
     int lastDistance;
     // clockwise rotation to record value for alpha
-    navigation.rotate(Turn.CLOCK_WISE, ROTATE_SPEED_SLOW);
+    Navigation.rotate(Turn.CLOCK_WISE, ROTATE_SPEED_SLOW);
     while (true) {
-      distances = ultrasonicPoller.getDistances();
+      distances = ultrasonicPoller.getLeftUsController().getDistances();
       currentDistance = distances[0];
       lastDistance = distances[1];
       // if (ultrasonicPoller.getDistance() < COMMON_D - FALLINGEDGE_K) {
       if (currentDistance >= (COMMON_D + FALLINGEDGE_K) && lastDistance <= (COMMON_D - FALLINGEDGE_K)) {
         this.alpha = odometer.getTheta();
-        navigation.stopMotors();
+        Navigation.stopMotors();
         break;
       }
     }
 
     // anti-clockwise rotation to record beta value
-    navigation.turn(-20, ROTATE_SPEED_SLOW);
-    navigation.rotate(Turn.COUNTER_CLOCK_WISE, ROTATE_SPEED_SLOW);
+    Navigation.turn(-20, ROTATE_SPEED_SLOW);
+    Navigation.rotate(Turn.COUNTER_CLOCK_WISE, ROTATE_SPEED_SLOW);
     while (true) {
-      distances = ultrasonicPoller.getDistances();
+      distances = ultrasonicPoller.getLeftUsController().getDistances();
       currentDistance = distances[0];
       lastDistance = distances[1];
       // if (ultrasonicPoller.getDistance() < COMMON_D - FALLINGEDGE_K) {
       if (currentDistance >= (COMMON_D + FALLINGEDGE_K) && lastDistance <= (COMMON_D - FALLINGEDGE_K)) {
         this.beta = odometer.getTheta();
-        navigation.stopMotors();
+        Navigation.stopMotors();
         break;
       }
     }
@@ -112,7 +113,7 @@ public class UltrasonicLocalizer {
     odometer.update(0, 0, angleAdjustment);
 
     // odometer.setTheta(odometer.getTheta() + angleAdjustment);
-    navigation.turnTo(0);
+    Navigation.turnTo(0);
 
   }
 
