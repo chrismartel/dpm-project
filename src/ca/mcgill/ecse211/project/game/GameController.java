@@ -29,6 +29,7 @@ public class GameController {
   
   public static void main(String[] args) {
     Sound.beep();
+    Navigation.travel(5);
     //gameController = new GameController();
     
     
