@@ -4,6 +4,7 @@ import ca.mcgill.ecse211.project.localization.*;
 import lejos.hardware.Button;
 
 import static ca.mcgill.ecse211.project.game.Resources.*;
+import ca.mcgill.ecse211.project.game.Navigation;
 
 /**
  * The main class.
@@ -13,7 +14,7 @@ public class Main {
   /**
    * The main method
    */
-	public static void main(String[] args) {
+	public static void main2(String[] args) {
 
 		int buttonChoice;
 		// Initialize the odometer and the distance polling threads
@@ -31,8 +32,8 @@ public class Main {
 				int buttonChoice3 = Button.waitForAnyPress();
 				if (buttonChoice3 == Button.ID_ENTER) {
 					LCD.clear();
-					ballisticLauncher.launch(LAUNCH_DISTANCE);
-					ballisticLauncher.reload();
+					//ballisticLauncher.launch(LAUNCH_DISTANCE);
+					//ballisticLauncher.reload();
 				} else if (buttonChoice3 == Button.ID_ESCAPE) {
 					System.exit(0);
 				}
@@ -59,16 +60,16 @@ public class Main {
 			//Localize to 1,1 and point to 0
 			initialLocalize();
 			
-			navigation.travelTo(launchArea[0], launchArea[1]);
-			navigation.turnTo(targetArea[0], targetArea[1]);
+			Navigation.travelTo(launchArea[0], launchArea[1]);
+			Navigation.turnTo(targetArea[0], targetArea[1]);
 			
 
 			// Launches as many times as the enter button is pressed.
 			while (true) {
 				int buttonChoice3 = Button.waitForAnyPress();
 				if (buttonChoice3 == Button.ID_ENTER) {
-					ballisticLauncher.launch(LAUNCH_DISTANCE);
-					ballisticLauncher.reload();
+					//ballisticLauncher.launch(LAUNCH_DISTANCE);
+					//ballisticLauncher.reload();
 				} else if (buttonChoice3 == Button.ID_ESCAPE) {
 					System.exit(0);
 				}

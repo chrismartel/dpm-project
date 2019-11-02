@@ -2,6 +2,7 @@ package ca.mcgill.ecse211.project.game;
 
 import ca.mcgill.ecse211.project.localization.LightLocalizer;
 import ca.mcgill.ecse211.project.localization.UltrasonicLocalizer;
+import lejos.hardware.Sound;
 
 public class GameController {
 
@@ -27,8 +28,8 @@ public class GameController {
   
   
   public static void main(String[] args) {
-    
-    gameController = new GameController();
+    Sound.beep();
+    //gameController = new GameController();
     
     
   }

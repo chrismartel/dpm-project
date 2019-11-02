@@ -3,7 +3,7 @@ package ca.mcgill.ecse211.project;
 import java.text.DecimalFormat;
 
 //static import to avoid duplicating variables and make the code easier to read
-import static ca.mcgill.ecse211.project.Resources.*;
+import static ca.mcgill.ecse211.project.game.Resources.*;
 
 /**
  * This class is used to display the content of the odometer variables (x, y, Theta).

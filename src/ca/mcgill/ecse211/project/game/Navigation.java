@@ -70,7 +70,7 @@ public class Navigation {
   }
 
 
-  public void turnTo(double x, double y) {
+  public static void turnTo(double x, double y) {
     // Convert the coordinates to centimeters
     x = x * TILE_SIZE;
     y = y * TILE_SIZE;
