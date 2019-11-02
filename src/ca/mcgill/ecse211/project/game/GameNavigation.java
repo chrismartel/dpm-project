@@ -92,6 +92,8 @@ public class GameNavigation {
       this.tunnelEntrance[1] = (TUNNEL_UR[1] - 0.5);
     }
   }
+  
+  public 
 
 public double[] getTunnelEntrance() {
   return tunnelEntrance;

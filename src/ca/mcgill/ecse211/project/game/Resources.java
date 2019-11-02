@@ -247,6 +247,8 @@ public class Resources {
     GREEN, RED
   }
   
+  // OBJECT AOIDANCE
   
+  public static final int ORIENTATION_CHECK_ERROR = 5;
 
 }
