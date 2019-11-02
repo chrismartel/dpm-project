@@ -1,6 +1,7 @@
 package ca.mcgill.ecse211.project.game;
 
 import ca.mcgill.ecse211.project.game.BallisticLauncher;
+import ca.mcgill.ecse211.project.game.GameNavigation.REGION;
 import ca.mcgill.ecse211.project.game.Navigation;
 import ca.mcgill.ecse211.project.odometry.Odometer;
 import ca.mcgill.ecse211.project.sensor.UltrasonicPoller;
@@ -83,17 +84,13 @@ public class Resources {
   /**
    * Arbitrary threshold constant for rising and falling edge cases for the ultrasonic localizer
    */
-  public static final int COMMON_D = 40;
+  public static final int FALLINGEDGE_D = 40;
 
   /**
    * Noise margin constant for falling edge ultrasonic localizer
    */
   public static final int FALLINGEDGE_K = 2;
 
-  /**
-   * Noise margin constant for rising edge ultrasonic localizer
-   */
-  public static final int RISINGEDGE_K = 2;
 
   // LIGHT LOCALIZATION CONSTANTS
 
@@ -203,6 +200,7 @@ public class Resources {
    */
   public static final TextLCD LCD = LocalEV3.get().getTextLCD();
 
+  
   // SINGLETONS
 
   /**
@@ -216,6 +214,41 @@ public class Resources {
   public static UltrasonicPoller ultrasonicPoller = UltrasonicPoller.getUltrasonicPoller();
   
  
+  // WIFI CONSTANTS
+  public static int RED_CORNER;
+  public static int GREEN_CORNER;
   
+  public static int[] RED_LL;
+  public static int[] RED_UR;
+  
+  public static int[] GREEN_LL;
+  public static int[] GREEN_UR;
+  
+  public static int[] ISLAND_LL;
+  public static int[] ISLAND_UR;
+  
+  public static int[] TNR_LL;
+  public static int[] TNR_UR;
+  
+  public static int[] TNG_LL;
+  public static int[] TNG_UR;
+  
+  public static int[] BIN;
+  
+  // MAP CONSTANTS
+  
+  public static int[] TUNNEL_LL;
+  public static int[] TUNNEL_UR;
+  
+  public static COLOR currentColor;
+  public static REGION currentRegion;
+  
+  public enum COLOR {
+    GREEN, RED
+  }
+  
+  // OBJECT AOIDANCE
+  
+  public static final int ORIENTATION_CHECK_ERROR = 5;
 
 }

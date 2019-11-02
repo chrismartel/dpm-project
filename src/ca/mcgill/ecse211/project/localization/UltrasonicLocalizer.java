@@ -38,7 +38,7 @@ public class UltrasonicLocalizer {
       currentDistance = distances[0];
       lastDistance = distances[1];
       // if (ultrasonicPoller.getDistance() < COMMON_D - FALLINGEDGE_K) {
-      if (lastDistance >= (COMMON_D + FALLINGEDGE_K) && currentDistance <= (COMMON_D - FALLINGEDGE_K)) {
+      if (lastDistance >= (FALLINGEDGE_D + FALLINGEDGE_K) && currentDistance <= (FALLINGEDGE_D - FALLINGEDGE_K)) {
         this.alpha = odometer.getTheta();
         Navigation.stopMotors();
         break;
@@ -53,55 +53,7 @@ public class UltrasonicLocalizer {
       currentDistance = distances[0];
       lastDistance = distances[1];
       // if (ultrasonicPoller.getDistance() < COMMON_D - FALLINGEDGE_K) {
-      if (lastDistance >= (COMMON_D + FALLINGEDGE_K) && currentDistance <= (COMMON_D - FALLINGEDGE_K)) {
-        this.beta = odometer.getTheta();
-        Navigation.stopMotors();
-        break;
-      }
-    }
-    // compute the angle heading considering the 2 angles obtained
-    angleAdjustment = this.angleHeadingAdjustment();
-    // Adjust the current theta of the odometer by adding the computed heading
-    // odometer.setTheta(odometer.getTheta() + angleAdjustment);
-    odometer.update(0, 0, angleAdjustment);
-    Navigation.turnTo(0);
-
-  }
-
-  /**
-   * Method performs the rising edge localization. Robot always completes an clockwise rotation around its center of
-   * rotation to record the value for alpha. Then it rotates in the anti-clockwise direction to record value for beta.
-   * Using the values recorded, the robot will then appropriately orient itself accordingly along the 0 degree y-axis.
-   */
-  public void risingEdge() {
-
-    double angleAdjustment = 0;
-    int[] distances;
-    int currentDistance;
-    int lastDistance;
-    // clockwise rotation to record value for alpha
-    Navigation.rotate(Turn.CLOCK_WISE, ROTATE_SPEED_SLOW);
-    while (true) {
-      distances = ultrasonicPoller.getLeftUsController().getDistances();
-      currentDistance = distances[0];
-      lastDistance = distances[1];
-      // if (ultrasonicPoller.getDistance() < COMMON_D - FALLINGEDGE_K) {
-      if (currentDistance >= (COMMON_D + FALLINGEDGE_K) && lastDistance <= (COMMON_D - FALLINGEDGE_K)) {
-        this.alpha = odometer.getTheta();
-        Navigation.stopMotors();
-        break;
-      }
-    }
-
-    // anti-clockwise rotation to record beta value
-    Navigation.turn(-20, ROTATE_SPEED_SLOW);
-    Navigation.rotate(Turn.COUNTER_CLOCK_WISE, ROTATE_SPEED_SLOW);
-    while (true) {
-      distances = ultrasonicPoller.getLeftUsController().getDistances();
-      currentDistance = distances[0];
-      lastDistance = distances[1];
-      // if (ultrasonicPoller.getDistance() < COMMON_D - FALLINGEDGE_K) {
-      if (currentDistance >= (COMMON_D + FALLINGEDGE_K) && lastDistance <= (COMMON_D - FALLINGEDGE_K)) {
+      if (lastDistance >= (FALLINGEDGE_D + FALLINGEDGE_K) && currentDistance <= (FALLINGEDGE_D - FALLINGEDGE_K)) {
         this.beta = odometer.getTheta();
         Navigation.stopMotors();
         break;
@@ -111,11 +63,10 @@ public class UltrasonicLocalizer {
     angleAdjustment = this.angleHeadingAdjustment();
     // Adjust the current theta of the odometer by adding the computed heading
     odometer.update(0, 0, angleAdjustment);
-
-    // odometer.setTheta(odometer.getTheta() + angleAdjustment);
     Navigation.turnTo(0);
 
   }
+
 
   /**
    * Computes the heading to add to the odometer current angle considering the two angles obtained by rising or falling
