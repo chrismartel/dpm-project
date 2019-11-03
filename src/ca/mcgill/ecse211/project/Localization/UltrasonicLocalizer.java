@@ -63,7 +63,7 @@ public class UltrasonicLocalizer {
     angleAdjustment = this.angleHeadingAdjustment();
     // Adjust the current theta of the odometer by adding the computed heading
     odometer.update(0, 0, angleAdjustment);
-    Navigation.turnTo(0);
+    Navigation.turnTo(0, ROTATE_SPEED_SLOW);
 
   }
 

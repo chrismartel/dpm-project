@@ -8,26 +8,27 @@ public class GameNavigation {
   public enum REGION {
     RED, WATER, TUNNEL_RED, TUNNEL_GREEN, GREEN, ISLAND
   }
+
   /**
    * coordinates of the tunnel entrance and exit
    */
-  private double [] tunnelEntrance;
-  private  double [] tunnelExit;
-  
+  private double[] tunnelEntrance;
+  private double[] tunnelExit;
+
   /**
    * coordinates of the launch point
    */
-  private double [] launchPoint;
+  private double[] launchPoint;
   /**
    * coordinates of the target point
    */
-  private double [] targetPoint;
-  
+  private double[] targetPoint;
+
   /**
    * Orientation the robot needs to have to traverse the tunnel
    */
   private double tunnelTraversalOrientation;
-  
+
   public GameNavigation() {
     tunnelEntrance = new double[2];
     tunnelExit = new double[2];
@@ -36,21 +37,21 @@ public class GameNavigation {
     targetPoint[0] = BIN[0];
     targetPoint[1] = BIN[1];
   }
-  
+
   /**
    * Method used to navigate to the tunnel entrance
    */
   private void navigateToTunnel() {
-    Navigation.travelTo(tunnelEntrance[0], tunnelEntrance[1]);
-    Navigation.turnTo(tunnelTraversalOrientation);
+    Navigation.travelTo(tunnelEntrance[0], tunnelEntrance[1], FORWARD_SPEED_NORMAL);
+    Navigation.turnTo(tunnelTraversalOrientation, ROTATE_SPEED_SLOW);
   }
-  
+
   private void navigateThroughTunnel() {
-    // TODO: switch state of game to TUNNEL state
-    Navigation.travelTo(tunnelExit[0], tunnelExit[1]);
-    // TODO: switch state to navigation state
+    gameState = GameState.Tunnel;
+    Navigation.travelTo(tunnelExit[0], tunnelExit[1], FORWARD_SPEED_SLOW);
+    gameState = GameState.Navigation;
   }
-  
+
 
 
   /**
@@ -89,8 +90,8 @@ public class GameNavigation {
   /**
    * Method finding and setting the coordinates of the tunnel entrance
    */
-  private void setTunnelData() {
-    
+  private void calculateTunnelData() {
+
     REGION targetRegion;
     REGION tunnelBottom = this.regionCalculation((TUNNEL_LL[0] + 0.5), (TUNNEL_LL[1] - 0.5));
     REGION tunnelTop = this.regionCalculation((TUNNEL_UR[0] - 0.5), (TUNNEL_UR[1] + 0.5));
@@ -100,10 +101,9 @@ public class GameNavigation {
     // determine the target region
     if (currentColor == COLOR.RED && currentRegion == REGION.RED) {
       targetRegion = REGION.RED;
-    } else if(currentColor == COLOR.GREEN && currentRegion == REGION.GREEN){
+    } else if (currentColor == COLOR.GREEN && currentRegion == REGION.GREEN) {
       targetRegion = REGION.GREEN;
-    }
-    else {
+    } else {
       targetRegion = REGION.ISLAND;
     }
     // determine where is the tunnel entrance
@@ -134,15 +134,20 @@ public class GameNavigation {
 
     }
   }
-  
-public double[] getTunnelEntrance() {
-  return tunnelEntrance;
-}
-public double[] getTunnelExit() {
-  return tunnelExit;
-}
-public double getTunnelTraversalOrientation() {
-  return tunnelTraversalOrientation;
-}
+  public void calculateLaunchPoints() {
+    // TODO: method to find 3 possible launch points to consider that there might be obstacles
+  }
+
+  public double[] getTunnelEntrance() {
+    return tunnelEntrance;
+  }
+
+  public double[] getTunnelExit() {
+    return tunnelExit;
+  }
+
+  public double getTunnelTraversalOrientation() {
+    return tunnelTraversalOrientation;
+  }
 
 }
