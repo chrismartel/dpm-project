@@ -22,13 +22,15 @@ public enum GameState {
       }
       
     },
-  ColorLocalization{
+  
+  Tunnel{
       @Override
       public GameState nextState() {
         return LightLocalization;
       }
       
     },
+  
   Navigation{
 
     @Override

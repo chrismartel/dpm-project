@@ -42,21 +42,18 @@ public class Resources {
   // MOTORS CONSTANTS
 
   /**
-   * The speed at which the robot moves forward in degrees per second.
+   * The speeds at which the robot moves forward in degrees per second.
    */
-
-  public static final int FORWARD_SPEED = 150;
+  public static final int FORWARD_SPEED_SLOW = 100;
+  public static final int FORWARD_SPEED_NORMAL = 150;
+  public static final int FORWARD_SPEED_FAST = 200;
 
   /**
-   * The speed at which the robot rotates in degrees per second.
+   * The speeds at which the robot rotates in degrees per second.
    */
-  public static final int ROTATE_SPEED = 100;
-
-  /**
-   * The speed at which the robot rotates slowly in degrees per second.
-   */
-  public static final int ROTATE_SPEED_SLOW = 50;
-
+  public static final int ROTATE_SPEED_SLOW = 80;
+  public static final int ROTATE_SPEED_NORMAL = 100;
+  public static final int ROTATE_SPEED_FAST = 150;
 
 
   // ULTRASONIC POLLER CONSTANTS
@@ -235,7 +232,9 @@ public class Resources {
   
   public static int[] BIN;
   
+  
   // MAP CONSTANTS
+  public static GameState gameState;
   
   public static int[] TUNNEL_LL;
   public static int[] TUNNEL_UR;
@@ -247,8 +246,14 @@ public class Resources {
     GREEN, RED
   }
   
-  // OBJECT AOIDANCE
+  // OBJECT AVOIDANCE
   
-  public static final int ORIENTATION_CHECK_ERROR = 5;
-
+  public static final int ORIENTATION_CHECK_ERROR = 3;
+  public static final int BAND_CENTER = 20;
+  public static final int BAND_WIDTH = 3;
+  public static final double GAIN_CONSTANT = 10;
+  public static final double MIN_AVOID_SPEED = 100;
+  public static final double MAX_AVOID_SPEED = 300;
+  public static final int MAXIMAL_ERROR = 10;
+  
 }

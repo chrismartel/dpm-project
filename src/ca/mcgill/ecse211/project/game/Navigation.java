@@ -47,7 +47,7 @@ public class Navigation {
    * @param x : x coordinate of the current way point
    * @param y : y coordinate of the current way point
    */
-  public static void travelTo(double x, double y) {
+  public static void travelTo(double x, double y, int speed) {
 
     // Convert the coordinates to centimeters
     x = x * TILE_SIZE;
@@ -62,15 +62,15 @@ public class Navigation {
     double dY = y - currentY;
 
     // the robot turns by the angle between its current orientation and the orientation towards the current way point
-    turnTo(Math.toDegrees(Math.atan2(dX, dY)));
+    turnTo(Math.toDegrees(Math.atan2(dX, dY)), speed);
 
     // the robot travels to the way point
-    travel(dX, dY);
+    travel(dX, dY, speed);
 
   }
 
 
-  public static void turnTo(double x, double y) {
+  public static void turnTo(double x, double y, int speed) {
     // Convert the coordinates to centimeters
     x = x * TILE_SIZE;
     y = y * TILE_SIZE;
@@ -83,7 +83,7 @@ public class Navigation {
     double dX = x - currentX;
     double dY = y - currentY;
 
-    turnTo(Math.toDegrees(Math.atan2(dX, dY)));
+    turnTo(Math.toDegrees(Math.atan2(dX, dY)), speed);
   }
 
   /**
@@ -91,7 +91,7 @@ public class Navigation {
    * 
    * @param theta :
    */
-  public static void turnTo(double theta) {
+  public static void turnTo(double theta, int speed) {
     double currentTheta = odometer.getTheta();
     // compute the difference between the current orientation and the desired orientation
     double rotation = theta - currentTheta;
@@ -106,7 +106,7 @@ public class Navigation {
     }
 
     // rotate to the calculated angle
-    turn(rotation, ROTATE_SPEED);
+    turn(rotation, speed);
   }
 
 
@@ -156,8 +156,8 @@ public class Navigation {
    * @param x : the x distance to travel
    * @param y : the y distance to travel
    */
-  public static void travel(double x, double y) {
-    travel(Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)));
+  public static void travel(double x, double y, int speed) {
+    travel(Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)), speed);
   }
 
   /**
@@ -165,7 +165,7 @@ public class Navigation {
    * 
    * @param travelDistance : the magnitude of the distance to travel
    */
-  public static void travel(double travelDistance) {
+  public static void travel(double travelDistance, int speed) {
     double dX, dY;
 
     // poll the odometer to get the current X and Y coordinates
@@ -173,12 +173,12 @@ public class Navigation {
     lastY = odometer.getY();
 
     // robot travels forward
-    travelForward();
+    travelForward(speed);
 
     while (true) {
       dX = Math.abs(odometer.getX() - lastX);
       dY = Math.abs(odometer.getY() - lastY);
-
+      // TODO: if game state is in tunnel--> check if the wall is too close and adjust
       // Reached goal coordinates condition
       if (Math.pow(dX, 2) + Math.pow(dY, 2) >= Math.pow(travelDistance, 2)) {
 
@@ -197,7 +197,7 @@ public class Navigation {
    * 
    * @param travelDistance : the magnitude of the distance to travel
    */
-  public  static void backUp(double travelDistance) {
+  public  static void backUp(double travelDistance, int speed) {
     double dX, dY;
 
     // poll the odometer to get the current X and Y coordinates
@@ -205,7 +205,7 @@ public class Navigation {
     lastY = odometer.getY();
 
     // robot travels forward
-    travelBackward();
+    travelBackward(speed);
 
     while (true) {
       dX = Math.abs(odometer.getX() - lastX);
@@ -228,10 +228,10 @@ public class Navigation {
   /**
    * set both motors forward
    */
-  public static void travelForward() {
+  public static void travelForward(int speed) {
 
-    leftMotor.setSpeed(FORWARD_SPEED);
-    rightMotor.setSpeed(FORWARD_SPEED);
+    leftMotor.setSpeed(speed);
+    rightMotor.setSpeed(speed);
     rightMotor.forward();
     leftMotor.forward();
 
@@ -240,9 +240,9 @@ public class Navigation {
   /**
    * Set both motors backward
    */
-  public static void travelBackward() {
-    leftMotor.setSpeed(FORWARD_SPEED);
-    rightMotor.setSpeed(FORWARD_SPEED);
+  public static void travelBackward(int speed) {
+    leftMotor.setSpeed(speed);
+    rightMotor.setSpeed(speed);
     rightMotor.backward();
     leftMotor.backward();
   }

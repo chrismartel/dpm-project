@@ -9,20 +9,50 @@ public class GameNavigation {
     RED, WATER, TUNNEL_RED, TUNNEL_GREEN, GREEN, ISLAND
   }
 
-  private double [] tunnelEntrance;
-  
-  private void navigateToTunnel() {
-    this.navigationWithCorrection(tunnelEntrance[0], tunnelEntrance[1]);
-  }
-  
-  
   /**
-   * Method used to navigate to a specific point using correction after traveling a specfic number of tiles
+   * coordinates of the tunnel entrance and exit
    */
-  private void navigationWithCorrection(double x, double y) {
-    
-    
+  private double[] tunnelEntrance;
+  private double[] tunnelExit;
+
+  /**
+   * coordinates of the launch point
+   */
+  private double[] launchPoint;
+  /**
+   * coordinates of the target point
+   */
+  private double[] targetPoint;
+
+  /**
+   * Orientation the robot needs to have to traverse the tunnel
+   */
+  private double tunnelTraversalOrientation;
+
+  public GameNavigation() {
+    tunnelEntrance = new double[2];
+    tunnelExit = new double[2];
+    launchPoint = new double[2];
+    targetPoint = new double[2];
+    targetPoint[0] = BIN[0];
+    targetPoint[1] = BIN[1];
   }
+
+  /**
+   * Method used to navigate to the tunnel entrance
+   */
+  private void navigateToTunnel() {
+    Navigation.travelTo(tunnelEntrance[0], tunnelEntrance[1], FORWARD_SPEED_NORMAL);
+    Navigation.turnTo(tunnelTraversalOrientation, ROTATE_SPEED_SLOW);
+  }
+
+  private void navigateThroughTunnel() {
+    gameState = GameState.Tunnel;
+    Navigation.travelTo(tunnelExit[0], tunnelExit[1], FORWARD_SPEED_SLOW);
+    gameState = GameState.Navigation;
+  }
+
+
 
   /**
    * Method returning the region of a specific tile
@@ -60,8 +90,8 @@ public class GameNavigation {
   /**
    * Method finding and setting the coordinates of the tunnel entrance
    */
-  private void setTunnelEntrance() {
-    
+  private void calculateTunnelData() {
+
     REGION targetRegion;
     REGION tunnelBottom = this.regionCalculation((TUNNEL_LL[0] + 0.5), (TUNNEL_LL[1] - 0.5));
     REGION tunnelTop = this.regionCalculation((TUNNEL_UR[0] - 0.5), (TUNNEL_UR[1] + 0.5));
@@ -71,33 +101,53 @@ public class GameNavigation {
     // determine the target region
     if (currentColor == COLOR.RED && currentRegion == REGION.RED) {
       targetRegion = REGION.RED;
-    } else if(currentColor == COLOR.GREEN && currentRegion == REGION.GREEN){
+    } else if (currentColor == COLOR.GREEN && currentRegion == REGION.GREEN) {
       targetRegion = REGION.GREEN;
-    }
-    else {
+    } else {
       targetRegion = REGION.ISLAND;
     }
     // determine where is the tunnel entrance
     if (tunnelBottom == targetRegion) {
       this.tunnelEntrance[0] = (TUNNEL_LL[0] + 0.5);
       this.tunnelEntrance[1] = (TUNNEL_LL[1] - 0.5);
+      this.tunnelExit[0] = (TUNNEL_UR[0] - 0.5);
+      this.tunnelExit[1] = (TUNNEL_UR[1] + 0.5);
+      this.tunnelTraversalOrientation = 0;
     } else if (tunnelTop == targetRegion) {
       this.tunnelEntrance[0] = (TUNNEL_UR[0] - 0.5);
       this.tunnelEntrance[1] = (TUNNEL_UR[1] + 0.5);
+      this.tunnelExit[0] = (TUNNEL_LL[0] + 0.5);
+      this.tunnelExit[1] = (TUNNEL_LL[1] - 0.5);
+      this.tunnelTraversalOrientation = 180;
     } else if (tunnelLeft == targetRegion) {
       this.tunnelEntrance[0] = (TUNNEL_LL[0] - 0.5);
       this.tunnelEntrance[1] = (TUNNEL_LL[1] + 0.5);
+      this.tunnelExit[0] = (TUNNEL_UR[0] + 0.5);
+      this.tunnelExit[1] = (TUNNEL_UR[1] - 0.5);
+      this.tunnelTraversalOrientation = 90;
     } else if (tunnelRight == targetRegion) {
       this.tunnelEntrance[0] = (TUNNEL_UR[0] + 0.5);
       this.tunnelEntrance[1] = (TUNNEL_UR[1] - 0.5);
+      this.tunnelExit[0] = (TUNNEL_LL[0] - 0.5);
+      this.tunnelExit[1] = (TUNNEL_LL[1] + 0.5);
+      this.tunnelTraversalOrientation = 270;
+
     }
   }
-  
-  public 
+  public void calculateLaunchPoints() {
+    // TODO: method to find 3 possible launch points to consider that there might be obstacles
+  }
 
-public double[] getTunnelEntrance() {
-  return tunnelEntrance;
-}
+  public double[] getTunnelEntrance() {
+    return tunnelEntrance;
+  }
 
+  public double[] getTunnelExit() {
+    return tunnelExit;
+  }
+
+  public double getTunnelTraversalOrientation() {
+    return tunnelTraversalOrientation;
+  }
 
 }

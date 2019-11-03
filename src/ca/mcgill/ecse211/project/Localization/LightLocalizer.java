@@ -59,15 +59,15 @@ public class LightLocalizer {
    */
   public void initialPositioning() {
     // Set motion towards point (1,1)
-    Navigation.turnTo(45);
+    Navigation.turnTo(45, ROTATE_SPEED_SLOW);
     // travel forward until a line is detected
-    Navigation.travelForward();
+    Navigation.travelForward(ROTATE_SPEED_SLOW);
     while (!this.lineDetected());
     // Stop as soon as first black line is detected by the light sensor
     Sound.beep();
     Navigation.stopMotors();
     // Make robot move back such that the center of rotation is somewhat close to the point (1,1)
-    Navigation.backUp(OFFSET_FROM_WHEELBASE);
+    Navigation.backUp(OFFSET_FROM_WHEELBASE, FORWARD_SPEED_SLOW);
   }
 
   /**
@@ -130,9 +130,9 @@ public class LightLocalizer {
     // Adjust the odometer x and y
     odometer.setXYT(this.getCoordinates()[0] * TILE_SIZE + x, this.getCoordinates()[1] * TILE_SIZE + y, 0);
     Button.waitForAnyPress();
-    Navigation.travelTo(coordinates[0], coordinates[1]);
+    Navigation.travelTo(coordinates[0], coordinates[1], FORWARD_SPEED_NORMAL);
     // turn to 0 degree
-    Navigation.turnTo(0);
+    Navigation.turnTo(0, ROTATE_SPEED_SLOW);
   }
 
 
