@@ -1,6 +1,7 @@
 package ca.mcgill.ecse211.project.game;
 
 import ca.mcgill.ecse211.project.game.BallisticLauncher;
+import ca.mcgill.ecse211.project.game.GameController.NAVIGATION_TYPE;
 import ca.mcgill.ecse211.project.game.GameNavigation.REGION;
 import ca.mcgill.ecse211.project.game.Navigation;
 import ca.mcgill.ecse211.project.odometry.Odometer;
@@ -238,6 +239,7 @@ public class Resources {
   
   // MAP CONSTANTS
   public static GameState gameState;
+  public static NAVIGATION_TYPE navigationType;
   
   public static int[] TUNNEL_LL;
   public static int[] TUNNEL_UR;

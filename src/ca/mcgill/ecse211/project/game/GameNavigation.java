@@ -8,6 +8,8 @@ public class GameNavigation {
   public enum REGION {
     RED, WATER, TUNNEL_RED, TUNNEL_GREEN, GREEN, ISLAND
   }
+  
+
 
   /**
    * coordinates of the tunnel entrance and exit
