@@ -43,6 +43,12 @@ public enum GameState {
     public GameState nextState() {
       return Navigation;
     }},
+  Done{
+
+      @Override
+      public GameState nextState() {
+        return Navigation;
+      }},
   Launch{
 
     @Override
