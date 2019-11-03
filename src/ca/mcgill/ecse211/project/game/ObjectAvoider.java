@@ -7,7 +7,11 @@ public class ObjectAvoider {
   private int[] goalCoordinates = new int[2];
   
   public void wallFollower() {
-    // TODO:
+    Navigation.turn(90, Resources.ROTATE_SPEED);
+    // wall follows until it faces its desired coordinates
+    while(!orientationCheck()) {
+      // TODO: execute wall following process
+    }
   }
   
   /**

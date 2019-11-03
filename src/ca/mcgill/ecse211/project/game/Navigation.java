@@ -178,7 +178,7 @@ public class Navigation {
     while (true) {
       dX = Math.abs(odometer.getX() - lastX);
       dY = Math.abs(odometer.getY() - lastY);
-
+      // TODO: if game state is in tunnel--> check if the wall is too close and adjust
       // Reached goal coordinates condition
       if (Math.pow(dX, 2) + Math.pow(dY, 2) >= Math.pow(travelDistance, 2)) {
 

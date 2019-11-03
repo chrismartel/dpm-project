@@ -8,21 +8,50 @@ public class GameNavigation {
   public enum REGION {
     RED, WATER, TUNNEL_RED, TUNNEL_GREEN, GREEN, ISLAND
   }
-
+  /**
+   * coordinates of the tunnel entrance and exit
+   */
   private double [] tunnelEntrance;
-  
-  private void navigateToTunnel() {
-    this.navigationWithCorrection(tunnelEntrance[0], tunnelEntrance[1]);
-  }
-  
+  private  double [] tunnelExit;
   
   /**
-   * Method used to navigate to a specific point using correction after traveling a specfic number of tiles
+   * coordinates of the launch point
    */
-  private void navigationWithCorrection(double x, double y) {
-    
-    
+  private double [] launchPoint;
+  /**
+   * coordinates of the target point
+   */
+  private double [] targetPoint;
+  
+  /**
+   * Orientation the robot needs to have to traverse the tunnel
+   */
+  private double tunnelTraversalOrientation;
+  
+  public GameNavigation() {
+    tunnelEntrance = new double[2];
+    tunnelExit = new double[2];
+    launchPoint = new double[2];
+    targetPoint = new double[2];
+    targetPoint[0] = BIN[0];
+    targetPoint[1] = BIN[1];
   }
+  
+  /**
+   * Method used to navigate to the tunnel entrance
+   */
+  private void navigateToTunnel() {
+    Navigation.travelTo(tunnelEntrance[0], tunnelEntrance[1]);
+    Navigation.turnTo(tunnelTraversalOrientation);
+  }
+  
+  private void navigateThroughTunnel() {
+    // TODO: switch state of game to TUNNEL state
+    Navigation.travelTo(tunnelExit[0], tunnelExit[1]);
+    // TODO: switch state to navigation state
+  }
+  
+
 
   /**
    * Method returning the region of a specific tile
@@ -60,7 +89,7 @@ public class GameNavigation {
   /**
    * Method finding and setting the coordinates of the tunnel entrance
    */
-  private void setTunnelEntrance() {
+  private void setTunnelData() {
     
     REGION targetRegion;
     REGION tunnelBottom = this.regionCalculation((TUNNEL_LL[0] + 0.5), (TUNNEL_LL[1] - 0.5));
@@ -81,23 +110,39 @@ public class GameNavigation {
     if (tunnelBottom == targetRegion) {
       this.tunnelEntrance[0] = (TUNNEL_LL[0] + 0.5);
       this.tunnelEntrance[1] = (TUNNEL_LL[1] - 0.5);
+      this.tunnelExit[0] = (TUNNEL_UR[0] - 0.5);
+      this.tunnelExit[1] = (TUNNEL_UR[1] + 0.5);
+      this.tunnelTraversalOrientation = 0;
     } else if (tunnelTop == targetRegion) {
       this.tunnelEntrance[0] = (TUNNEL_UR[0] - 0.5);
       this.tunnelEntrance[1] = (TUNNEL_UR[1] + 0.5);
+      this.tunnelExit[0] = (TUNNEL_LL[0] + 0.5);
+      this.tunnelExit[1] = (TUNNEL_LL[1] - 0.5);
+      this.tunnelTraversalOrientation = 180;
     } else if (tunnelLeft == targetRegion) {
       this.tunnelEntrance[0] = (TUNNEL_LL[0] - 0.5);
       this.tunnelEntrance[1] = (TUNNEL_LL[1] + 0.5);
+      this.tunnelExit[0] = (TUNNEL_UR[0] + 0.5);
+      this.tunnelExit[1] = (TUNNEL_UR[1] - 0.5);
+      this.tunnelTraversalOrientation = 90;
     } else if (tunnelRight == targetRegion) {
       this.tunnelEntrance[0] = (TUNNEL_UR[0] + 0.5);
       this.tunnelEntrance[1] = (TUNNEL_UR[1] - 0.5);
+      this.tunnelExit[0] = (TUNNEL_LL[0] - 0.5);
+      this.tunnelExit[1] = (TUNNEL_LL[1] + 0.5);
+      this.tunnelTraversalOrientation = 270;
+
     }
   }
   
-  public 
-
 public double[] getTunnelEntrance() {
   return tunnelEntrance;
 }
-
+public double[] getTunnelExit() {
+  return tunnelExit;
+}
+public double getTunnelTraversalOrientation() {
+  return tunnelTraversalOrientation;
+}
 
 }
