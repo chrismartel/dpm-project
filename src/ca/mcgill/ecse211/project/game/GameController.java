@@ -8,7 +8,7 @@ import ca.mcgill.ecse211.project.localization.UltrasonicLocalizer;
 public class GameController {
 
   public enum NAVIGATION_DESTINATION {
-    TUNNEL1_ENTRANCE, TUNNEL1_EXIT, TUNNEL2_ENTRANCE, TUNNEL2_EXIT, LAUNCH_POINT, END_POINT,
+    TUNNEL1_ENTRANCE, TUNNEL2_ENTRANCE, LAUNCH_POINT, END_POINT,
   }
 
   public static void main(String[] args) {
@@ -75,23 +75,32 @@ public class GameController {
             goalCoordinates = gameNavigation.getTunnelEntrance();
             // travel to the tunnel entrance
             gameNavigation.navigateToTunnel();
-            // if navigation is completed --> transition to tunnel state and update the next navigation destination
+            // if navigation is completed --> transition to tunnel state + update the navigation point to the launch
+            // point
             if (navigationCompleted == true) {
               gameState = GameState.Tunnel;
-              navigationDestination = NAVIGATION_DESTINATION.TUNNEL1_EXIT;
+              navigationDestination = NAVIGATION_DESTINATION.LAUNCH_POINT;
             }
             break;
           case TUNNEL2_ENTRANCE:
+            // update the tunnel entrance and exit
+            gameNavigation.setTunnel();
+            // set the goal coordinates to the tunnel entrance
             goalCoordinates = gameNavigation.getTunnelEntrance();
-            Navigation.travelTo(goalCoordinates[0], goalCoordinates[1], FORWARD_SPEED_NORMAL);
+            // travel to the tunnel entrance
+            gameNavigation.navigateToTunnel();
+            // when navigation is completed --> transition to tunnel state + update the destination point to the end
+            // point
             if (navigationCompleted == true) {
               gameState = GameState.Tunnel;
-              navigationDestination = NAVIGATION_DESTINATION.TUNNEL2_EXIT;
+              navigationDestination = NAVIGATION_DESTINATION.END_POINT;
             }
             break;
           case LAUNCH_POINT:
-            // TODO: navigate to launch point
+            // TODO: compute possible launch points --> waiting on hardware for this part
             // TODO: set goal coordinates
+            // TODO: navigate to launch point
+            // if navigation to launch point is completed --> transition to launching state + update the new destination
             if (navigationCompleted == true) {
               gameState = GameState.Launch;
               navigationDestination = NAVIGATION_DESTINATION.TUNNEL2_ENTRANCE;
@@ -109,10 +118,9 @@ public class GameController {
 
       // tunnel traversal process
       else if (gameState == GameState.Tunnel) {
-        // TODO: navigate through tunnel
         tunnelCompleted = false;
         gameNavigation.navigateThroughTunnel();
-        // if navigation through tunnel is completed
+        // when navigation through tunnel is completed
         if (tunnelCompleted == true) {
           // update the current region of the robot
           if (currentRegion == REGION.GREEN || currentRegion == REGION.RED) {
@@ -124,15 +132,6 @@ public class GameController {
               currentRegion = REGION.RED;
             }
           }
-          // set the navigation destination
-          // if exits tunnel 1 --> navigation destination to launch point
-          if(navigationDestination == NAVIGATION_DESTINATION.TUNNEL1_EXIT) {
-            navigationDestination = NAVIGATION_DESTINATION.LAUNCH_POINT;
-          }
-          // if exits tunnel 2 --> navigation destination to end point
-          else if(navigationDestination == NAVIGATION_DESTINATION.TUNNEL2_EXIT) {
-            navigationDestination = NAVIGATION_DESTINATION.END_POINT;
-          }
           // after a tunnel traversal --> transition to navigation state
           gameState = GameState.Navigation;
         }
@@ -141,17 +140,17 @@ public class GameController {
 
       // object avoidance process
       else if (gameState == GameState.Avoidance) {
-        // TODO: object avoidance process
-        // set goal coordinates of the object avoider
-
-
-
+        // object avoidance procedure using wall follower with P-Controller
+        objectAvoider.wallFollower();
+        // object avoidance is over --> transition to navigation
+        gameState = GameState.Navigation;
       }
 
       // launch process
       else if (gameState == GameState.Launch) {
-        // TODO: launch and reload
-        navigationDestination = NAVIGATION_DESTINATION.TUNNEL2_ENTRANCE;
+        // TODO: launch and reload --> waiting after hardware for this part
+        // when launch is completed --> transition to navigation
+        gameState = GameState.Navigation;
       }
 
     }

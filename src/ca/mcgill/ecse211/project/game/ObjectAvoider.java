@@ -87,8 +87,7 @@ public class ObjectAvoider {
         }
       }
     }
-    // object avoidance is over, switch back to navigation
-    gameState = GameState.Navigation;
+ 
 
   }
 
