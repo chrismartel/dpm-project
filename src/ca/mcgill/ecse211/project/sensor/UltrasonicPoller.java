@@ -1,6 +1,7 @@
 package ca.mcgill.ecse211.project.sensor;
 
 import static ca.mcgill.ecse211.project.game.Resources.*;
+import ca.mcgill.ecse211.project.game.GameState;
 
 /**
  * Ultrasonic poller class implementing a median filter. Polls data from the ultrasonic sensor in an independent thread
@@ -75,8 +76,10 @@ public class UltrasonicPoller implements Runnable {
       // Process the fetched distance in the controllers
       leftUsController.processDistance(this.leftDistance);
       frontUsController.processDistance(this.frontDistance);
-      leftUsController.checkForObject();
-      frontUsController.checkForObject();
+      // when navigating, check for obstacles
+      if(gameState == GameState.Navigation) {
+        frontUsController.checkForObstacle();
+      }
       // record the ending time of the loop and make the thread sleep so the period is respected
       updateEnd = System.currentTimeMillis();
       if (updateEnd - updateStart < US_PERIOD) {

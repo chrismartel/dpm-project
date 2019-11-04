@@ -4,6 +4,7 @@ import static ca.mcgill.ecse211.project.game.Resources.*;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
+import ca.mcgill.ecse211.project.game.GameState;
 
 public class UltrasonicController {
   
@@ -113,9 +114,11 @@ public class UltrasonicController {
     return distance;
   }
   
-  public void checkForObject() {
-    // TODO: check if the robot is in navigation state and if objects are detected while navigating
-    // If object detected switch the state
+  public void checkForObstacle() {
+    // obstacle ahead
+    if(currentDistance<=OBSTACLE_DETECTION_DISTANCE) {
+      gameState = GameState.Avoidance;
+    }
   }
 
 }

@@ -174,21 +174,24 @@ public class Navigation {
 
     // robot travels forward
     travelForward(speed);
-
-    while (true) {
+    
+    // navigates as long as the state is not in avoidance
+    while (gameState != GameState.Avoidance) {
       dX = Math.abs(odometer.getX() - lastX);
       dY = Math.abs(odometer.getY() - lastY);
       // TODO: if game state is in tunnel--> check if the wall is too close and adjust
       // Reached goal coordinates condition
       if (Math.pow(dX, 2) + Math.pow(dY, 2) >= Math.pow(travelDistance, 2)) {
-
+        if(Resources.gameState == GameState.Navigation) {
+          Resources.navigationCompleted = true;
+        }
         // robot stops if its destination is reached
         stopMotors();
-
         // exit the travel method if the destination is reached
         break;
       }
     }
+    stopMotors();
 
   }
 
