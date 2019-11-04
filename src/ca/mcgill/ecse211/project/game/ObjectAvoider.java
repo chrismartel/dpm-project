@@ -11,6 +11,7 @@ public class ObjectAvoider {
    * Method describing the wall following process using P-Controller
    */
   public void wallFollower() {
+    // TODO: implement conditions that checks the current limits and generates unreal obstacles at those limits
     // initial positioning
     Navigation.turn(90, Resources.ROTATE_SPEED_NORMAL);
     double wallDistance;
@@ -87,6 +88,7 @@ public class ObjectAvoider {
         }
       }
     }
+    Navigation.stopMotors();
  
 
   }

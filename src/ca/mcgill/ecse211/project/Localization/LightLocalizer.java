@@ -10,7 +10,7 @@ import lejos.hardware.Sound;
  * This class implements the methods used to execute the light localization using 2 sensors at the back of the robot
  */
 public class LightLocalizer {
-  
+  // TODO: light localization with 2 sensors at the back
   /**
    * last and current sensor color readings used for comparison in each line detection loop
    */
@@ -30,6 +30,7 @@ public class LightLocalizer {
   /**
    * Constructor of the light localization class
    */
+  /*
   public LightLocalizer() {
     // initialize the data list
     // llDataQueue = new LinkedList<Float>();
@@ -44,11 +45,12 @@ public class LightLocalizer {
     currentColorValue = (sensorData[0] * 100);
     lastColorValue = currentColorValue;
     coordinates = new double[2];
-  }
+  }*/
 
   /**
    * Method implementing the initial positioning of the robot before light localization
    */
+  /*
   public void initialPositioning() {
     // Set motion towards point (1,1)
     Navigation.turnTo(45, ROTATE_SPEED_SLOW);
@@ -61,13 +63,14 @@ public class LightLocalizer {
     // Make robot move back such that the center of rotation is somewhat close to the point (1,1)
     Navigation.backUp(OFFSET_FROM_WHEELBASE, FORWARD_SPEED_SLOW);
   }
-
+*/
   /**
    * Method performs the light localization routine. Robot rotates around center of rotation on point (1,1). The angle
    * values recorded when a black line is detected is used to correct the robots heading and position on the point
    * (1,1). The robot returns to a 0 degree stop at the end of the process.
    * 
    */
+  /*
   public void lightLocalize() {
 
     // Perform full rotation to record angle values at each black line
