@@ -69,8 +69,8 @@ public class UltrasonicLocalizer {
 
 
   /**
-   * Computes the heading to add to the odometer current angle considering the two angles obtained by rising or falling
-   * edge routines
+   * Computes the heading to add to the odometer current angle considering the two angles obtained by falling
+   * edge routine
    * 
    * @return : the heading to add to the odometer
    */

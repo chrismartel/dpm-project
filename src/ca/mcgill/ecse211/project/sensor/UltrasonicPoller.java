@@ -46,7 +46,6 @@ public class UltrasonicPoller implements Runnable {
   private UltrasonicPoller() {
     leftUsData = new float[leftUsSensor.sampleSize()];
     frontUsData = new float[leftUsSensor.sampleSize()];
-    this.pollSensors();
     leftUsController = new UltrasonicController(this.leftDistance);
     frontUsController = new UltrasonicController(this.frontDistance);
   }
@@ -73,9 +72,16 @@ public class UltrasonicPoller implements Runnable {
     while (true) {
       updateStart = System.currentTimeMillis();
       this.pollSensors();
-      // Process the fetched distance in the controllers
-      leftUsController.processDistance(this.leftDistance);
-      frontUsController.processDistance(this.frontDistance);
+      // robot is avoiding so only process distance in the left controller
+      if(gameState == GameState.Avoidance) {
+        // Process the fetched distance in the left controller
+        leftUsController.processDistance(this.leftDistance);
+      }
+      // robot is navigating so process distance only in front controller
+      else {
+        // Process the fetched distance in the front controller
+        frontUsController.processDistance(this.frontDistance);
+      }
       // when navigating, check for obstacles
       if(gameState == GameState.Navigation) {
         frontUsController.checkForObstacle();
@@ -96,15 +102,20 @@ public class UltrasonicPoller implements Runnable {
    * Method polling data samples from the ultrasonic sensors
    */
   private void pollSensors() {
-    // acquire distance data in meters
-    leftUsSensor.getDistanceMode().fetchSample(leftUsData, 0);
-    // set the initial distance seen by the sensor
-    this.leftDistance = (int) (leftUsData[0] * 100);
-
-    // acquire distance data in meters
-    frontUsSensor.getDistanceMode().fetchSample(frontUsData, 0);
-    // set the initial distance seen by the sensor
-    this.frontDistance = (int) (frontUsData[0] * 100);
+    // robot is avoiding an object --> only poll left sensor
+    if(gameState== GameState.Avoidance) {
+      // acquire distance data in meters
+      leftUsSensor.getDistanceMode().fetchSample(leftUsData, 0);
+      // set the initial distance seen by the sensor
+      this.leftDistance = (int) (leftUsData[0] * 100);
+    }
+    // robot is navigating --> only poll front sensor
+    else {
+      // acquire distance data in meters
+      frontUsSensor.getDistanceMode().fetchSample(frontUsData, 0);
+      // set the initial distance seen by the sensor
+      this.frontDistance = (int) (frontUsData[0] * 100);
+    }
   }
 
   public UltrasonicController getfrontUsController() {

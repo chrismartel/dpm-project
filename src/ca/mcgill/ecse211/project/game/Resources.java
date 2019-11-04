@@ -1,6 +1,7 @@
 package ca.mcgill.ecse211.project.game;
 
 import ca.mcgill.ecse211.project.game.BallisticLauncher;
+import ca.mcgill.ecse211.project.game.GameController.NAVIGATION_DESTINATION;
 import ca.mcgill.ecse211.project.game.GameController.NAVIGATION_TYPE;
 import ca.mcgill.ecse211.project.game.GameNavigation.REGION;
 import ca.mcgill.ecse211.project.game.Navigation;
@@ -236,21 +237,26 @@ public class Resources {
   
   public static int[] BIN;
   
-  
   // MAP CONSTANTS
-  public static GameState gameState;
-  public static boolean navigationCompleted = false;
-  public static NAVIGATION_TYPE navigationType;
-  
   public static int[] TUNNEL_LL;
   public static int[] TUNNEL_UR;
-  public static int[] STARTING_CORNER;
-  public static COLOR color;
-  public static REGION currentRegion;
+  public static double[] STARTING_CORNER;
   
+  // GAME CONSTANTS
+  public static GameState gameState;
+  public static boolean navigationCompleted = false;
+  public static boolean tunnelCompleted = false;
+  public static int currentLeftLimit;
+  public static int currentRightLimit;
+  public static int currentTopLimit;
+  public static int currentBottomLimit;
+  public static NAVIGATION_DESTINATION navigationDestination;
   public enum COLOR {
     GREEN, RED
   }
+  public static COLOR color;
+  public static REGION currentRegion;
+  public static double[] goalCoordinates;
   
   // OBJECT AVOIDANCE
   /*
@@ -284,7 +290,7 @@ public class Resources {
   /*
    * Minimal bound on the error
    */
-  public static final int MINIMAL_ERROR = -10;
+  public static final int MINIMAL_ERROR = -5;
   /*
    * Period of the check for distance in the wall following process
    */
