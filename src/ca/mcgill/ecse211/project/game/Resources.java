@@ -239,6 +239,7 @@ public class Resources {
   
   // MAP CONSTANTS
   public static GameState gameState;
+  public static boolean navigationCompleted = false;
   public static NAVIGATION_TYPE navigationType;
   
   public static int[] TUNNEL_LL;
@@ -288,5 +289,10 @@ public class Resources {
    * Period of the check for distance in the wall following process
    */
   public static final int OBJECT_AVOIDANCE_PERIOD = 50; // in ms
+  
+  /*
+   * Distance of obstacle detection
+   */
+  public static final int OBSTACLE_DETECTION_DISTANCE = 8; 
   
 }
