@@ -284,7 +284,7 @@ public class Resources {
   /*
    * Minimal bound on the error
    */
-  public static final int MINIMAL_ERROR = -10;
+  public static final int MINIMAL_ERROR = -5;
   /*
    * Period of the check for distance in the wall following process
    */

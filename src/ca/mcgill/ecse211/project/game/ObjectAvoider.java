@@ -7,8 +7,11 @@ public class ObjectAvoider {
   private int objectDistance;
   private int[] goalCoordinates = new int[2];
 
+  /**
+   * Method describing the wall following process using P-Controller
+   */
   public void wallFollower() {
-    //initial positioning
+    // initial positioning
     Navigation.turn(90, Resources.ROTATE_SPEED_NORMAL);
     double wallDistance;
     double leftSpeed;
@@ -31,24 +34,29 @@ public class ObjectAvoider {
         // robot is too far from wall
         if (error > 0) {
           // imminent collision
-          if(error > MAXIMAL_ERROR) {
+          if (error > MAXIMAL_ERROR) {
             leftMotor.forward();
             rightMotor.backward();
             leftSpeed = FORWARD_SPEED_SLOW;
             rightSpeed = FORWARD_SPEED_SLOW;
-          } else {
+          }
+          // normal adjustment
+          else {
             leftMotor.forward();
             rightMotor.forward();
             leftSpeed = (int) (FORWARD_SPEED_SLOW - this.calculateGain(error));
             rightSpeed = (int) (FORWARD_SPEED_SLOW + this.calculateGain(error));
           }
-        } else {
-          if(error < (-MAXIMAL_ERROR)) {
+        } 
+        // robot is too close to wall
+        else {
+          if (error < MINIMAL_ERROR) {
             leftMotor.backward();
             rightMotor.forward();
             leftSpeed = FORWARD_SPEED_SLOW;
             rightSpeed = FORWARD_SPEED_SLOW;
-          }
+          } 
+          // normal adjustment
           else {
             leftMotor.forward();
             rightMotor.forward();
@@ -56,7 +64,7 @@ public class ObjectAvoider {
             rightSpeed = (int) (FORWARD_SPEED_SLOW - this.calculateGain(error));
           }
         }
-        //set bounds on the speed during avoidance
+        // set bounds on the speed during avoidance
         if (leftSpeed <= MIN_AVOID_SPEED) {
           leftSpeed = MIN_AVOID_SPEED;
         } else if (leftSpeed >= MAX_AVOID_SPEED) {
@@ -67,8 +75,8 @@ public class ObjectAvoider {
         } else if (rightSpeed >= MAX_AVOID_SPEED) {
           rightSpeed = MAX_AVOID_SPEED;
         }
-        leftMotor.setSpeed((int)leftSpeed);
-        rightMotor.setSpeed((int)rightSpeed);
+        leftMotor.setSpeed((int) leftSpeed);
+        rightMotor.setSpeed((int) rightSpeed);
         endTime = System.currentTimeMillis();
         if (endTime - startTime < OBJECT_AVOIDANCE_PERIOD) {
           try {
