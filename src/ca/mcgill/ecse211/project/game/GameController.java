@@ -24,6 +24,7 @@ public class GameController {
     while(gameState != GameState.Done) {
       if(gameState == GameState.Initialization) {
         // TODO: get info from wifi class and generate map
+        // set currentRegion and color depending on wifi
       }
       else if(gameState == GameState.UltrasonicLocalization) {
         // TODO: us localization using falling edge
@@ -34,6 +35,13 @@ public class GameController {
       }
       else if(gameState == GameState.Navigation) {
         // TODO: navigate to point
+        switch(navigationType) {
+          case TUNNEL1_ENTRANCE:
+          case TUNNEL2_ENTRANCE:
+          case LAUNCH_POINT:
+          case END_POINT:
+            
+        }
       }
       else if(gameState == GameState.Tunnel) {
         // TODO: navigate through tunnel

@@ -9,8 +9,6 @@ public class GameNavigation {
     RED, WATER, TUNNEL_RED, TUNNEL_GREEN, GREEN, ISLAND
   }
   
-
-
   /**
    * coordinates of the tunnel entrance and exit
    */
@@ -49,12 +47,8 @@ public class GameNavigation {
   }
 
   private void navigateThroughTunnel() {
-    gameState = GameState.Tunnel;
     Navigation.travelTo(tunnelExit[0], tunnelExit[1], FORWARD_SPEED_SLOW);
-    gameState = GameState.Navigation;
   }
-
-
 
   /**
    * Method returning the region of a specific tile
@@ -92,7 +86,7 @@ public class GameNavigation {
   /**
    * Method finding and setting the coordinates of the tunnel entrance
    */
-  private void calculateTunnelData() {
+  private void updateTunnelData() {
 
     REGION targetRegion;
     REGION tunnelBottom = this.regionCalculation((TUNNEL_LL[0] + 0.5), (TUNNEL_LL[1] - 0.5));
@@ -100,10 +94,10 @@ public class GameNavigation {
     REGION tunnelLeft = this.regionCalculation((TUNNEL_LL[0] - 0.5), (TUNNEL_LL[1] + 0.5));
     REGION tunnelRight = this.regionCalculation((TUNNEL_UR[0] + 0.5), (TUNNEL_UR[1] - 0.5));
 
-    // determine the target region
-    if (currentColor == COLOR.RED && currentRegion == REGION.RED) {
+    // determine the target region, the region of the tunel entrance
+    if (currentRegion == REGION.RED) {
       targetRegion = REGION.RED;
-    } else if (currentColor == COLOR.GREEN && currentRegion == REGION.GREEN) {
+    } else if (currentRegion == REGION.GREEN) {
       targetRegion = REGION.GREEN;
     } else {
       targetRegion = REGION.ISLAND;
@@ -134,6 +128,20 @@ public class GameNavigation {
       this.tunnelExit[1] = (TUNNEL_LL[1] + 0.5);
       this.tunnelTraversalOrientation = 270;
 
+    }
+  }
+  public void chooseTunnel() {
+    if(color == COLOR.RED) {
+      TUNNEL_LL[0] = TNR_LL[0];
+      TUNNEL_LL[1] = TNR_LL[1];
+      TUNNEL_UR[0] = TNR_UR[0];
+      TUNNEL_UR[1] = TNR_UR[1];
+    }
+    else {
+      TUNNEL_LL[0] = TNG_LL[0];
+      TUNNEL_LL[1] = TNG_LL[1];
+      TUNNEL_UR[0] = TNG_UR[0];
+      TUNNEL_UR[1] = TNG_UR[1];
     }
   }
   public void calculateLaunchPoints() {

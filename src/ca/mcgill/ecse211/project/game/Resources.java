@@ -244,7 +244,7 @@ public class Resources {
   public static int[] TUNNEL_LL;
   public static int[] TUNNEL_UR;
   public static int[] STARTING_CORNER;
-  public static COLOR currentColor;
+  public static COLOR color;
   public static REGION currentRegion;
   
   public enum COLOR {
