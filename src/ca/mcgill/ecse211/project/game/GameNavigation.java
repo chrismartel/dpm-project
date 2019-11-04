@@ -8,12 +8,13 @@ public class GameNavigation {
   public enum REGION {
     RED, WATER, TUNNEL_RED, TUNNEL_GREEN, GREEN, ISLAND
   }
-  
+
   /**
    * coordinates of the tunnel entrance and exit
    */
   private double[] tunnelEntrance;
   private double[] tunnelExit;
+  private double tunnelLength;
 
   /**
    * coordinates of the launch point
@@ -82,6 +83,58 @@ public class GameNavigation {
     return REGION.WATER;
   }
 
+  /**
+   * Method used to find the closest coordinate point from the actual position of the odometer
+   * 
+   * @return an array representing the closest coordinate point from the current odometer position
+   */
+  private int[] closestPoint() {
+    double x = odometer.getX();
+    double y = odometer.getY();
+    int x1 = (int) (x % TILE_SIZE);
+    int y1 = (int) (y % TILE_SIZE);
+    int x2 = (int) x1 + 1;
+    int y2 = (int) y1 + 1;
+    int[] p1 = {x1, y1};
+    int[] p2 = {x1, y2};
+    int[] p3 = {x2, y1};
+    int[] p4 = {x2, y2};
+    // compute distances of 4 points from actual position
+    double d1 = this.calculateDistance(x, y, x1, y1);
+    double d2 = this.calculateDistance(x, y, x1, y2);
+    double d3 = this.calculateDistance(x, y, x2, y1);
+    double d4 = this.calculateDistance(x, y, x2, y2);
+    // find the minimal distance
+    double d = Math.min(d1, d2);
+    d = Math.min(d, d3);
+    d = Math.min(d, d4);
+    // return the closest point
+    if (d == d1) {
+      return p1;
+    } else if (d == d2) {
+      return p2;
+
+    } else if (d == d3) {
+      return p3;
+
+    } else {
+      return p4;
+    }
+  }
+
+  /**
+   * Method used to calculate the distance between 2 points
+   * 
+   * @param x1: x coordinate of the first point
+   * @param y1: y coordinate of the first point
+   * @param x2: x coordinate of the second point
+   * @param y2: y coordinate of the second point
+   * @return the distance between 2 points
+   */
+  private double calculateDistance(double x1, double y1, double x2, double y2) {
+    double distance = Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
+    return distance;
+  }
 
   /**
    * Method finding and setting the coordinates of the tunnel entrance
@@ -94,7 +147,7 @@ public class GameNavigation {
     REGION tunnelLeft = this.regionCalculation((TUNNEL_LL[0] - 0.5), (TUNNEL_LL[1] + 0.5));
     REGION tunnelRight = this.regionCalculation((TUNNEL_UR[0] + 0.5), (TUNNEL_UR[1] - 0.5));
 
-    // determine the target region, the region of the tunel entrance
+    // determine the target region, the region of the tunnel entrance
     if (currentRegion == REGION.RED) {
       targetRegion = REGION.RED;
     } else if (currentRegion == REGION.GREEN) {
@@ -109,41 +162,45 @@ public class GameNavigation {
       this.tunnelExit[0] = (TUNNEL_UR[0] - 0.5);
       this.tunnelExit[1] = (TUNNEL_UR[1] + 0.5);
       this.tunnelTraversalOrientation = 0;
+      //this.tunnelLength = (TUNNEL_UR[1] - TUNNEL_LL[1]) * TILE_SIZE;
     } else if (tunnelTop == targetRegion) {
       this.tunnelEntrance[0] = (TUNNEL_UR[0] - 0.5);
       this.tunnelEntrance[1] = (TUNNEL_UR[1] + 0.5);
       this.tunnelExit[0] = (TUNNEL_LL[0] + 0.5);
       this.tunnelExit[1] = (TUNNEL_LL[1] - 0.5);
       this.tunnelTraversalOrientation = 180;
+      //this.tunnelLength = (TUNNEL_UR[1] - TUNNEL_LL[1]) * TILE_SIZE;
     } else if (tunnelLeft == targetRegion) {
       this.tunnelEntrance[0] = (TUNNEL_LL[0] - 0.5);
       this.tunnelEntrance[1] = (TUNNEL_LL[1] + 0.5);
       this.tunnelExit[0] = (TUNNEL_UR[0] + 0.5);
       this.tunnelExit[1] = (TUNNEL_UR[1] - 0.5);
       this.tunnelTraversalOrientation = 90;
+      //this.tunnelLength = (TUNNEL_UR[0] - TUNNEL_LL[0]) * TILE_SIZE;
     } else if (tunnelRight == targetRegion) {
       this.tunnelEntrance[0] = (TUNNEL_UR[0] + 0.5);
       this.tunnelEntrance[1] = (TUNNEL_UR[1] - 0.5);
       this.tunnelExit[0] = (TUNNEL_LL[0] - 0.5);
       this.tunnelExit[1] = (TUNNEL_LL[1] + 0.5);
       this.tunnelTraversalOrientation = 270;
-
+      //this.tunnelLength = (TUNNEL_UR[0] - TUNNEL_LL[0]) * TILE_SIZE;
     }
   }
-  public void chooseTunnel() {
-    if(color == COLOR.RED) {
+
+  public void setTunnel() {
+    if (color == COLOR.RED) {
       TUNNEL_LL[0] = TNR_LL[0];
       TUNNEL_LL[1] = TNR_LL[1];
       TUNNEL_UR[0] = TNR_UR[0];
       TUNNEL_UR[1] = TNR_UR[1];
-    }
-    else {
+    } else {
       TUNNEL_LL[0] = TNG_LL[0];
       TUNNEL_LL[1] = TNG_LL[1];
       TUNNEL_UR[0] = TNG_UR[0];
       TUNNEL_UR[1] = TNG_UR[1];
     }
   }
+
   public void calculateLaunchPoints() {
     // TODO: method to find 3 possible launch points to consider that there might be obstacles
   }
@@ -158,6 +215,10 @@ public class GameNavigation {
 
   public double getTunnelTraversalOrientation() {
     return tunnelTraversalOrientation;
+  }
+
+  public double getTunnelLength() {
+    return tunnelLength;
   }
 
 }

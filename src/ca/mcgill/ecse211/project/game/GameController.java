@@ -32,23 +32,29 @@ public class GameController {
 
     // Execute until the game reaches the Done state
     while (gameState != GameState.Done) {
+      
       // initialization process
       if (gameState == GameState.Initialization) {
         // TODO: get info from wifi class and generate map
         // set currentRegion and color depending on wifi
+        // set tunnel
+        gameNavigation.setTunnel();
         gameState = GameState.UltrasonicLocalization;
       }
+      
       // ultrasonic localization process
       else if (gameState == GameState.UltrasonicLocalization) {
         // TODO: us localization using falling edge
         gameState = GameState.LightLocalization;
       }
+      
       // light localization process
       else if (gameState == GameState.LightLocalization) {
         // TODO: light localization using 2 sensors at the back
         gameState = GameState.Navigation;
         navigationType = NAVIGATION_TYPE.TUNNEL1_ENTRANCE;
       }
+      
       // navigation process
       else if (gameState == GameState.Navigation) {
         // TODO: navigate to point
@@ -72,7 +78,7 @@ public class GameController {
           case LAUNCH_POINT:
             // TODO: navigate to launch point
             if (navigationCompleted == true) {
-              gameState = GameState.Tunnel;
+              gameState = GameState.Launch;
               navigationType = NAVIGATION_TYPE.TUNNEL2_ENTRANCE;
             }
           case END_POINT:
@@ -83,15 +89,18 @@ public class GameController {
 
         }
       }
+      
       // tunnel traversal process
       else if (gameState == GameState.Tunnel) {
         // TODO: navigate through tunnel
       }
+      
       // object avoidance process
       else if (gameState == GameState.Avoidance) {
         // TODO: object avoidance process
 
       }
+      
       // launch process
       else if (gameState == GameState.Launch) {
         // TODO: launch and reload
@@ -103,4 +112,6 @@ public class GameController {
 
 
   }
+  
+  
 }
