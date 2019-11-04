@@ -1,6 +1,7 @@
 package ca.mcgill.ecse211.project.game;
 
 import ca.mcgill.ecse211.project.game.BallisticLauncher;
+import ca.mcgill.ecse211.project.game.GameController.NAVIGATION_TYPE;
 import ca.mcgill.ecse211.project.game.GameNavigation.REGION;
 import ca.mcgill.ecse211.project.game.Navigation;
 import ca.mcgill.ecse211.project.odometry.Odometer;
@@ -212,6 +213,9 @@ public class Resources {
   
  
   // WIFI CONSTANTS
+  /*
+   * ID of the corners
+   */
   public static int RED_CORNER;
   public static int GREEN_CORNER;
   
@@ -235,11 +239,12 @@ public class Resources {
   
   // MAP CONSTANTS
   public static GameState gameState;
+  public static NAVIGATION_TYPE navigationType;
   
   public static int[] TUNNEL_LL;
   public static int[] TUNNEL_UR;
-  
-  public static COLOR currentColor;
+  public static int[] STARTING_CORNER;
+  public static COLOR color;
   public static REGION currentRegion;
   
   public enum COLOR {
@@ -247,13 +252,41 @@ public class Resources {
   }
   
   // OBJECT AVOIDANCE
-  
+  /*
+   * Error acceptable for the orientation check during the wall folowing
+   */
   public static final int ORIENTATION_CHECK_ERROR = 3;
+  /*
+   * band center for the wall following
+   */
   public static final int BAND_CENTER = 20;
+  /*
+   * band width for the wall following
+   */
   public static final int BAND_WIDTH = 3;
+  /*
+   * gain constant used for the P-controller 
+   */
   public static final double GAIN_CONSTANT = 10;
+  /*
+   * minimum speed used during wall following 
+   */
   public static final double MIN_AVOID_SPEED = 100;
+  /*
+   * maximum speed used during wall following 
+   */
   public static final double MAX_AVOID_SPEED = 300;
+  /*
+   * Maximal bound on the error
+   */
   public static final int MAXIMAL_ERROR = 10;
+  /*
+   * Minimal bound on the error
+   */
+  public static final int MINIMAL_ERROR = -10;
+  /*
+   * Period of the check for distance in the wall following process
+   */
+  public static final int OBJECT_AVOIDANCE_PERIOD = 50; // in ms
   
 }

@@ -8,12 +8,16 @@ public class ObjectAvoider {
   private int[] goalCoordinates = new int[2];
 
   public void wallFollower() {
+    //initial positioning
     Navigation.turn(90, Resources.ROTATE_SPEED_NORMAL);
     double wallDistance;
     double leftSpeed;
     double rightSpeed;
+    double startTime;
+    double endTime;
     Navigation.travelForward(FORWARD_SPEED_SLOW);
     while (!orientationCheck()) {
+      startTime = System.currentTimeMillis();
       wallDistance = ultrasonicPoller.getLeftUsController().getDistance();
       wallDistance = this.calculateLateralDistance(wallDistance);
       double error = wallDistance - BAND_CENTER;
@@ -65,8 +69,18 @@ public class ObjectAvoider {
         }
         leftMotor.setSpeed((int)leftSpeed);
         rightMotor.setSpeed((int)rightSpeed);
+        endTime = System.currentTimeMillis();
+        if (endTime - startTime < OBJECT_AVOIDANCE_PERIOD) {
+          try {
+            Thread.sleep((long) (OBJECT_AVOIDANCE_PERIOD - (endTime - startTime)));
+          } catch (InterruptedException e) {
+            // there is nothing to be done
+          }
+        }
       }
     }
+    // object avoidance is over
+    gameState = GameState.Navigation;
 
   }
 
