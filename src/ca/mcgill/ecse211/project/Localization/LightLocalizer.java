@@ -8,17 +8,6 @@ import lejos.hardware.Sound;
 
 public class LightLocalizer {
 
-  // TOOLS FOR MEAN ESTIMATE (NOT USED IN LAB 5)
-  /**
-   * window to store the data polled from the color sensor in a queue
-   */
-  // private Queue<Float> llDataQueue;
-
-  /**
-   * linked list to store the data from the window of samples
-   */
-  // private LinkedList<Float> llDataList;
-
   /**
    * last and current sensor color readings used for comparison in each line detection loop
    */
@@ -32,7 +21,7 @@ public class LightLocalizer {
   /**
    * coordinates to reach with light localization
    */
-  private int[] coordinates;
+  private double[] coordinates;
 
 
   /**
@@ -51,7 +40,7 @@ public class LightLocalizer {
     // initialize the sensor readings
     currentColorValue = (sensorData[0] * 100);
     lastColorValue = currentColorValue;
-    coordinates = new int[2];
+    coordinates = new double[2];
   }
 
   /**
@@ -154,15 +143,6 @@ public class LightLocalizer {
     leftColorSensor.fetchSample(sensorData, 0);
     temporaryColorValue = sensorData[0] * 100;
 
-    // MEAN ESTIMATE CALCULATIONS, NOT USED IN LAB 5
-    // mean estimate of the color sensor reading
-    /*
-     * if (llDataQueue.size() >= LL_WINDOW) { float element = this.llDataQueue.remove(); llDataList.remove(element); }
-     */
-    // this.llDataQueue.add(temporaryColorValue);
-    // llDataList.add(temporaryColorValue);
-    // this.currentColorValue = this.meanEstimate();
-
     // set the current color value
     this.currentColorValue = temporaryColorValue;
 
@@ -193,23 +173,13 @@ public class LightLocalizer {
   }
 
   /**
-   * Method to compute the mean estimate of the color signals in the window of the color sensor
-   */
-  /*
-   * public float meanEstimate() { float mean = this.llDataList.get(0); if (llDataList.size() == 3) { mean =
-   * (this.llDataList.get(0) + this.llDataList.get(1) + this.llDataList.get(2)) / LL_WINDOW;
-   * 
-   * } return mean; }
-   */
-
-  /**
    * getter and setter for the goal coordinates of the light localization [x, y]
    */
-  public void setCoordinates(int[] coordinates) {
-    this.coordinates = coordinates;
+  public void setCoordinates(double[] STARTING_CORNER) {
+    this.coordinates = STARTING_CORNER;
   }
 
-  public int[] getCoordinates() {
+  public double[] getCoordinates() {
     return coordinates;
   }
 }

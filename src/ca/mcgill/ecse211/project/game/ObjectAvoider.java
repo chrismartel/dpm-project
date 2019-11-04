@@ -5,7 +5,7 @@ import static ca.mcgill.ecse211.project.game.Resources.*;
 public class ObjectAvoider {
 
   private int objectDistance;
-  private int[] goalCoordinates = new int[2];
+
 
   /**
    * Method describing the wall following process using P-Controller
@@ -47,7 +47,7 @@ public class ObjectAvoider {
             leftSpeed = (int) (FORWARD_SPEED_SLOW - this.calculateGain(error));
             rightSpeed = (int) (FORWARD_SPEED_SLOW + this.calculateGain(error));
           }
-        } 
+        }
         // robot is too close to wall
         else {
           if (error < MINIMAL_ERROR) {
@@ -55,7 +55,7 @@ public class ObjectAvoider {
             rightMotor.forward();
             leftSpeed = FORWARD_SPEED_SLOW;
             rightSpeed = FORWARD_SPEED_SLOW;
-          } 
+          }
           // normal adjustment
           else {
             leftMotor.forward();
@@ -134,11 +134,6 @@ public class ObjectAvoider {
     this.objectDistance = objectDistance;
   }
 
-  public int[] getGoalCoordinates() {
-    return goalCoordinates;
-  }
 
-  public void setGoalCoordinates(int[] goalCoordinates) {
-    this.goalCoordinates = goalCoordinates;
-  }
+  
 }

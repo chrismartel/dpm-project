@@ -14,6 +14,9 @@ public class GameNavigation {
    */
   private double[] tunnelEntrance;
   private double[] tunnelExit;
+  /**
+   * length of the tunnel
+   */
   private double tunnelLength;
 
   /**
@@ -42,13 +45,14 @@ public class GameNavigation {
   /**
    * Method used to navigate to the tunnel entrance
    */
-  private void navigateToTunnel() {
+  public void navigateToTunnel() {
     Navigation.travelTo(tunnelEntrance[0], tunnelEntrance[1], FORWARD_SPEED_NORMAL);
     Navigation.turnTo(tunnelTraversalOrientation, ROTATE_SPEED_SLOW);
   }
 
-  private void navigateThroughTunnel() {
-    Navigation.travelTo(tunnelExit[0], tunnelExit[1], FORWARD_SPEED_SLOW);
+  public void navigateThroughTunnel() {
+    // TODO: method using ultrasonic sensors to travel through tunnel
+    // if traversal completed --> set tunnelCompleted boolean to true
   }
 
   /**
@@ -58,7 +62,7 @@ public class GameNavigation {
    * @param y : the y coordinate of the center of the tile
    * @return the region type of the tile
    */
-  private REGION regionCalculation(double x, double y) {
+  public REGION regionCalculation(double x, double y) {
 
     if (x <= RED_UR[0] && x >= RED_LL[0] && y <= RED_UR[1] && y >= RED_LL[1]) {
       return REGION.RED;
@@ -88,7 +92,7 @@ public class GameNavigation {
    * 
    * @return an array representing the closest coordinate point from the current odometer position
    */
-  private int[] closestPoint() {
+  public int[] closestPoint() {
     double x = odometer.getX();
     double y = odometer.getY();
     int x1 = (int) (x % TILE_SIZE);
@@ -131,15 +135,16 @@ public class GameNavigation {
    * @param y2: y coordinate of the second point
    * @return the distance between 2 points
    */
-  private double calculateDistance(double x1, double y1, double x2, double y2) {
+  public double calculateDistance(double x1, double y1, double x2, double y2) {
     double distance = Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
     return distance;
   }
 
   /**
-   * Method finding and setting the coordinates of the tunnel entrance
+   * Method used to find the tunnel entrance by evaluating the region of the points around the tunnel. Once the method
+   * has found the entrance, it sets the tunnel entrance, exit and length data
    */
-  private void updateTunnelData() {
+  public void updateTunnelData() {
 
     REGION targetRegion;
     REGION tunnelBottom = this.regionCalculation((TUNNEL_LL[0] + 0.5), (TUNNEL_LL[1] - 0.5));
@@ -162,31 +167,34 @@ public class GameNavigation {
       this.tunnelExit[0] = (TUNNEL_UR[0] - 0.5);
       this.tunnelExit[1] = (TUNNEL_UR[1] + 0.5);
       this.tunnelTraversalOrientation = 0;
-      //this.tunnelLength = (TUNNEL_UR[1] - TUNNEL_LL[1]) * TILE_SIZE;
+      // this.tunnelLength = (TUNNEL_UR[1] - TUNNEL_LL[1]) * TILE_SIZE;
     } else if (tunnelTop == targetRegion) {
       this.tunnelEntrance[0] = (TUNNEL_UR[0] - 0.5);
       this.tunnelEntrance[1] = (TUNNEL_UR[1] + 0.5);
       this.tunnelExit[0] = (TUNNEL_LL[0] + 0.5);
       this.tunnelExit[1] = (TUNNEL_LL[1] - 0.5);
       this.tunnelTraversalOrientation = 180;
-      //this.tunnelLength = (TUNNEL_UR[1] - TUNNEL_LL[1]) * TILE_SIZE;
+      // this.tunnelLength = (TUNNEL_UR[1] - TUNNEL_LL[1]) * TILE_SIZE;
     } else if (tunnelLeft == targetRegion) {
       this.tunnelEntrance[0] = (TUNNEL_LL[0] - 0.5);
       this.tunnelEntrance[1] = (TUNNEL_LL[1] + 0.5);
       this.tunnelExit[0] = (TUNNEL_UR[0] + 0.5);
       this.tunnelExit[1] = (TUNNEL_UR[1] - 0.5);
       this.tunnelTraversalOrientation = 90;
-      //this.tunnelLength = (TUNNEL_UR[0] - TUNNEL_LL[0]) * TILE_SIZE;
+      // this.tunnelLength = (TUNNEL_UR[0] - TUNNEL_LL[0]) * TILE_SIZE;
     } else if (tunnelRight == targetRegion) {
       this.tunnelEntrance[0] = (TUNNEL_UR[0] + 0.5);
       this.tunnelEntrance[1] = (TUNNEL_UR[1] - 0.5);
       this.tunnelExit[0] = (TUNNEL_LL[0] - 0.5);
       this.tunnelExit[1] = (TUNNEL_LL[1] + 0.5);
       this.tunnelTraversalOrientation = 270;
-      //this.tunnelLength = (TUNNEL_UR[0] - TUNNEL_LL[0]) * TILE_SIZE;
+      // this.tunnelLength = (TUNNEL_UR[0] - TUNNEL_LL[0]) * TILE_SIZE;
     }
   }
 
+  /**
+   * Method used to set the tunnel depending on the team color
+   */
   public void setTunnel() {
     if (color == COLOR.RED) {
       TUNNEL_LL[0] = TNR_LL[0];
@@ -204,6 +212,7 @@ public class GameNavigation {
   public void calculateLaunchPoints() {
     // TODO: method to find 3 possible launch points to consider that there might be obstacles
   }
+
 
   public double[] getTunnelEntrance() {
     return tunnelEntrance;
