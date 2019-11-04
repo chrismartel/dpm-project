@@ -6,8 +6,11 @@ import ca.mcgill.ecse211.project.game.Navigation.Turn;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 
+/**
+ * This class implements the methods used to execute the light localization using 2 sensors at the back of the robot
+ */
 public class LightLocalizer {
-
+  
   /**
    * last and current sensor color readings used for comparison in each line detection loop
    */

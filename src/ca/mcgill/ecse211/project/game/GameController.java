@@ -43,6 +43,7 @@ public class GameController {
          */
         // set tunnel
         gameNavigation.setTunnel();
+        gameNavigation.setLimits();
         gameState = GameState.UltrasonicLocalization;
       }
 
@@ -132,6 +133,8 @@ public class GameController {
               currentRegion = REGION.RED;
             }
           }
+          // reset the zone limits when the traversal is completed
+          gameNavigation.setLimits();
           // after a tunnel traversal --> transition to navigation state
           gameState = GameState.Navigation;
         }

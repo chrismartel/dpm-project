@@ -208,7 +208,37 @@ public class GameNavigation {
       TUNNEL_UR[1] = TNG_UR[1];
     }
   }
-
+  /**
+   * Method used to set the limits of the current region
+   */
+  public void setLimits() {
+    // set the limits depending on the current region
+    switch(currentRegion) {
+      case GREEN:
+        currentLeftLimit = GREEN_LL[0];
+        currentRightLimit = GREEN_UR[0];
+        currentTopLimit = GREEN_UR[1];
+        currentBottomLimit = GREEN_LL[1];
+        break;
+      case RED:
+        currentLeftLimit = RED_LL[0];
+        currentRightLimit = RED_UR[0];
+        currentTopLimit = RED_UR[1];
+        currentBottomLimit = RED_LL[1];
+        break;
+      case ISLAND:
+        currentLeftLimit = ISLAND_LL[0];
+        currentRightLimit = ISLAND_UR[0];
+        currentTopLimit = ISLAND_UR[1];
+        currentBottomLimit = ISLAND_LL[1];
+        break;
+      default:
+        break;
+      
+    }
+    
+    
+  }
   public void calculateLaunchPoints() {
     // TODO: method to find 3 possible launch points to consider that there might be obstacles
   }

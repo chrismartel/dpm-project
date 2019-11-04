@@ -246,6 +246,10 @@ public class Resources {
   public static GameState gameState;
   public static boolean navigationCompleted = false;
   public static boolean tunnelCompleted = false;
+  public static int currentLeftLimit;
+  public static int currentRightLimit;
+  public static int currentTopLimit;
+  public static int currentBottomLimit;
   public static NAVIGATION_DESTINATION navigationDestination;
   public enum COLOR {
     GREEN, RED
