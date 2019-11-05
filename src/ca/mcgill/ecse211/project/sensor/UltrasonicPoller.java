@@ -1,7 +1,6 @@
 package ca.mcgill.ecse211.project.sensor;
 
 import static ca.mcgill.ecse211.project.game.Resources.*;
-import ca.mcgill.ecse211.project.game.GameController.NAVIGATION_DESTINATION;
 import ca.mcgill.ecse211.project.game.GameState;
 
 /**
@@ -78,15 +77,16 @@ public class UltrasonicPoller implements Runnable {
         // Process the fetched distance in the left controller
         leftUsController.processDistance(this.leftDistance);
       }
-      // robot is navigating so process distance only in front controller
-      else {
+      // process distance of front sensor only in navigation and us localization states
+      else if(gameState == GameState.Navigation || gameState == GameState.UltrasonicLocalization){
         // Process the fetched distance in the front controller
         frontUsController.processDistance(this.frontDistance);
+        // when navigating, check for obstacles
+        if(gameState == GameState.Navigation) {
+          frontUsController.checkForObstacle();
+        }
       }
-      // when navigating, check for obstacles
-      if(gameState == GameState.Navigation && (navigationDestination == NAVIGATION_DESTINATION.LAUNCH_POINT || navigationDestination == NAVIGATION_DESTINATION.TUNNEL2_ENTRANCE) ) {
-        frontUsController.checkForObstacle();
-      }
+
       // record the ending time of the loop and make the thread sleep so the period is respected
       updateEnd = System.currentTimeMillis();
       if (updateEnd - updateStart < US_PERIOD) {
@@ -111,7 +111,7 @@ public class UltrasonicPoller implements Runnable {
       this.leftDistance = (int) (leftUsData[0] * 100);
     }
     // robot is navigating --> only poll front sensor
-    else {
+    else if (gameState== GameState.Navigation || gameState== GameState.UltrasonicLocalization){
       // acquire distance data in meters
       frontUsSensor.getDistanceMode().fetchSample(frontUsData, 0);
       // set the initial distance seen by the sensor

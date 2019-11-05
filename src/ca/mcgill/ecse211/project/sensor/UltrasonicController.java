@@ -48,6 +48,7 @@ public class UltrasonicController {
   
   
   void processDistance(int distance) {
+    // distance initially not changed by the filter out method
     this.distanceChanged = false;
     this.previousDistance = this.currentDistance;
     int temporaryDistance = distance;
@@ -72,7 +73,7 @@ public class UltrasonicController {
       Collections.sort(usDataSortedList);
       
       // set the temporary distance to be the median of the sorted list
-      temporaryDistance = (int) (usDataSortedList.get((int) (usDataSortedList.size() / 2)));
+      currentDistance = (int) (usDataSortedList.get((int) (usDataSortedList.size() / 2)));
 
     }
   }
