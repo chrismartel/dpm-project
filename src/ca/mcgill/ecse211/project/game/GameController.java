@@ -67,19 +67,32 @@ public class GameController {
 
         // initialization process
         if (gameState == GameState.Initialization) {
+          /*
           // initiate and start threads
           Thread odometerThread = new Thread(odometer);
           Thread usPollerTread = new Thread(ultrasonicPoller);
           odometerThread.start();
-          // usPollerTread.start();
-          // TODO: get info from wifi class and generate map
-          // gameState = GameState.UltrasonicLocalization;
-
+          usPollerTread.start();
+          // generate map
+          gameNavigation.setStartingRegion();
+          gameNavigation.setCorner();
+          gameNavigation.setLimits();
+          gameNavigation.setTunnel();
+          gameNavigation.updateTunnelData();
+          goalCoordinates = gameNavigation.getTunnelEntrance();
+          gameState = GameState.UltrasonicLocalization;
+          */
 
           // ****** TEST 1 ******* //
+          // DONE
           /*robot sets the tunnel data for its zone and navigate to the entrance, then traverses the tunnel
            * Test both tunnel orientations
            */
+          /*
+          Thread odometerThread = new Thread(odometer);
+          Thread usPollerTread = new Thread(ultrasonicPoller);
+          odometerThread.start();
+          usPollerTread.start();
           color = COLOR.GREEN;
           navigationDestination = NAVIGATION_DESTINATION.TUNNEL1_ENTRANCE;
           gameNavigation.setStartingRegion();
@@ -91,13 +104,33 @@ public class GameController {
           odometer.setXYT(STARTING_CORNER[0] * TILE_SIZE, STARTING_CORNER[1] * TILE_SIZE, 0);
           gameNavigation.navigateToTunnel();
           gameNavigation.navigateThroughTunnel();
-          gameState = GameState.Done;
+          gameState = GameState.Done;*/
+          
           // ***** END OF TEST 1 ****** //
 
+          // ****** TEST 2 ******* //
+          // DONE
+          //Test the method returning the closest point
+          /*
+          Thread odometerThread = new Thread(odometer);
+          Thread usPollerTread = new Thread(ultrasonicPoller);
+          odometerThread.start();
+          usPollerTread.start();
+          //odometer.setXYT(1.7* TILE_SIZE, 3.5 * TILE_SIZE, 0);
+          //odometer.setXYT(3* TILE_SIZE, 3 * TILE_SIZE, 0);
+          //odometer.setXYT(5.4* TILE_SIZE, 2.3 * TILE_SIZE, 0);
+          //odometer.setXYT(8.4* TILE_SIZE, 7 * TILE_SIZE, 0);
 
+          int[] point = gameNavigation.closestPoint();
+          System.out.println("closest point: "+point[0] + ", " + point[1]);
+          gameState = GameState.Done;
+          */
+          // ***** END OF TEST 2 ****** //
         }
 
-        // ultrasonic localization process
+        /*
+         * Ultrasonic Localization
+         */
         else if (gameState == GameState.UltrasonicLocalization) {
           // TODO: us localization using falling edge
           ultrasonicLocalizer.fallingEdge();
@@ -105,7 +138,9 @@ public class GameController {
           gameState = GameState.LightLocalization;
         }
 
-        // light localization process
+        /*
+         * Light Localization
+         */
         else if (gameState == GameState.LightLocalization) {
           lightLocalizer.setCoordinates(STARTING_CORNER);
           // TODO: light localization using 2 sensors at the back
@@ -115,7 +150,9 @@ public class GameController {
           navigationDestination = NAVIGATION_DESTINATION.TUNNEL1_ENTRANCE;
         }
 
-        // navigation process
+        /*
+         * Navigation
+         */
         else if (gameState == GameState.Navigation) {
           // navigation is considered uncompleted initially
           navigationCompleted = false;
@@ -168,7 +205,9 @@ public class GameController {
           }
         }
 
-        // tunnel traversal process
+        /*
+         * Tunnel Traversal
+         */
         else if (gameState == GameState.Tunnel) {
           tunnelCompleted = false;
           gameNavigation.navigateThroughTunnel();
@@ -192,7 +231,9 @@ public class GameController {
 
         }
 
-        // object avoidance process
+        /*
+         * Object Avoidance
+         */
         else if (gameState == GameState.Avoidance) {
           // object avoidance procedure using wall follower with P-Controller
           objectAvoider.wallFollower();
@@ -200,7 +241,9 @@ public class GameController {
           gameState = GameState.Navigation;
         }
 
-        // launch process
+        /*
+         * Launch
+         */
         else if (gameState == GameState.Launch) {
           // TODO: launch and reload --> waiting after hardware for this part
           // when launch is completed --> transition to navigation
