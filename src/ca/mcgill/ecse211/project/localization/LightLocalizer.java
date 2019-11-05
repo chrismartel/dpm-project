@@ -181,8 +181,8 @@ public class LightLocalizer {
   /**
    * getter and setter for the goal coordinates of the light localization [x, y]
    */
-  public void setCoordinates(double[] STARTING_CORNER) {
-    this.coordinates = STARTING_CORNER;
+  public void setCoordinates(double[] coordinates) {
+    this.coordinates = coordinates;
   }
 
   public double[] getCoordinates() {
