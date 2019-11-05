@@ -46,6 +46,9 @@ public class GameNavigation {
    * Method used to navigate to the tunnel entrance
    */
   public void navigateToTunnel() {
+    System.out.println("navigate to tunnel");
+    System.out.println("entrance: "+tunnelEntrance[0] + tunnelEntrance[1]);
+
     Navigation.travelTo(tunnelEntrance[0], tunnelEntrance[1], FORWARD_SPEED_NORMAL);
     Navigation.turnTo(tunnelTraversalOrientation, ROTATE_SPEED_SLOW);
   }
@@ -236,8 +239,65 @@ public class GameNavigation {
         break;
       
     }
-    
-    
+  }
+  
+  /**
+   * Method used to set the staring region depending on the team color
+   */
+  public void setStartingRegion() {
+    if(color == COLOR.GREEN) {
+      currentRegion = REGION.GREEN;
+    }
+    else {
+      currentRegion = REGION.RED;
+    }
+  }
+  /**
+   * Method setting the coordinates of the starting corner
+   */
+  public void setCorner() {
+    // TODO: determine which is the corner 0
+    if(color == COLOR.GREEN) {
+      switch(GREEN_CORNER) {
+        case 0:
+          STARTING_CORNER[0] = 1;
+          STARTING_CORNER[1] = 1;
+          break;
+        case 1:
+          STARTING_CORNER[0] = 1;
+          STARTING_CORNER[1] = 14;
+          break;
+        case 2:
+          STARTING_CORNER[0] = 8;
+          STARTING_CORNER[1] = 14;
+          break;
+        case 3:
+          STARTING_CORNER[0] = 8;
+          STARTING_CORNER[1] = 1;
+          break;
+      }
+    }
+    else {
+      switch(RED_CORNER) {
+        case 0:
+          STARTING_CORNER[0] = 1;
+          STARTING_CORNER[1] = 1;
+          break;
+        case 1:
+          STARTING_CORNER[0] = 1;
+          STARTING_CORNER[1] = 14;
+          break;
+        case 2:
+          STARTING_CORNER[0] = 8;
+          STARTING_CORNER[1] = 14;
+          break;
+        case 3:
+          STARTING_CORNER[0] = 8;
+          STARTING_CORNER[1] = 1;
+          break;
+      }
+      
+    }
   }
   public void calculateLaunchPoints() {
     // TODO: method to find 3 possible launch points to consider that there might be obstacles

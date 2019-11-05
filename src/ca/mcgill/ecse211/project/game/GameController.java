@@ -12,10 +12,41 @@ public class GameController {
   }
 
   public static void main(String[] args) {
+    // for tests, supposing we are green team
+    // MAP 1
+    TNG_LL[0] = 2;
+    TNG_LL[1] = 3;
+    TNG_UR[0] = 3;
+    TNG_UR[1] = 4;
+    
+    TNR_LL[0] = 0;
+    TNR_LL[1] = 0;
+    TNR_UR[0] = 0;
+    TNR_UR[1] = 0;
+    
+    RED_LL[0]=0;
+    RED_LL[1]=0;
+    RED_UR[0]=0;
+    RED_UR[1]=0;
+    
+    GREEN_LL[0]=0;
+    GREEN_LL[1]=0;
+    GREEN_UR[0]=4;
+    GREEN_UR[1]=3;
+    
+    ISLAND_LL[0]=0;
+    ISLAND_LL[1]=4;
+    ISLAND_UR[0]=5;
+    ISLAND_UR[1]=10;
+    
+    BIN[0] = -4;
+    BIN[1]= 2;
+    GREEN_CORNER = 0;
 
+    
     // initialize class instances needed
-    GameNavigation gameNavigation = new GameNavigation();;
-    LightLocalizer lightLocalizer = new LightLocalizer();;
+    GameNavigation gameNavigation = new GameNavigation();
+    LightLocalizer lightLocalizer = new LightLocalizer();
     UltrasonicLocalizer ultrasonicLocalizer = new UltrasonicLocalizer();
     BallisticLauncher ballisticLauncher = new BallisticLauncher();
     ObjectAvoider objectAvoider = new ObjectAvoider();
@@ -34,17 +65,23 @@ public class GameController {
         // start threads
         odometerThread.start();
         usPollerTread.start();
+
+        //TEST navigation to tunnel
+        color = COLOR.GREEN;
+        gameNavigation.setStartingRegion();
+        gameNavigation.setCorner();
+        gameNavigation.setTunnel();
+        gameNavigation.updateTunnelData();
+        odometer.setXYT(STARTING_CORNER[0]*TILE_SIZE, STARTING_CORNER[1]*TILE_SIZE, 0);
+        gameNavigation.navigateToTunnel();
+        gameState = GameState.Done;
+        
         // TODO: get info from wifi class and generate map
         // set currentRegion and color depending on wifi
-        /*
-         * if() { color = COLOR.RED; } else { color = COLOR.GREEN;
-         * 
-         * }
-         */
         // set tunnel
-        gameNavigation.setTunnel();
-        gameNavigation.setLimits();
-        gameState = GameState.UltrasonicLocalization;
+        //gameNavigation.setTunnel();
+        //gameNavigation.setLimits();
+        //gameState = GameState.UltrasonicLocalization;
       }
 
       // ultrasonic localization process
@@ -108,7 +145,7 @@ public class GameController {
             }
             break;
           case END_POINT:
-            goalCoordinates = STARTING_CORNER;
+            goalCoordinates = (double[])STARTING_CORNER;
             Navigation.travelTo(goalCoordinates[0], goalCoordinates[1], FORWARD_SPEED_NORMAL);
             if (navigationCompleted == true) {
               gameState = GameState.Done;
@@ -157,7 +194,7 @@ public class GameController {
       }
 
     }
-
+    LCD.drawString("DONE", 1, 1);
 
 
   }

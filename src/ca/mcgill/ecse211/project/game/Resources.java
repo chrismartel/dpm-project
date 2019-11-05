@@ -2,7 +2,6 @@ package ca.mcgill.ecse211.project.game;
 
 import ca.mcgill.ecse211.project.game.BallisticLauncher;
 import ca.mcgill.ecse211.project.game.GameController.NAVIGATION_DESTINATION;
-import ca.mcgill.ecse211.project.game.GameController.NAVIGATION_TYPE;
 import ca.mcgill.ecse211.project.game.GameNavigation.REGION;
 import ca.mcgill.ecse211.project.game.Navigation;
 import ca.mcgill.ecse211.project.odometry.Odometer;
@@ -220,27 +219,27 @@ public class Resources {
   public static int RED_CORNER;
   public static int GREEN_CORNER;
   
-  public static int[] RED_LL;
-  public static int[] RED_UR;
+  public static int[] RED_LL = new int[2];
+  public static int[] RED_UR = new int[2];
   
-  public static int[] GREEN_LL;
-  public static int[] GREEN_UR;
+  public static int[] GREEN_LL = new int[2];
+  public static int[] GREEN_UR = new int[2];
   
-  public static int[] ISLAND_LL;
-  public static int[] ISLAND_UR;
+  public static int[] ISLAND_LL = new int[2];
+  public static int[] ISLAND_UR = new int[2];
   
-  public static int[] TNR_LL;
-  public static int[] TNR_UR;
+  public static int[] TNR_LL = new int[2];
+  public static int[] TNR_UR = new int[2];
   
-  public static int[] TNG_LL;
-  public static int[] TNG_UR;
+  public static int[] TNG_LL = new int[2];
+  public static int[] TNG_UR = new int[2];
   
-  public static int[] BIN;
+  public static int[] BIN = new int[2];
   
   // MAP CONSTANTS
-  public static int[] TUNNEL_LL;
-  public static int[] TUNNEL_UR;
-  public static double[] STARTING_CORNER;
+  public static int[] TUNNEL_LL = new int[2];
+  public static int[] TUNNEL_UR = new int[2];
+  public static double[] STARTING_CORNER = new double[2];
   
   // GAME CONSTANTS
   public static GameState gameState;
