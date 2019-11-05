@@ -13,8 +13,7 @@ public class GameController {
   }
 
   public static void main(String[] args) {
-
-
+    
     // MAP 1
     // suppose we are green team
     TNG_LL[0] = 4;
@@ -44,8 +43,7 @@ public class GameController {
 
     BIN[0] = -4;
     BIN[1] = 2;
-    // bottom left corner
-    GREEN_CORNER = 0;
+    GREEN_CORNER = 1;
 
 
     // initialize class instances needed
@@ -56,7 +54,10 @@ public class GameController {
     ObjectAvoider objectAvoider = new ObjectAvoider();
 
     // set initial state
-    gameState = GameState.Initialization;
+    
+    //gameState = GameState.Initialization;
+    gameState = GameState.Test;
+
     LCD.drawString("PRESS TO START", 1, 1);
     int buttonChoice = Button.waitForAnyPress();
     if (buttonChoice == Button.ID_ENTER) {
@@ -65,24 +66,9 @@ public class GameController {
       // Execute until the game reaches the Done state
       while (gameState != GameState.Done) {
 
-        // initialization process
-        if (gameState == GameState.Initialization) {
-          /*
-          // initiate and start threads
-          Thread odometerThread = new Thread(odometer);
-          Thread usPollerTread = new Thread(ultrasonicPoller);
-          odometerThread.start();
-          usPollerTread.start();
-          // generate map
-          gameNavigation.setStartingRegion();
-          gameNavigation.setCorner();
-          gameNavigation.setLimits();
-          gameNavigation.setTunnel();
-          gameNavigation.updateTunnelData();
-          goalCoordinates = gameNavigation.getTunnelEntrance();
-          gameState = GameState.UltrasonicLocalization;
-          */
 
+        if (gameState == GameState.Test) {
+          
           // ****** TEST 1 ******* //
           // DONE
           /*robot sets the tunnel data for its zone and navigate to the entrance, then traverses the tunnel
@@ -108,6 +94,9 @@ public class GameController {
           
           // ***** END OF TEST 1 ****** //
 
+          
+          
+          
           // ****** TEST 2 ******* //
           // DONE
           //Test the method returning the closest point
@@ -126,6 +115,41 @@ public class GameController {
           gameState = GameState.Done;
           */
           // ***** END OF TEST 2 ****** //
+          
+          
+          
+          // ****** TEST 3 ******* //
+          // Analyze data from ultrasonic controllers
+          Thread odometerThread = new Thread(odometer);
+          Thread usPollerTread = new Thread(ultrasonicPoller);
+          odometerThread.start();
+          usPollerTread.start();
+          gameState = GameState.Navigation;
+          Navigation.turn(360, ROTATE_SPEED_NORMAL);
+          
+          
+          // ***** END OF TEST 3 ****** //
+        }
+        /*
+         * Initialization
+         */
+        else if(gameState == GameState.Initialization) {
+          // TODO: get data fom wifi class
+          // start threads
+          Thread odometerThread = new Thread(odometer);
+          Thread usPollerTread = new Thread(ultrasonicPoller);
+          odometerThread.start();
+          usPollerTread.start();
+          // generate map
+          gameNavigation.setColor();
+          gameNavigation.setStartingRegion();
+          gameNavigation.setCorner();
+          gameNavigation.setLimits();
+          gameNavigation.setTunnel();
+          gameNavigation.updateTunnelData();
+          navigationDestination = NAVIGATION_DESTINATION.TUNNEL1_ENTRANCE;
+          gameState = GameState.UltrasonicLocalization;
+          
         }
 
         /*
@@ -144,10 +168,7 @@ public class GameController {
         else if (gameState == GameState.LightLocalization) {
           lightLocalizer.setCoordinates(STARTING_CORNER);
           // TODO: light localization using 2 sensors at the back
-          // when light localization is done --> transition to navigation
           gameState = GameState.Navigation;
-          // first navigation destination --> first tunnel entrance
-          navigationDestination = NAVIGATION_DESTINATION.TUNNEL1_ENTRANCE;
         }
 
         /*
@@ -209,10 +230,8 @@ public class GameController {
          * Tunnel Traversal
          */
         else if (gameState == GameState.Tunnel) {
-          tunnelCompleted = false;
           gameNavigation.navigateThroughTunnel();
           // when navigation through tunnel is completed
-          if (tunnelCompleted == true) {
             // update the current region of the robot
             if (currentRegion == REGION.GREEN || currentRegion == REGION.RED) {
               currentRegion = REGION.ISLAND;
@@ -227,7 +246,7 @@ public class GameController {
             gameNavigation.setLimits();
             // after a tunnel traversal --> transition to navigation state
             gameState = GameState.Navigation;
-          }
+          
 
         }
 

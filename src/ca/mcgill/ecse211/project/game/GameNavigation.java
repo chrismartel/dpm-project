@@ -236,7 +236,18 @@ public class GameNavigation {
 
     }
   }
-
+  /**
+   * Method used to set the color
+   */
+  public void setColor() {
+    if(RED_TEAM == TEAM_NUMBER) {
+      color = COLOR.RED;
+    }
+    else if(GREEN_TEAM == TEAM_NUMBER){
+      color = COLOR.GREEN;
+    }
+    
+  }
   /**
    * Method used to set the staring region depending on the team color
    */

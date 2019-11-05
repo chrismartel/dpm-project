@@ -213,9 +213,8 @@ public class Resources {
   
  
   // WIFI CONSTANTS
-  /*
-   * ID of the corners
-   */
+  public static int RED_TEAM = 2;
+  public static int GREEN_TEAM = 13;
   public static int RED_CORNER;
   public static int GREEN_CORNER;
   
@@ -242,9 +241,9 @@ public class Resources {
   public static double[] STARTING_CORNER = new double[2];
   
   // GAME CONSTANTS
+  public static final int TEAM_NUMBER = 13;
   public static GameState gameState;
   public static boolean navigationCompleted = false;
-  public static boolean tunnelCompleted = false;
   public static int currentLeftLimit;
   public static int currentRightLimit;
   public static int currentTopLimit;

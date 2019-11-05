@@ -77,6 +77,7 @@ public class UltrasonicController {
       currentDistance = (int) (usDataSortedList.get((int) (usDataSortedList.size() / 2)));
 
     }
+    System.out.println(this.currentDistance);
   }
 
   /**
