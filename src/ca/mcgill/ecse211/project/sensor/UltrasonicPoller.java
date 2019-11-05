@@ -118,7 +118,7 @@ public class UltrasonicPoller implements Runnable {
     }
   }
 
-  public UltrasonicController getFrontUsController() {
+  public UltrasonicController getfrontUsController() {
     return frontUsController;
   }
 

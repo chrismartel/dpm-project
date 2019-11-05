@@ -4,7 +4,7 @@ import static ca.mcgill.ecse211.project.game.Resources.*;
 
 public class ObjectAvoider {
 
-  private double objectDistance;
+  private int objectDistance;
 
 
   /**
@@ -119,7 +119,7 @@ public class ObjectAvoider {
     return gain;
   }
 
-  private double calculateLateralDistance(double distance) {// method used to approximate the lateral distance of the robot from
+  double calculateLateralDistance(double distance) {// method used to approximate the lateral distance of the robot from
                                                     // the wall
     // lateral distance = distance *cos(45)
     // 4 centimeters between sensor and wheels
@@ -127,11 +127,11 @@ public class ObjectAvoider {
     return lateralDistance;
   }
 
-  public double getObjectDistance() {
+  public int getObjectDistance() {
     return objectDistance;
   }
 
-  public void setObjectDistance(double objectDistance) {
+  public void setObjectDistance(int objectDistance) {
     this.objectDistance = objectDistance;
   }
 
