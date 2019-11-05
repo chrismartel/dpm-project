@@ -23,10 +23,6 @@ public class GameNavigation {
    * coordinates of the launch point
    */
   private double[] launchPoint;
-  /**
-   * coordinates of the target point
-   */
-  private double[] targetPoint;
 
   /**
    * Orientation the robot needs to have to traverse the tunnel
@@ -37,25 +33,21 @@ public class GameNavigation {
     tunnelEntrance = new double[2];
     tunnelExit = new double[2];
     launchPoint = new double[2];
-    targetPoint = new double[2];
-    targetPoint[0] = BIN[0];
-    targetPoint[1] = BIN[1];
   }
 
   /**
    * Method used to navigate to the tunnel entrance
    */
   public void navigateToTunnel() {
-    System.out.println("navigate to tunnel");
-    System.out.println("entrance: "+tunnelEntrance[0] + tunnelEntrance[1]);
-
     Navigation.travelTo(tunnelEntrance[0], tunnelEntrance[1], FORWARD_SPEED_NORMAL);
     Navigation.turnTo(tunnelTraversalOrientation, ROTATE_SPEED_SLOW);
   }
 
+  /**
+   * Method used to navigate through the tunnel entrance
+   */
   public void navigateThroughTunnel() {
-    // TODO: method using ultrasonic sensors to travel through tunnel
-    // if traversal completed --> set tunnelCompleted boolean to true
+    Navigation.travelTo(tunnelExit[0], tunnelExit[1], FORWARD_SPEED_NORMAL);
   }
 
   /**
@@ -98,8 +90,8 @@ public class GameNavigation {
   public int[] closestPoint() {
     double x = odometer.getX();
     double y = odometer.getY();
-    int x1 = (int) (x % TILE_SIZE);
-    int y1 = (int) (y % TILE_SIZE);
+    int x1 = (int) (x / TILE_SIZE);
+    int y1 = (int) (y / TILE_SIZE);
     int x2 = (int) x1 + 1;
     int y2 = (int) y1 + 1;
     int[] p1 = {x1, y1};
@@ -107,10 +99,13 @@ public class GameNavigation {
     int[] p3 = {x2, y1};
     int[] p4 = {x2, y2};
     // compute distances of 4 points from actual position
+    x = odometer.getX()/TILE_SIZE;
+    y = odometer.getY()/TILE_SIZE;
     double d1 = this.calculateDistance(x, y, x1, y1);
     double d2 = this.calculateDistance(x, y, x1, y2);
     double d3 = this.calculateDistance(x, y, x2, y1);
     double d4 = this.calculateDistance(x, y, x2, y2);
+
     // find the minimal distance
     double d = Math.min(d1, d2);
     d = Math.min(d, d3);
@@ -211,12 +206,13 @@ public class GameNavigation {
       TUNNEL_UR[1] = TNG_UR[1];
     }
   }
+
   /**
    * Method used to set the limits of the current region
    */
   public void setLimits() {
     // set the limits depending on the current region
-    switch(currentRegion) {
+    switch (currentRegion) {
       case GREEN:
         currentLeftLimit = GREEN_LL[0];
         currentRightLimit = GREEN_UR[0];
@@ -237,28 +233,58 @@ public class GameNavigation {
         break;
       default:
         break;
-      
+
     }
   }
-  
+  /**
+   * Method used to set the color
+   */
+  public void setColor() {
+    if(RED_TEAM == TEAM_NUMBER) {
+      color = COLOR.RED;
+    }
+    else if(GREEN_TEAM == TEAM_NUMBER){
+      color = COLOR.GREEN;
+    }
+    
+  }
   /**
    * Method used to set the staring region depending on the team color
    */
   public void setStartingRegion() {
-    if(color == COLOR.GREEN) {
+    if (color == COLOR.GREEN) {
       currentRegion = REGION.GREEN;
-    }
-    else {
+    } else {
       currentRegion = REGION.RED;
     }
   }
+
   /**
    * Method setting the coordinates of the starting corner
    */
   public void setCorner() {
     // TODO: determine which is the corner 0
-    if(color == COLOR.GREEN) {
-      switch(GREEN_CORNER) {
+    if (color == COLOR.GREEN) {
+      switch (GREEN_CORNER) {
+        case 0:
+          STARTING_CORNER[0] = 0;
+          STARTING_CORNER[1] = 0;
+          break;
+        case 1:
+          STARTING_CORNER[0] = 15;
+          STARTING_CORNER[1] = 0;
+          break;
+        case 2:
+          STARTING_CORNER[0] = 15;
+          STARTING_CORNER[1] = 9;
+          break;
+        case 3:
+          STARTING_CORNER[0] = 0;
+          STARTING_CORNER[1] = 9;
+          break;
+      }
+    } else {
+      switch (RED_CORNER) {
         case 0:
           STARTING_CORNER[0] = 1;
           STARTING_CORNER[1] = 1;
@@ -276,29 +302,10 @@ public class GameNavigation {
           STARTING_CORNER[1] = 1;
           break;
       }
-    }
-    else {
-      switch(RED_CORNER) {
-        case 0:
-          STARTING_CORNER[0] = 1;
-          STARTING_CORNER[1] = 1;
-          break;
-        case 1:
-          STARTING_CORNER[0] = 1;
-          STARTING_CORNER[1] = 14;
-          break;
-        case 2:
-          STARTING_CORNER[0] = 8;
-          STARTING_CORNER[1] = 14;
-          break;
-        case 3:
-          STARTING_CORNER[0] = 8;
-          STARTING_CORNER[1] = 1;
-          break;
-      }
-      
+
     }
   }
+
   public void calculateLaunchPoints() {
     // TODO: method to find 3 possible launch points to consider that there might be obstacles
   }

@@ -7,7 +7,7 @@ import java.util.Queue;
 import ca.mcgill.ecse211.project.game.GameState;
 
 public class UltrasonicController {
-  
+
   /**
    * current distance processed by the ultrasonic controller
    */
@@ -17,9 +17,9 @@ public class UltrasonicController {
    * last distance processed by the ultrasonic controller
    */
   private int previousDistance;
-  
+
   private boolean distanceChanged;
-  
+
   /**
    * window to store the data polled from the UsSensor in a queue
    */
@@ -29,14 +29,14 @@ public class UltrasonicController {
    * linked list to sort the data from the window of samples
    */
   private LinkedList<Integer> usDataSortedList;
-  
+
   /**
    * filter control value used for the filter method
    */
   private int filterControl;
-  
+
   UltrasonicController(int initialDistance) {
-    
+
     // initialize the data lists
     this.usDataQueue = new LinkedList<Integer>();
     this.usDataSortedList = new LinkedList<Integer>();
@@ -45,17 +45,19 @@ public class UltrasonicController {
     this.previousDistance = initialDistance;
     this.distanceChanged = false;
   }
-  
-  
+
+
   void processDistance(int distance) {
+    // distance initially not changed by the filter out method
     this.distanceChanged = false;
     this.previousDistance = this.currentDistance;
     int temporaryDistance = distance;
     // filter the temporary distance the get rid of aberrant values and update the current distance
     filter(temporaryDistance);
+
     // use median filter only if distance changed in filter out method
-    if(this.distanceChanged == true) {
-   // if the lists are full remove the oldest sample from the queue and from the sorted list
+    if (this.distanceChanged == true) {
+      // if the lists are full remove the oldest sample from the queue and from the sorted list
       if (usDataQueue.size() == US_WINDOW) {
         // retrieves the element at head of the queue
         float element = usDataQueue.element();
@@ -70,13 +72,14 @@ public class UltrasonicController {
 
       // sort the data list
       Collections.sort(usDataSortedList);
-      
+
       // set the temporary distance to be the median of the sorted list
-      temporaryDistance = (int) (usDataSortedList.get((int) (usDataSortedList.size() / 2)));
+      currentDistance = (int) (usDataSortedList.get((int) (usDataSortedList.size() / 2)));
 
     }
+    System.out.println(this.currentDistance);
   }
-  
+
   /**
    * method to filter the aberrant values processed by the controller
    * 
@@ -89,15 +92,15 @@ public class UltrasonicController {
     } else if (distance >= 255) {
       // Repeated large values, so there is nothing there: leave the distance alone
       this.currentDistance = 255;
-      this.distanceChanged =true;
+      this.distanceChanged = true;
     } else {
       // distance went below 255: reset filter and leave distance alone.
       filterControl = 0;
       this.currentDistance = distance;
-      this.distanceChanged=true;
+      this.distanceChanged = true;
     }
   }
-  
+
   /**
    * method to get the current and last distances processed by the controller
    * 
@@ -105,11 +108,11 @@ public class UltrasonicController {
    */
   public int[] getDistances() {
     int[] distances = new int[2];
-      distances[0] = this.currentDistance;
-      distances[1] = this.previousDistance;
+    distances[0] = this.currentDistance;
+    distances[1] = this.previousDistance;
     return distances;
   }
-  
+
   /**
    * method to get the current distance processed by the controller
    * 
@@ -119,10 +122,10 @@ public class UltrasonicController {
     int distance = this.currentDistance;
     return distance;
   }
-  
+
   public void checkForObstacle() {
     // obstacle ahead
-    if(currentDistance<=OBSTACLE_DETECTION_DISTANCE) {
+    if (currentDistance <= OBSTACLE_DETECTION_DISTANCE) {
       gameState = GameState.Avoidance;
     }
   }
