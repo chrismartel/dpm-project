@@ -1,6 +1,7 @@
 package ca.mcgill.ecse211.project.sensor;
 
 import static ca.mcgill.ecse211.project.game.Resources.*;
+import ca.mcgill.ecse211.project.game.GameController.NAVIGATION_DESTINATION;
 import ca.mcgill.ecse211.project.game.GameState;
 
 /**
@@ -83,7 +84,7 @@ public class UltrasonicPoller implements Runnable {
         frontUsController.processDistance(this.frontDistance);
       }
       // when navigating, check for obstacles
-      if(gameState == GameState.Navigation) {
+      if(gameState == GameState.Navigation && (navigationDestination == NAVIGATION_DESTINATION.LAUNCH_POINT || navigationDestination == NAVIGATION_DESTINATION.TUNNEL2_ENTRANCE) ) {
         frontUsController.checkForObstacle();
       }
       // record the ending time of the loop and make the thread sleep so the period is respected

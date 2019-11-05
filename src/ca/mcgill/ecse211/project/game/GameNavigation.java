@@ -50,12 +50,15 @@ public class GameNavigation {
     System.out.println("entrance: "+tunnelEntrance[0] + tunnelEntrance[1]);
 
     Navigation.travelTo(tunnelEntrance[0], tunnelEntrance[1], FORWARD_SPEED_NORMAL);
+    System.out.println(tunnelTraversalOrientation);
     Navigation.turnTo(tunnelTraversalOrientation, ROTATE_SPEED_SLOW);
+    
   }
-
+  /**
+   * Method used to navigate through the tunnel entrance
+   */
   public void navigateThroughTunnel() {
-    // TODO: method using ultrasonic sensors to travel through tunnel
-    // if traversal completed --> set tunnelCompleted boolean to true
+    Navigation.travelTo(tunnelExit[0], tunnelExit[1], FORWARD_SPEED_NORMAL);
   }
 
   /**

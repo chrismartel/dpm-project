@@ -31,7 +31,7 @@ public class Resources {
   /**
    * The robot width.
    */
-  public static final double TRACK = 14;// 14.77;
+  public static final double TRACK = 15;// 14.77;
 
   // ENVIRONMENT CONSTANTS
 
@@ -298,6 +298,6 @@ public class Resources {
   /*
    * Distance of obstacle detection
    */
-  public static final int OBSTACLE_DETECTION_DISTANCE = 8; 
+  public static final int OBSTACLE_DETECTION_DISTANCE = 4; 
   
 }
