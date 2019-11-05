@@ -2,9 +2,9 @@ package ca.mcgill.ecse211.project.game;
 
 import static ca.mcgill.ecse211.project.game.Resources.*;
 
-public class ObjectAvoider {
+public class ObstacleAvoider {
 
-  private double objectDistance;
+  private double obstacleDistance;
 
 
   /**
@@ -127,12 +127,12 @@ public class ObjectAvoider {
     return lateralDistance;
   }
 
-  public double getObjectDistance() {
-    return objectDistance;
+  public double getObstacleDistance() {
+    return obstacleDistance;
   }
 
-  public void setObjectDistance(double objectDistance) {
-    this.objectDistance = objectDistance;
+  public void setObstaceDistance(double obstacleDistance) {
+    this.obstacleDistance = obstacleDistance;
   }
 
 
