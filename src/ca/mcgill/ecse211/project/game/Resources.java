@@ -68,7 +68,7 @@ public class Resources {
    * The ultrasonic sensor update period in ms. Was calculated in order to have approximately 3 pollings per degree of
    * rotation during slow rotation
    */
-  public static final long US_PERIOD = 50;
+  public static final long US_PERIOD = 80;
 
   /**
    * Filter out constant to filter the distance seen by the us sensor
@@ -111,7 +111,7 @@ public class Resources {
   /**
    * Period of the light sensor operations
    */
-  public static final long LIGHT_SENSOR_PERIOD = 235; // HAS TO BE DETERMINED BY TESTING --> EXCEL
+  public static final long LIGHT_SENSOR_PERIOD = 235; // HAS TO BE DETERMINED BY TESTING
   /**
    * Light sensor to center of wheel-base distance
    */
@@ -217,6 +217,8 @@ public class Resources {
   public static int GREEN_TEAM = 13;
   public static int RED_CORNER;
   public static int GREEN_CORNER;
+  public static int CORNER;
+
   
   public static int[] RED_LL = new int[2];
   public static int[] RED_UR = new int[2];

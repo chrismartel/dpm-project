@@ -1,6 +1,7 @@
 package ca.mcgill.ecse211.project.sensor;
 
 import static ca.mcgill.ecse211.project.game.Resources.*;
+import ca.mcgill.ecse211.project.game.GameController.NAVIGATION_DESTINATION;
 import ca.mcgill.ecse211.project.game.GameState;
 
 /**
@@ -111,15 +112,15 @@ public class UltrasonicPoller implements Runnable {
       this.leftDistance = (int) (leftUsData[0] * 100);
     }
     // robot is navigating --> only poll front sensor
-    else if (gameState== GameState.Navigation || gameState== GameState.UltrasonicLocalization){
+    else if ((gameState== GameState.Navigation || gameState== GameState.UltrasonicLocalization)){
       // acquire distance data in meters
       frontUsSensor.getDistanceMode().fetchSample(frontUsData, 0);
-      // set the initial distance seen by the sensor
+      // set the distance seen by the sensor
       this.frontDistance = (int) (frontUsData[0] * 100);
     }
   }
 
-  public UltrasonicController getfrontUsController() {
+  public UltrasonicController getFrontUsController() {
     return frontUsController;
   }
 

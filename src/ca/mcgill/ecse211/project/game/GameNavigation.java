@@ -87,17 +87,17 @@ public class GameNavigation {
    * 
    * @return an array representing the closest coordinate point from the current odometer position
    */
-  public int[] closestPoint() {
+  public double[] closestPoint() {
     double x = odometer.getX();
     double y = odometer.getY();
     int x1 = (int) (x / TILE_SIZE);
     int y1 = (int) (y / TILE_SIZE);
     int x2 = (int) x1 + 1;
     int y2 = (int) y1 + 1;
-    int[] p1 = {x1, y1};
-    int[] p2 = {x1, y2};
-    int[] p3 = {x2, y1};
-    int[] p4 = {x2, y2};
+    double [] p1 = {x1, y1};
+    double[] p2 = {x1, y2};
+    double[] p3 = {x2, y1};
+    double[] p4 = {x2, y2};
     // compute distances of 4 points from actual position
     x = odometer.getX()/TILE_SIZE;
     y = odometer.getY()/TILE_SIZE;
@@ -161,29 +161,29 @@ public class GameNavigation {
     // determine where is the tunnel entrance
     if (tunnelBottom == targetRegion) {
       this.tunnelEntrance[0] = (TUNNEL_LL[0] + 0.5);
-      this.tunnelEntrance[1] = (TUNNEL_LL[1] - 0.5);
+      this.tunnelEntrance[1] = (TUNNEL_LL[1] - 1);
       this.tunnelExit[0] = (TUNNEL_UR[0] - 0.5);
-      this.tunnelExit[1] = (TUNNEL_UR[1] + 0.5);
+      this.tunnelExit[1] = (TUNNEL_UR[1] + 1);
       this.tunnelTraversalOrientation = 0;
       // this.tunnelLength = (TUNNEL_UR[1] - TUNNEL_LL[1]) * TILE_SIZE;
     } else if (tunnelTop == targetRegion) {
       this.tunnelEntrance[0] = (TUNNEL_UR[0] - 0.5);
-      this.tunnelEntrance[1] = (TUNNEL_UR[1] + 0.5);
+      this.tunnelEntrance[1] = (TUNNEL_UR[1] + 1);
       this.tunnelExit[0] = (TUNNEL_LL[0] + 0.5);
-      this.tunnelExit[1] = (TUNNEL_LL[1] - 0.5);
+      this.tunnelExit[1] = (TUNNEL_LL[1] - 1);
       this.tunnelTraversalOrientation = 180;
       // this.tunnelLength = (TUNNEL_UR[1] - TUNNEL_LL[1]) * TILE_SIZE;
     } else if (tunnelLeft == targetRegion) {
-      this.tunnelEntrance[0] = (TUNNEL_LL[0] - 0.5);
+      this.tunnelEntrance[0] = (TUNNEL_LL[0] - 1);
       this.tunnelEntrance[1] = (TUNNEL_LL[1] + 0.5);
-      this.tunnelExit[0] = (TUNNEL_UR[0] + 0.5);
+      this.tunnelExit[0] = (TUNNEL_UR[0] + 1);
       this.tunnelExit[1] = (TUNNEL_UR[1] - 0.5);
       this.tunnelTraversalOrientation = 90;
       // this.tunnelLength = (TUNNEL_UR[0] - TUNNEL_LL[0]) * TILE_SIZE;
     } else if (tunnelRight == targetRegion) {
-      this.tunnelEntrance[0] = (TUNNEL_UR[0] + 0.5);
+      this.tunnelEntrance[0] = (TUNNEL_UR[0] + 1);
       this.tunnelEntrance[1] = (TUNNEL_UR[1] - 0.5);
-      this.tunnelExit[0] = (TUNNEL_LL[0] - 0.5);
+      this.tunnelExit[0] = (TUNNEL_LL[0] - 1);
       this.tunnelExit[1] = (TUNNEL_LL[1] + 0.5);
       this.tunnelTraversalOrientation = 270;
       // this.tunnelLength = (TUNNEL_UR[0] - TUNNEL_LL[0]) * TILE_SIZE;
@@ -269,18 +269,23 @@ public class GameNavigation {
         case 0:
           STARTING_CORNER[0] = 0;
           STARTING_CORNER[1] = 0;
+          CORNER = 0;
           break;
         case 1:
           STARTING_CORNER[0] = 15;
           STARTING_CORNER[1] = 0;
+          CORNER = 1;
           break;
         case 2:
           STARTING_CORNER[0] = 15;
           STARTING_CORNER[1] = 9;
+          
+          CORNER = 2;
           break;
         case 3:
           STARTING_CORNER[0] = 0;
           STARTING_CORNER[1] = 9;
+          CORNER = 3;
           break;
       }
     } else {
@@ -288,18 +293,22 @@ public class GameNavigation {
         case 0:
           STARTING_CORNER[0] = 1;
           STARTING_CORNER[1] = 1;
+          CORNER = 0;
           break;
         case 1:
           STARTING_CORNER[0] = 1;
           STARTING_CORNER[1] = 14;
+          CORNER = 1;
           break;
         case 2:
           STARTING_CORNER[0] = 8;
           STARTING_CORNER[1] = 14;
+          CORNER = 2;
           break;
         case 3:
           STARTING_CORNER[0] = 8;
           STARTING_CORNER[1] = 1;
+          CORNER = 3;
           break;
       }
 

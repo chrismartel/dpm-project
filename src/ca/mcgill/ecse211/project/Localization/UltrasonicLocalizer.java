@@ -34,11 +34,12 @@ public class UltrasonicLocalizer {
     // clockwise rotation to record value for alpha
     Navigation.rotate(Turn.CLOCK_WISE, ROTATE_SPEED_SLOW);
     while (true) {
-      distances = ultrasonicPoller.getLeftUsController().getDistances();
+      distances = ultrasonicPoller.getFrontUsController().getDistances();
       currentDistance = distances[0];
       lastDistance = distances[1];
-      // if (ultrasonicPoller.getDistance() < COMMON_D - FALLINGEDGE_K) {
-      if (lastDistance >= (FALLINGEDGE_D + FALLINGEDGE_K) && currentDistance <= (FALLINGEDGE_D - FALLINGEDGE_K)) {
+      System.out.println("distances: "+ distances[0] + ", "+ distances[1]);
+      if (lastDistance > (FALLINGEDGE_D + FALLINGEDGE_K) && currentDistance < (FALLINGEDGE_D - FALLINGEDGE_K)) {
+        System.out.println("differenatial: "+(lastDistance-currentDistance));
         this.alpha = odometer.getTheta();
         Navigation.stopMotors();
         break;
@@ -46,10 +47,10 @@ public class UltrasonicLocalizer {
     }
 
     // anti-clockwise rotation to record beta value
-    Navigation.turn(-20, ROTATE_SPEED_SLOW);
+    Navigation.turn(-50, ROTATE_SPEED_SLOW);
     Navigation.rotate(Turn.COUNTER_CLOCK_WISE, ROTATE_SPEED_SLOW);
     while (true) {
-      distances = ultrasonicPoller.getLeftUsController().getDistances();
+      distances = ultrasonicPoller.getFrontUsController().getDistances();
       currentDistance = distances[0];
       lastDistance = distances[1];
       // if (ultrasonicPoller.getDistance() < COMMON_D - FALLINGEDGE_K) {
@@ -64,6 +65,22 @@ public class UltrasonicLocalizer {
     // Adjust the current theta of the odometer by adding the computed heading
     odometer.update(0, 0, angleAdjustment);
     Navigation.turnTo(0, ROTATE_SPEED_SLOW);
+    // set theta depending on the starting corner
+    switch(CORNER) {
+      case 0:
+        odometer.setTheta(0);
+        break;
+      case 1:
+        odometer.setTheta(270);
+        break;
+      case 2:
+        odometer.setTheta(180);
+        break;
+      case 3:
+        odometer.setTheta(90);
+        break;
+    }
+    
 
   }
 
