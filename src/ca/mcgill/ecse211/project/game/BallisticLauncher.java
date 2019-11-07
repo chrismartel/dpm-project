@@ -1,6 +1,6 @@
 package ca.mcgill.ecse211.project.game;
 
-import static ca.mcgill.ecse211.project.game.Resources.*;
+import static ca.mcgill.ecse211.project.game.GameResources.*;
 
 /**
  * This class implements the behaviour of the ballistic launcher of the robot

@@ -1,6 +1,6 @@
 package ca.mcgill.ecse211.project.game;
 
-import static ca.mcgill.ecse211.project.game.Resources.*;
+import static ca.mcgill.ecse211.project.game.GameResources.*;
 
 public class ObjectAvoider {
 
@@ -13,7 +13,7 @@ public class ObjectAvoider {
   public void wallFollower() {
     // TODO: implement conditions that checks the current limits and generates unreal obstacles at those limits
     // initial positioning
-    Navigation.turn(90, Resources.ROTATE_SPEED_NORMAL);
+    Navigation.turn(90, ROTATE_SPEED_NORMAL);
     double wallDistance;
     double leftSpeed;
     double rightSpeed;
@@ -101,8 +101,8 @@ public class ObjectAvoider {
   public boolean orientationCheck() {
     double currentX = odometer.getX();
     double currentY = odometer.getY();
-    double goalX = goalCoordinates[0] * TILE_SIZE;
-    double goalY = goalCoordinates[1] * TILE_SIZE;
+    double goalX = navigationCoordinates.x * TILE_SIZE;
+    double goalY = navigationCoordinates.y * TILE_SIZE;
     double dX = goalX - currentX;
     double dY = goalY - currentY;
     double turnToAngle = Math.abs(Math.toDegrees(Math.atan2(dX, dY)));

@@ -2,7 +2,7 @@ package ca.mcgill.ecse211.project.game;
 
 
 
-import static ca.mcgill.ecse211.project.game.Resources.*;
+import static ca.mcgill.ecse211.project.game.GameResources.*;
 
 /**
  * The navigation class is used to define all the low level navigation movements of the robot.
@@ -163,7 +163,7 @@ public class Navigation {
   /**
    * Method causing the robot to travel forward a until the odometer reaches the travel distance
    * 
-   * @param travelDistance : the magnitude of the distance to travel
+   * @param travelDistance : the magnitude of the distance to travel in cm
    */
   public static void travel(double travelDistance, int speed) {
     double dX, dY;
@@ -171,6 +171,10 @@ public class Navigation {
     // poll the odometer to get the current X and Y coordinates
     lastX = odometer.getX();
     lastY = odometer.getY();
+    System.out.println("INITIAL X: "+ lastX);
+    System.out.println("INITIAL Y: "+ lastY);
+
+
 
     // robot travels forward
     travelForward(speed);
@@ -185,8 +189,6 @@ public class Navigation {
         if(gameState == GameState.Navigation) {
           navigationCompleted = true;
         }
-        // robot stops if its destination is reached
-        stopMotors();
         // exit the travel method if the destination is reached
         break;
       }
