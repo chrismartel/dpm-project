@@ -68,7 +68,7 @@ public class Resources {
    * The ultrasonic sensor update period in ms. Was calculated in order to have approximately 3 pollings per degree of
    * rotation during slow rotation
    */
-  public static final long US_PERIOD = 50;
+  public static final long US_PERIOD = 80;
 
   /**
    * Filter out constant to filter the distance seen by the us sensor
