@@ -84,7 +84,7 @@ public class UltrasonicPoller implements Runnable {
         frontUsController.processDistance(this.frontDistance);
         // when navigating, check for obstacles
         if(gameState == GameState.Navigation) {
-          frontUsController.checkForObstacle();
+          //frontUsController.checkForObstacle();
         }
       }
 

@@ -32,7 +32,7 @@ public class GameResources {
   /**
    * The robot width.
    */
-  public static final double TRACK = 15;// 14.77;
+  public static final double TRACK = 15.06;// 14.77;
 
   // ENVIRONMENT CONSTANTS
 
@@ -69,7 +69,7 @@ public class GameResources {
    * The ultrasonic sensor update period in ms. Was calculated in order to have approximately 3 pollings per degree of
    * rotation during slow rotation
    */
-  public static final long US_PERIOD = 80;
+  public static final long US_PERIOD = 100;
 
   /**
    * Filter out constant to filter the distance seen by the us sensor
@@ -157,12 +157,12 @@ public class GameResources {
   /**
    * The left motor.
    */
-  public static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(MotorPort.D);
+  public static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(MotorPort.A);
 
   /**
    * The right motor.
    */
-  public static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(MotorPort.A);
+  public static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(MotorPort.D);
 
   /**
    * The left ballistic motor.
@@ -215,11 +215,13 @@ public class GameResources {
   // MAP CONSTANTS
   public static Region Tunnel = new Region(tng.ll, tng.ur); // default to green tunnel
   public static Point STARTING_CORNER = new Point(0,0); // default to 0,0
-  public static int CORNER_NUMBER;
+  public static int CORNER_NUMBER = 1;
   
   // GAME CONSTANTS
   public static GameState gameState;
   public static boolean navigationCompleted = false;
+  public static boolean enableCorrection = false;
+
   public static double currentLeftLimit;
   public static double currentRightLimit;
   public static double currentTopLimit;
@@ -227,7 +229,9 @@ public class GameResources {
   public static NAVIGATION_DESTINATION navigationDestination;
   public static COLOR color;
   public static REGION currentRegion;
-  public static Point goalCoordinates = new Point(0,0);
+  public static Point navigationCoordinates = new Point(0,0);
+  public static Point localizationCoordinates = new Point(0,0);
+
   
   // OBJECT AVOIDANCE
   /*

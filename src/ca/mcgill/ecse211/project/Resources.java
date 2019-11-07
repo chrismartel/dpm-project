@@ -39,7 +39,7 @@ public class Resources {
   /**
    * Enable this to attempt to receive Wi-Fi parameters at the start of the program.
    */
-  public static final boolean RECEIVE_WIFI_PARAMS = true;
+  public static final boolean RECEIVE_WIFI_PARAMS = false; // ENABLE TO TRUE TO RECEIVE FROM WIFI
  
   
   /**

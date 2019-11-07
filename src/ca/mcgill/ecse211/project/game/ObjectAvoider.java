@@ -101,8 +101,8 @@ public class ObjectAvoider {
   public boolean orientationCheck() {
     double currentX = odometer.getX();
     double currentY = odometer.getY();
-    double goalX = goalCoordinates.x * TILE_SIZE;
-    double goalY = goalCoordinates.y * TILE_SIZE;
+    double goalX = navigationCoordinates.x * TILE_SIZE;
+    double goalY = navigationCoordinates.y * TILE_SIZE;
     double dX = goalX - currentX;
     double dY = goalY - currentY;
     double turnToAngle = Math.abs(Math.toDegrees(Math.atan2(dX, dY)));

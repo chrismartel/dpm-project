@@ -36,12 +36,19 @@ public class GameNavigation {
     tunnelExit = new Point(0,0);
     launchPoint = new Point(0,0);
   }
+  
+  public void squareNavigation(double x, double y) {
+    enableCorrection = true;
+    Navigation.travelTo(x, (odometer.getY()/TILE_SIZE), FORWARD_SPEED_NORMAL);
+    Navigation.travelTo((odometer.getX()/TILE_SIZE), y, FORWARD_SPEED_NORMAL);
+    enableCorrection = false;
+  }
 
   /**
    * Method used to navigate to the tunnel entrance
    */
   public void navigateToTunnel() {
-    Navigation.travelTo(tunnelEntrance.x, tunnelEntrance.y, FORWARD_SPEED_NORMAL);
+    this.squareNavigation(tunnelEntrance.x, tunnelEntrance.y);
     Navigation.turnTo(tunnelTraversalOrientation, ROTATE_SPEED_SLOW);
   }
 
@@ -247,6 +254,7 @@ public class GameNavigation {
     }
     else if(greenTeam == TEAM_NUMBER){
       color = COLOR.GREEN;
+      System.out.println("GREEN TEAM SET");
     }
     
   }
@@ -256,6 +264,8 @@ public class GameNavigation {
   public void setStartingRegion() {
     if (color == COLOR.GREEN) {
       currentRegion = REGION.GREEN;
+      System.out.println("STARTING REGION SET");
+
     } else {
       currentRegion = REGION.RED;
     }
@@ -277,6 +287,8 @@ public class GameNavigation {
           STARTING_CORNER.x = 15;
           STARTING_CORNER.y = 0;
           CORNER_NUMBER = 1;
+          System.out.println("CORNER 1 SET");
+
           break;
         case 2:
           STARTING_CORNER.x = 15;
