@@ -1,6 +1,7 @@
 package ca.mcgill.ecse211.project.localization;
 
-import static ca.mcgill.ecse211.project.game.Resources.*;
+import static ca.mcgill.ecse211.project.game.GameResources.*;
+import ca.mcgill.ecse211.project.Resources.Point;
 import ca.mcgill.ecse211.project.game.Navigation;
 import ca.mcgill.ecse211.project.game.Navigation.Turn;
 import lejos.hardware.Button;
@@ -24,7 +25,7 @@ public class LightLocalizer {
   /**
    * coordinates to reach with light localization
    */
-  private double[] coordinates;
+  private Point coordinates;
 
 
   /**
@@ -181,11 +182,11 @@ public class LightLocalizer {
   /**
    * getter and setter for the goal coordinates of the light localization [x, y]
    */
-  public void setCoordinates(double[] coordinates) {
+  public void setCoordinates(Point coordinates) {
     this.coordinates = coordinates;
   }
 
-  public double[] getCoordinates() {
+  public Point getCoordinates() {
     return coordinates;
   }
 }

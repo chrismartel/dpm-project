@@ -1,7 +1,8 @@
 package ca.mcgill.ecse211.project.game;
 
-import static ca.mcgill.ecse211.project.game.Resources.*;
-import ca.mcgill.ecse211.project.game.GameNavigation.REGION;
+import static ca.mcgill.ecse211.project.game.GameResources.*;
+import static ca.mcgill.ecse211.project.Resources.*;
+import lejos.hardware.Button;
 import ca.mcgill.ecse211.project.localization.LightLocalizer;
 import ca.mcgill.ecse211.project.localization.UltrasonicLocalizer;
 import lejos.hardware.Button;
@@ -9,43 +10,10 @@ import lejos.hardware.Button;
 public class GameController {
 
   public enum NAVIGATION_DESTINATION {
-    TUNNEL1_ENTRANCE, TUNNEL2_ENTRANCE, LAUNCH_POINT, END_POINT,
+    TUNNEL1_ENTRANCE, TUNNEL2_ENTRANCE, LAUNCH_POINT, END_POINT, LOCALIZE
   }
 
   public static void main(String[] args) {
-
-    // MAP 1
-    // suppose we are green team
-    TNG_LL[0] = 4;
-    TNG_LL[1] = 1;
-    TNG_UR[0] = 6;
-    TNG_UR[1] = 2;
-
-    TNR_LL[0] = 0;
-    TNR_LL[1] = 0;
-    TNR_UR[0] = 0;
-    TNR_UR[1] = 0;
-
-    RED_LL[0] = 0;
-    RED_LL[1] = 0;
-    RED_UR[0] = 0;
-    RED_UR[1] = 0;
-
-    GREEN_LL[0] = 0;
-    GREEN_LL[1] = 0;
-    GREEN_UR[0] = 4;
-    GREEN_UR[1] = 4;
-
-    ISLAND_LL[0] = 6;
-    ISLAND_LL[1] = 0;
-    ISLAND_UR[0] = 9;
-    ISLAND_UR[1] = 4;
-
-    BIN[0] = -4;
-    BIN[1] = 2;
-    GREEN_CORNER = 1;
-
-
     // initialize class instances needed
     GameNavigation gameNavigation = new GameNavigation();
     LightLocalizer lightLocalizer = new LightLocalizer();
@@ -133,8 +101,10 @@ public class GameController {
           case UltrasonicLocalization:
             // perform ultrasonic localization using falling edge routine
             ultrasonicLocalizer.fallingEdge();
+            Navigation.turnTo(0, ROTATE_SPEED_SLOW);
             // when us localization is done --> transition to light localization
             gameState = GameState.LightLocalization;
+            goalCoordinates = STARTING_CORNER;
             LCD.clear();
             LCD.drawString("PRESS TO START LIGHT", 1, 1);
             buttonChoice = Button.waitForAnyPress();
@@ -143,7 +113,7 @@ public class GameController {
 
           case LightLocalization:
             lightLocalizer.setCoordinates(STARTING_CORNER);
-            odometer.setXYT(STARTING_CORNER[0] * TILE_SIZE, STARTING_CORNER[1] * TILE_SIZE, 0);
+            odometer.setXYT(STARTING_CORNER.x * TILE_SIZE, STARTING_CORNER.y * TILE_SIZE, 0);
             // TODO: light localization using 2 sensors at the back
             gameState = GameState.Navigation;
             // set first navigation destination
@@ -183,13 +153,16 @@ public class GameController {
                 // when navigation is completed --> transition to tunnel state + update the destination point to the end
                 // point
                 if (navigationCompleted == true) {
+                  goalCoordinates = gameNavigation.closestPoint();
+                  Navigation.travelTo(goalCoordinates.x, goalCoordinates.y, FORWARD_SPEED_SLOW);
+                  // TODO: light localization
+                  gameNavigation.navigateToTunnel();
                   gameState = GameState.Tunnel;
+                  goalCoordinates = STARTING_CORNER;
                   navigationDestination = NAVIGATION_DESTINATION.END_POINT;
                 }
                 break;
               case LAUNCH_POINT:
-                double[] point = gameNavigation.closestPoint();
-                Navigation.travelTo(point[0], point[1], FORWARD_SPEED_NORMAL);
                 // TODO: compute possible launch points --> waiting on hardware for this part
                 // TODO: set goal coordinates
                 // TODO: navigate to launch point
@@ -198,11 +171,11 @@ public class GameController {
                 if (navigationCompleted == true) {
                   gameState = GameState.Launch;
                   navigationDestination = NAVIGATION_DESTINATION.TUNNEL2_ENTRANCE;
+                  goalCoordinates = gameNavigation.getTunnelEntrance();
                 }
                 break;
               case END_POINT:
-                goalCoordinates = (double[]) STARTING_CORNER;
-                Navigation.travelTo(goalCoordinates[0], goalCoordinates[1], FORWARD_SPEED_NORMAL);
+                Navigation.travelTo(goalCoordinates.x, goalCoordinates.y, FORWARD_SPEED_NORMAL);
                 if (navigationCompleted == true) {
                   gameState = GameState.Done;
                 }
@@ -227,8 +200,8 @@ public class GameController {
             // reset the zone limits and the tunnel data when the traversal is completed
             gameNavigation.updateTunnelData();
             gameNavigation.setLimits();
-            double[] point = gameNavigation.closestPoint();
-            lightLocalizer.setCoordinates(point);
+            goalCoordinates = gameNavigation.closestPoint();
+            lightLocalizer.setCoordinates(goalCoordinates);
             // after a tunnel traversal --> transition to navigation state
             gameState = GameState.Navigation;
             break;

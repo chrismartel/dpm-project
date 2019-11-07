@@ -1,8 +1,9 @@
 package ca.mcgill.ecse211.project.game;
 
 import ca.mcgill.ecse211.project.game.BallisticLauncher;
+import static ca.mcgill.ecse211.project.Resources.*;
+import ca.mcgill.ecse211.project.Resources.Point;
 import ca.mcgill.ecse211.project.game.GameController.NAVIGATION_DESTINATION;
-import ca.mcgill.ecse211.project.game.GameNavigation.REGION;
 import ca.mcgill.ecse211.project.game.Navigation;
 import ca.mcgill.ecse211.project.odometry.Odometer;
 import ca.mcgill.ecse211.project.sensor.UltrasonicPoller;
@@ -19,7 +20,7 @@ import lejos.hardware.sensor.EV3UltrasonicSensor;
  * codebase.
  */
 
-public class Resources {
+public class GameResources {
 
   // HARDWARE DESIGN CONSTANTS
 
@@ -211,52 +212,22 @@ public class Resources {
    */
   public static UltrasonicPoller ultrasonicPoller = UltrasonicPoller.getUltrasonicPoller();
   
- 
-  // WIFI CONSTANTS
-  public static int RED_TEAM = 2;
-  public static int GREEN_TEAM = 13;
-  public static int RED_CORNER;
-  public static int GREEN_CORNER;
-  public static int CORNER;
-
-  
-  public static int[] RED_LL = new int[2];
-  public static int[] RED_UR = new int[2];
-  
-  public static int[] GREEN_LL = new int[2];
-  public static int[] GREEN_UR = new int[2];
-  
-  public static int[] ISLAND_LL = new int[2];
-  public static int[] ISLAND_UR = new int[2];
-  
-  public static int[] TNR_LL = new int[2];
-  public static int[] TNR_UR = new int[2];
-  
-  public static int[] TNG_LL = new int[2];
-  public static int[] TNG_UR = new int[2];
-  
-  public static int[] BIN = new int[2];
-  
   // MAP CONSTANTS
-  public static int[] TUNNEL_LL = new int[2];
-  public static int[] TUNNEL_UR = new int[2];
-  public static double[] STARTING_CORNER = new double[2];
+  public static Region Tunnel = new Region(tng.ll, tng.ur); // default to green tunnel
+  public static Point STARTING_CORNER = new Point(0,0); // default to 0,0
+  public static int CORNER_NUMBER;
   
   // GAME CONSTANTS
-  public static final int TEAM_NUMBER = 13;
   public static GameState gameState;
   public static boolean navigationCompleted = false;
-  public static int currentLeftLimit;
-  public static int currentRightLimit;
-  public static int currentTopLimit;
-  public static int currentBottomLimit;
+  public static double currentLeftLimit;
+  public static double currentRightLimit;
+  public static double currentTopLimit;
+  public static double currentBottomLimit;
   public static NAVIGATION_DESTINATION navigationDestination;
-  public enum COLOR {
-    GREEN, RED
-  }
   public static COLOR color;
   public static REGION currentRegion;
-  public static double[] goalCoordinates;
+  public static Point goalCoordinates = new Point(0,0);
   
   // OBJECT AVOIDANCE
   /*
@@ -301,4 +272,13 @@ public class Resources {
    */
   public static final int OBSTACLE_DETECTION_DISTANCE = 4; 
   
+  
+  // enums
+  public enum COLOR {
+    GREEN, RED
+  }
+  
+  public enum REGION {
+    RED, WATER, TUNNEL_RED, TUNNEL_GREEN, GREEN, ISLAND
+  }
 }

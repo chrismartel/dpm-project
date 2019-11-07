@@ -2,7 +2,7 @@ package ca.mcgill.ecse211.project.game;
 
 
 
-import static ca.mcgill.ecse211.project.game.Resources.*;
+import static ca.mcgill.ecse211.project.game.GameResources.*;
 
 /**
  * The navigation class is used to define all the low level navigation movements of the robot.

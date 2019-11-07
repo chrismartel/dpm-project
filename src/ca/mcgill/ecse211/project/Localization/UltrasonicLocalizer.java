@@ -1,6 +1,6 @@
 package ca.mcgill.ecse211.project.localization;
 
-import static ca.mcgill.ecse211.project.game.Resources.*;
+import static ca.mcgill.ecse211.project.game.GameResources.*;
 import ca.mcgill.ecse211.project.game.Navigation;
 import ca.mcgill.ecse211.project.game.Navigation.Turn;
 
@@ -66,7 +66,7 @@ public class UltrasonicLocalizer {
     odometer.update(0, 0, angleAdjustment);
     Navigation.turnTo(0, ROTATE_SPEED_SLOW);
     // set theta depending on the starting corner
-    switch(CORNER) {
+    switch(CORNER_NUMBER) {
       case 0:
         odometer.setTheta(0);
         break;
