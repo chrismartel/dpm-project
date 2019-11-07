@@ -55,8 +55,8 @@ public class GameController {
 
     // set initial state
     
-    //gameState = GameState.Initialization;
-    gameState = GameState.Test;
+    gameState = GameState.Initialization;
+    //gameState = GameState.Test;
 
     LCD.drawString("PRESS TO START", 1, 1);
     int buttonChoice = Button.waitForAnyPress();
@@ -117,29 +117,21 @@ public class GameController {
           // ***** END OF TEST 2 ****** //
           
           
-          
-          // ****** TEST 3 ******* //
-          // Analyze data from ultrasonic controllers
-          Thread odometerThread = new Thread(odometer);
-          Thread usPollerTread = new Thread(ultrasonicPoller);
-          odometerThread.start();
-          usPollerTread.start();
-          gameState = GameState.Navigation;
-          Navigation.turn(360, ROTATE_SPEED_NORMAL);
-          
-          
-          // ***** END OF TEST 3 ****** //
+         
         }
         /*
          * Initialization
          */
         else if(gameState == GameState.Initialization) {
-          // TODO: get data fom wifi class
+          
           // start threads
           Thread odometerThread = new Thread(odometer);
           Thread usPollerTread = new Thread(ultrasonicPoller);
           odometerThread.start();
           usPollerTread.start();
+          
+          // TODO: get data fom wifi class
+          
           // generate map
           gameNavigation.setColor();
           gameNavigation.setStartingRegion();
@@ -147,8 +139,11 @@ public class GameController {
           gameNavigation.setLimits();
           gameNavigation.setTunnel();
           gameNavigation.updateTunnelData();
-          navigationDestination = NAVIGATION_DESTINATION.TUNNEL1_ENTRANCE;
+
           gameState = GameState.UltrasonicLocalization;
+          LCD.clear();
+          LCD.drawString("PRESS TO START US", 1, 1);
+          int buttonChoice1 = Button.waitForAnyPress();
           
         }
 
@@ -156,10 +151,13 @@ public class GameController {
          * Ultrasonic Localization
          */
         else if (gameState == GameState.UltrasonicLocalization) {
-          // TODO: us localization using falling edge
+          // perform ultrasonic localization using falling edge routine
           ultrasonicLocalizer.fallingEdge();
           // when us localization is done --> transition to light localization
           gameState = GameState.LightLocalization;
+          LCD.clear();
+          LCD.drawString("PRESS TO START LIGHT", 1, 1);
+          int buttonChoice1 = Button.waitForAnyPress();
         }
 
         /*
@@ -167,8 +165,13 @@ public class GameController {
          */
         else if (gameState == GameState.LightLocalization) {
           lightLocalizer.setCoordinates(STARTING_CORNER);
+          odometer.setXYT(STARTING_CORNER[0]*TILE_SIZE, STARTING_CORNER[1]*TILE_SIZE, 0);
           // TODO: light localization using 2 sensors at the back
           gameState = GameState.Navigation;
+          // set first navigation destination
+          navigationDestination = NAVIGATION_DESTINATION.TUNNEL1_ENTRANCE;
+          LCD.drawString("PRESS TO START NAV", 1, 1);
+          int buttonChoice1 = Button.waitForAnyPress();
         }
 
         /*
@@ -189,6 +192,9 @@ public class GameController {
               if (navigationCompleted == true) {
                 gameState = GameState.Tunnel;
                 navigationDestination = NAVIGATION_DESTINATION.LAUNCH_POINT;
+                LCD.clear();
+                LCD.drawString("PRESS TO START TUNNEL", 1, 1);
+                int buttonChoice1 = Button.waitForAnyPress();
               }
               break;
             case TUNNEL2_ENTRANCE:
@@ -206,6 +212,8 @@ public class GameController {
               }
               break;
             case LAUNCH_POINT:
+              double[] point = gameNavigation.closestPoint();
+              Navigation.travelTo(point[0], point[1], FORWARD_SPEED_NORMAL);
               // TODO: compute possible launch points --> waiting on hardware for this part
               // TODO: set goal coordinates
               // TODO: navigate to launch point
@@ -242,8 +250,11 @@ public class GameController {
                 currentRegion = REGION.RED;
               }
             }
-            // reset the zone limits when the traversal is completed
+            // reset the zone limits and the tunnel data when the traversal is completed
+            gameNavigation.updateTunnelData();
             gameNavigation.setLimits();
+            double [] point = gameNavigation.closestPoint();
+            lightLocalizer.setCoordinates(point);
             // after a tunnel traversal --> transition to navigation state
             gameState = GameState.Navigation;
           

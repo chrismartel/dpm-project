@@ -18,7 +18,6 @@ public class UltrasonicController {
    */
   private int previousDistance;
 
-  private boolean distanceChanged;
 
   /**
    * window to store the data polled from the UsSensor in a queue
@@ -43,41 +42,35 @@ public class UltrasonicController {
     // set the initial distances of the controller
     this.currentDistance = initialDistance;
     this.previousDistance = initialDistance;
-    this.distanceChanged = false;
   }
 
 
   void processDistance(int distance) {
+    int temporaryDistance;
     // distance initially not changed by the filter out method
-    this.distanceChanged = false;
     this.previousDistance = this.currentDistance;
-    int temporaryDistance = distance;
-    // filter the temporary distance the get rid of aberrant values and update the current distance
-    filter(temporaryDistance);
-
     // use median filter only if distance changed in filter out method
-    if (this.distanceChanged == true) {
       // if the lists are full remove the oldest sample from the queue and from the sorted list
       if (usDataQueue.size() == US_WINDOW) {
-        // retrieves the element at head of the queue
-        float element = usDataQueue.element();
         // removes the element at top of the queue from the sorted list
-        usDataSortedList.remove(element);
+        usDataSortedList.remove(usDataQueue.element());
         // removes the element at head of the queue
         usDataQueue.remove();
       }
       // add the new fetched sample to the end of the queue and to the sorted list
-      usDataQueue.add(this.currentDistance);
+      usDataQueue.add(distance);
       usDataSortedList.add(distance);
 
       // sort the data list
       Collections.sort(usDataSortedList);
 
       // set the temporary distance to be the median of the sorted list
-      currentDistance = (int) (usDataSortedList.get((int) (usDataSortedList.size() / 2)));
-
-    }
-    System.out.println(this.currentDistance);
+      if (usDataQueue.size() == US_WINDOW) {
+        temporaryDistance = (int) (usDataSortedList.get((int) (US_WINDOW / 2)));
+        filter(temporaryDistance);
+      }
+      // filter the temporary distance the get rid of aberrant values and update the current distance
+    
   }
 
   /**
@@ -92,12 +85,10 @@ public class UltrasonicController {
     } else if (distance >= 255) {
       // Repeated large values, so there is nothing there: leave the distance alone
       this.currentDistance = 255;
-      this.distanceChanged = true;
     } else {
       // distance went below 255: reset filter and leave distance alone.
       filterControl = 0;
       this.currentDistance = distance;
-      this.distanceChanged = true;
     }
   }
 
