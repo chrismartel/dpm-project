@@ -3,6 +3,7 @@ package ca.mcgill.ecse211.project.game;
 
 
 import static ca.mcgill.ecse211.project.game.GameResources.*;
+import ca.mcgill.ecse211.project.localization.LightLocalizer;
 
 /**
  * The navigation class is used to define all the low level navigation movements of the robot.
@@ -14,6 +15,7 @@ public class Navigation {
    */
   private static double lastX;
   private static double lastY;
+
 
   /**
    * boolean representing if the robot is traveling to a way point it is set to false ONLY when a way point is reached
@@ -171,16 +173,25 @@ public class Navigation {
     // poll the odometer to get the current X and Y coordinates
     lastX = odometer.getX();
     lastY = odometer.getY();
-    System.out.println("INITIAL X: "+ lastX);
-    System.out.println("INITIAL Y: "+ lastY);
+//    System.out.println("INITIAL X: "+ lastX);
+//    System.out.println("INITIAL Y: "+ lastY);
 
 
 
     // robot travels forward
     travelForward(speed);
     
+    if(gameState == GameState.LightLocalization) {
+//      LightLocalizer lightLocalization = LightLocalizer.getLightLocalizer();
+      while (lightLocalization.lightLocalize()) {
+        continue;
+      }
+      // set odometer
+      
+    }
+    
     // navigates as long as the state is not in avoidance
-    while (gameState != GameState.Avoidance) {
+    while (gameState != GameState.Avoidance && gameState != GameState.LightLocalization) {
       dX = Math.abs(odometer.getX() - lastX);
       dY = Math.abs(odometer.getY() - lastY);
       // TODO: if game state is in tunnel--> check if the wall is too close and adjust
@@ -215,16 +226,16 @@ public class Navigation {
     while (true) {
       dX = Math.abs(odometer.getX() - lastX);
       dY = Math.abs(odometer.getY() - lastY);
-
       // Reached goal coordinates condition
       if (Math.pow(dX, 2) + Math.pow(dY, 2) >= Math.pow(travelDistance, 2)) {
-
+        
         // robot stops if its destination is reached
         stopMotors();
 
         // exit the travel method if the destination is reached
         break;
       }
+
     }
   }
 
@@ -257,7 +268,7 @@ public class Navigation {
    * 
    * @param : angle to turn to. If theta < 0, the robot turns counter clock wise if theta >0, the robot turns clock wise
    */
-  public static  void turn(double theta, int speed) {
+  public static void turn(double theta, int speed) {
     leftMotor.setSpeed(speed);
     rightMotor.setSpeed(speed);
     leftMotor.rotate(+convertAngle(theta), true);// doesn't wait for the motor to complete the rotation

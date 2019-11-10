@@ -4,6 +4,7 @@ import ca.mcgill.ecse211.project.game.BallisticLauncher;
 import static ca.mcgill.ecse211.project.Resources.*;
 import ca.mcgill.ecse211.project.Resources.Point;
 import ca.mcgill.ecse211.project.game.GameController.NAVIGATION_DESTINATION;
+import ca.mcgill.ecse211.project.localization.LightLocalizer;
 import ca.mcgill.ecse211.project.game.Navigation;
 import ca.mcgill.ecse211.project.odometry.Odometer;
 import ca.mcgill.ecse211.project.sensor.UltrasonicPoller;
@@ -96,7 +97,7 @@ public class GameResources {
   /**
    * Differential value to determine if a black line is detected or not
    */
-  public static final int DIFFERENTIAL_LINE_THRESHOLD = 12; // HAS TO BE DETERMINE BY TESTING
+  public static final int DIFFERENTIAL_LINE_THRESHOLD = 20; // HAS TO BE DETERMINE BY TESTING
 
 
   /**
@@ -112,7 +113,7 @@ public class GameResources {
   /**
    * Period of the light sensor operations
    */
-  public static final long LIGHT_SENSOR_PERIOD = 235; // HAS TO BE DETERMINED BY TESTING
+  public static final long LIGHT_SENSOR_PERIOD = 50; // HAS TO BE DETERMINED BY TESTING was 235
   /**
    * Light sensor to center of wheel-base distance
    */
@@ -211,6 +212,12 @@ public class GameResources {
    * The ultrasonic poller singleton.
    */
   public static UltrasonicPoller ultrasonicPoller = UltrasonicPoller.getUltrasonicPoller();
+  
+  /**
+   * Light localizer
+   */
+  public static LightLocalizer lightLocalization = LightLocalizer.getLightLocalizer();
+  
   
   // MAP CONSTANTS
   public static Region Tunnel = new Region(tng.ll, tng.ur); // default to green tunnel

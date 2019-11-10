@@ -1,8 +1,10 @@
 package ca.mcgill.ecse211.project.game;
 
 import static ca.mcgill.ecse211.project.game.GameResources.*;
+import ca.mcgill.ecse211.project.Display;
 import static ca.mcgill.ecse211.project.Resources.*;
 import lejos.hardware.Button;
+import lejos.hardware.Sound;
 import ca.mcgill.ecse211.project.localization.LightLocalizer;
 import ca.mcgill.ecse211.project.localization.UltrasonicLocalizer;
 import lejos.hardware.Button;
@@ -16,16 +18,25 @@ public class GameController {
   public static void main(String[] args) {
     // initialize class instances needed
     GameNavigation gameNavigation = new GameNavigation();
-    LightLocalizer lightLocalizer = new LightLocalizer();
     UltrasonicLocalizer ultrasonicLocalizer = new UltrasonicLocalizer();
     BallisticLauncher ballisticLauncher = new BallisticLauncher();
     ObjectAvoider objectAvoider = new ObjectAvoider();
+    
+    // TO TEST LIGHT LOCALIZATION
+    
+//    Thread odometerThread = new Thread(odometer);
+//    odometerThread.start();
+//    
+//    Thread displayThread = new Thread(new Display());
+//    displayThread.start();
+    
     int buttonChoice;
 
     // set initial state
 
-    gameState = GameState.Initialization;
-    // gameState = GameState.Test;
+//    gameState = GameState.Initialization;
+//     gameState = GameState.Test;
+    gameState = GameState.LightLocalization;
 
       // Execute until the game reaches the Done state
       while (gameState != GameState.Done) {
@@ -33,9 +44,11 @@ public class GameController {
 
         switch (gameState) {
           case Test:
-            odometer.setXYT(TILE_SIZE, TILE_SIZE, 0);
-            gameNavigation.squareNavigation(3, 4);
-            gameState = GameState.Done;
+
+//            odometer.setXYT(TILE_SIZE, TILE_SIZE, 0);
+//            gameNavigation.squareNavigation(3, 4);
+//            gameState = GameState.Done;
+            
             
 
             // ****** TEST 1 ******* //
@@ -76,9 +89,9 @@ public class GameController {
 
           case Initialization:
             // start threads
-            Thread odometerThread = new Thread(odometer);
+//            Thread odometerThread = new Thread(odometer);
             Thread usPollerTread = new Thread(ultrasonicPoller);
-            odometerThread.start();
+//            odometerThread.start();
             usPollerTread.start();
 
             // TODO: get data fom wifi class
@@ -116,12 +129,16 @@ public class GameController {
 
 
           case LightLocalization:
-            lightLocalizer.setCoordinates(localizationCoordinates);
-            odometer.setXYT(14*TILE_SIZE, 1*TILE_SIZE, 0);
+            Sound.beep();
+            odometer.setX(0.5*TILE_SIZE);
+            odometer.setY(0.5*TILE_SIZE);
+//            lightLocalizer.setCoordinates(localizationCoordinates);
+//            odometer.setXYT(14*TILE_SIZE, 1*TILE_SIZE, 0);
             // TODO: light localization using 2 sensors at the back
-            gameState = GameState.Navigation;
+//            gameState = GameState.Navigation;
+            gameNavigation.lightLocalize(new Point(1,1));
             // set first navigation destination
-            LCD.drawString("PRESS TO START NAV", 1, 1);
+//            LCD.drawString("PRESS TO START NAV", 1, 1);
             buttonChoice = Button.waitForAnyPress();
             LCD.clear();
             break;
@@ -204,9 +221,9 @@ public class GameController {
             // reset the zone limits and the tunnel data when the traversal is completed
             gameNavigation.updateTunnelData();
             gameNavigation.setLimits();
-            localizationCoordinates = gameNavigation.closestPoint();
-            lightLocalizer.setCoordinates(localizationCoordinates);
-            Navigation.travelTo(localizationCoordinates.x,localizationCoordinates.y, FORWARD_SPEED_SLOW);
+//            localizationCoordinates = gameNavigation.closestPoint();
+//            lightLocalizer.setCoordinates(localizationCoordinates);
+//            Navigation.travelTo(localizationCoordinates.x,localizationCoordinates.y, FORWARD_SPEED_SLOW);
             // TODO: localize
             // after a tunnel traversal --> transition to navigation state
             gameState = GameState.Navigation;

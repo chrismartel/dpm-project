@@ -37,6 +37,45 @@ public class GameNavigation {
     launchPoint = new Point(0,0);
   }
   
+  public void lightLocalize(Point closestPoint) {
+    
+    // THE GAME STATE MUST BE IN LIGHTLOCALIZATION.
+    
+    double x = closestPoint.x;
+    double y = closestPoint.y;
+    double midX;
+    double midY;
+    boolean turnRight = false;
+    // LIGHT LOCALIZE FOR THE Y VALUE FIRST.
+    if(x > (odometer.getX()/TILE_SIZE)) {
+      midX = x - 0.5;
+      turnRight = true;
+    }
+    else {
+      midX = x + 0.5;
+    }
+    if(y > (odometer.getY()/TILE_SIZE)) {
+      midY = y - 0.5;
+    }
+    else {
+      midY = y + 0.5;
+    }
+    
+    Navigation.travelTo(midX, y, 200);
+    odometer.setY(y*TILE_SIZE);
+    //THE THETA NEEDS TO BE DYNAMICALLY SET
+    odometer.setTheta(0);
+    Navigation.backUp((TILE_SIZE/1.2), 200);
+    if(turnRight) {
+      Navigation.turn(90, 200);
+    }
+
+    
+    Navigation.travelTo(x, midY, 200);
+    odometer.setX(x*TILE_SIZE);
+    
+  }
+  
   public void squareNavigation(double x, double y) {
     enableCorrection = true;
     Navigation.travelTo(x, (odometer.getY()/TILE_SIZE), FORWARD_SPEED_NORMAL);
