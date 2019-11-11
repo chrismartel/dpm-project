@@ -13,6 +13,12 @@ public class GameNavigation {
    */
   private Point tunnelEntrance;
   private Point tunnelExit;
+  
+  /**
+   * coordinates of the luanch point
+   */
+  private Point launchPoint;
+  
   /**
    * length of the tunnel
    */
@@ -26,6 +32,7 @@ public class GameNavigation {
   public GameNavigation() {
     tunnelEntrance = new Point(0, 0);
     tunnelExit = new Point(0, 0);
+    launchPoint = new Point(0,0);
   }
 
 
@@ -89,6 +96,14 @@ public class GameNavigation {
    * Method used to navigate to the tunnel entrance
    */
   public void navigateToTunnel() {
+    this.squareNavigation(tunnelEntrance.x, tunnelEntrance.y);
+    Navigation.turnTo(tunnelTraversalOrientation, ROTATE_SPEED_SLOW);
+  }
+  
+  /**
+   * Method used to navigate to the launch point
+   * */
+  public void navigateToLaunchPoint() {
     this.squareNavigation(tunnelEntrance.x, tunnelEntrance.y);
     Navigation.turnTo(tunnelTraversalOrientation, ROTATE_SPEED_SLOW);
   }
@@ -454,5 +469,8 @@ public class GameNavigation {
   public double getTunnelLength() {
     return tunnelLength;
   }
+
+
+
 
 }

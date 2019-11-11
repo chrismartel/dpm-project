@@ -1,9 +1,7 @@
 package ca.mcgill.ecse211.project.game;
 
 import static ca.mcgill.ecse211.project.game.GameResources.*;
-import static ca.mcgill.ecse211.project.Resources.*;
 import lejos.hardware.Button;
-import lejos.hardware.Sound;
 import ca.mcgill.ecse211.project.localization.UltrasonicLocalizer;
 
 public class GameController {
@@ -18,29 +16,13 @@ public class GameController {
     UltrasonicLocalizer ultrasonicLocalizer = new UltrasonicLocalizer();
     BallisticLauncher ballisticLauncher = new BallisticLauncher();
     ObstacleAvoider obstacleAvoider = new ObstacleAvoider();
-
-
-    // TO TEST LIGHT LOCALIZATION
-
-    // Thread odometerThread = new Thread(odometer);
-    // odometerThread.start();
-    //
-    // Thread displayThread = new Thread(new Display());
-    // displayThread.start();
-
-
     int buttonChoice;
 
     // set initial state
-
-    // gameState = GameState.Initialization;
-    // gameState = GameState.Test;
-    gameState = GameState.LightLocalization;
+    gameState = GameState.Initialization;
 
     // Execute until the game reaches the Done state
     while (gameState != GameState.Done) {
-
-
       switch (gameState) {
         case Test:
 
@@ -81,17 +63,9 @@ public class GameController {
 
 
         case LightLocalization:
+          gameNavigation.lightLocalize(STARTING_POINT);
 
-          Sound.beep();
-          odometer.setX(0.5 * TILE_SIZE);
-          odometer.setY(0.5 * TILE_SIZE);
-          // lightLocalizer.setCoordinates(localizationCoordinates);
-          // odometer.setXYT(14*TILE_SIZE, 1*TILE_SIZE, 0);
-          // TODO: light localization using 2 sensors at the back
-          // gameState = GameState.Navigation;
-          gameNavigation.lightLocalize(new Point(1, 1));
-          // set first navigation destination
-          // LCD.drawString("PRESS TO START NAV", 1, 1);
+          LCD.drawString("PRESS TO START NAV", 1, 1);
           buttonChoice = Button.waitForAnyPress();
           LCD.clear();
           break;
@@ -108,11 +82,13 @@ public class GameController {
               // if navigation is completed --> transition to tunnel state + update the navigation point to the launch
               // point
               if (navigationCompleted == true) {
+
                 // LIGHT LOCALIZATION
+                gameState = GameState.LightLocalization;
                 localizationCoordinates = gameNavigation.closestPoint();
-                Navigation.travelTo(localizationCoordinates.x, localizationCoordinates.y, FORWARD_SPEED_SLOW);
-                // TODO: light localize
-                Navigation.travelTo(navigationCoordinates.x, navigationCoordinates.y, FORWARD_SPEED_SLOW);
+                gameNavigation.lightLocalize(localizationCoordinates);
+                gameNavigation.navigateToTunnel();
+
 
                 // transition to tunnel state
                 gameState = GameState.Tunnel;
@@ -132,13 +108,14 @@ public class GameController {
               if (navigationCompleted == true) {
 
                 // LIGHT LOCALIZATION
+                gameState = GameState.LightLocalization;
                 localizationCoordinates = gameNavigation.closestPoint();
-                Navigation.travelTo(localizationCoordinates.x, localizationCoordinates.y, FORWARD_SPEED_SLOW);
-                // TODO: light localize
-                Navigation.travelTo(navigationCoordinates.x, navigationCoordinates.y, FORWARD_SPEED_SLOW);
+                gameNavigation.lightLocalize(localizationCoordinates);
+                gameNavigation.navigateToTunnel();
 
                 // transition to tunnel state
                 gameState = GameState.Tunnel;
+
                 // update new checkpoint
                 navigationCoordinates = STARTING_POINT;
                 navigationDestination = NAVIGATION_DESTINATION.END_POINT;
@@ -146,15 +123,20 @@ public class GameController {
               break;
             case LAUNCH_POINT:
               gameNavigation.squareNavigation(1, 1);
-              // TODO: compute possible launch points --> waiting on hardware for this part
-              // TODO: set goal coordinates
-              // TODO: navigate to launch point
-              // if navigation to launch point is completed --> transition to launching state + update the new
-              // destination
+              gameNavigation.calculateLaunchPoints();
+              gameNavigation.navigateToLaunchPoint();
               if (navigationCompleted == true) {
-                // TODO: light localize
+
+                // LIGHT LOCALIZATION
+                gameState = GameState.LightLocalization;
+                localizationCoordinates = gameNavigation.closestPoint();
+                gameNavigation.lightLocalize(localizationCoordinates);
+                gameNavigation.navigateToLaunchPoint();
+
+                // Transit to launch state
                 gameState = GameState.Launch;
-                // update new navigation destination
+
+                // update new checkpoint
                 navigationDestination = NAVIGATION_DESTINATION.TUNNEL2_ENTRANCE;
                 navigationCoordinates = gameNavigation.getTunnelEntrance();
               }
@@ -174,11 +156,11 @@ public class GameController {
         case Tunnel:
           // navigate through tunnel
           gameNavigation.navigateThroughTunnel();
-          localizationCoordinates = gameNavigation.closestPoint();
-          Navigation.travelTo(localizationCoordinates.x, localizationCoordinates.y, FORWARD_SPEED_SLOW);
 
-          // TODO: localize
-          // after a tunnel traversal --> transition to navigation state
+          // LIGHT LOCALIZATION
+          gameState = GameState.LightLocalization;
+          localizationCoordinates = gameNavigation.closestPoint();
+          gameNavigation.lightLocalize(localizationCoordinates);
           gameState = GameState.Navigation;
           break;
 
@@ -186,7 +168,11 @@ public class GameController {
         case Avoidance:
           // object avoidance procedure using wall follower with P-Controller
           obstacleAvoider.wallFollower();
-          // object avoidance is over --> transition to navigation
+
+          // LIGHT LOCALIZATION
+          gameState = GameState.LightLocalization;
+          localizationCoordinates = gameNavigation.closestPoint();
+          gameNavigation.lightLocalize(localizationCoordinates);
           gameState = GameState.Navigation;
           break;
 

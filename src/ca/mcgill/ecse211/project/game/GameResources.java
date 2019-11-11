@@ -252,14 +252,17 @@ public class GameResources {
    * Current state of the game state machine
    */
   public static GameState gameState;
+  
   /**
    * Indicates if the navigation was completed or not
    */
   public static boolean navigationCompleted = false;
+  
   /**
    * Indicates if the odometry correction enable dor not
    */
   public static boolean enableCorrection = false;
+  
   /**
    * Limits of the current zone
    */

@@ -173,10 +173,6 @@ public class Navigation {
     // poll the odometer to get the current X and Y coordinates
     lastX = odometer.getX();
     lastY = odometer.getY();
-//    System.out.println("INITIAL X: "+ lastX);
-//    System.out.println("INITIAL Y: "+ lastY);
-
-
 
     // robot travels forward
     travelForward(speed);
