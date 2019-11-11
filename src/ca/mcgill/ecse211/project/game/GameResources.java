@@ -3,7 +3,6 @@ package ca.mcgill.ecse211.project.game;
 import ca.mcgill.ecse211.project.game.BallisticLauncher;
 import static ca.mcgill.ecse211.project.Resources.*;
 import ca.mcgill.ecse211.project.Resources.Point;
-import ca.mcgill.ecse211.project.game.GameController.NAVIGATION_DESTINATION;
 import ca.mcgill.ecse211.project.localization.LightLocalizer;
 import ca.mcgill.ecse211.project.game.Navigation;
 import ca.mcgill.ecse211.project.odometry.Odometer;
@@ -147,7 +146,7 @@ public class GameResources {
   /**
    * Distance to launch the ball
    */
-  public static final int LAUNCH_DISTANCE = 120;
+  public static final int MAXIMAL_LAUNCH_DISTANCE = 200;
 
   /**
    * period of sleeping before launch
@@ -345,5 +344,9 @@ public class GameResources {
 
   public enum REGION {
     RED, WATER, TUNNEL_RED, TUNNEL_GREEN, GREEN, ISLAND
+  }
+  
+  public enum NAVIGATION_DESTINATION {
+    TUNNEL1_ENTRANCE, TUNNEL2_ENTRANCE, LAUNCH_POINT, END_POINT, LOCALIZE
   }
 }

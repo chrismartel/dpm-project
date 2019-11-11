@@ -1,6 +1,7 @@
 package ca.mcgill.ecse211.project.game;
 
 import static ca.mcgill.ecse211.project.game.GameResources.*;
+import java.util.LinkedList;
 import ca.mcgill.ecse211.project.game.GameResources.COLOR;
 import ca.mcgill.ecse211.project.game.GameResources.REGION;
 import static ca.mcgill.ecse211.project.Resources.*;
@@ -15,9 +16,14 @@ public class GameNavigation {
   private Point tunnelExit;
   
   /**
-   * coordinates of the luanch point
+   * coordinates of the launch point
    */
   private Point launchPoint;
+  
+  /**
+   * array of launch points on the island
+   */
+  private LinkedList<Point> launchPoints = new LinkedList<Point>();
   
   /**
    * length of the tunnel
@@ -406,9 +412,7 @@ public class GameNavigation {
    * 
    * @return: the distance between the robot and the bin
    */
-  public double distanceFromBin() {
-    double x = odometer.getX();
-    double y = odometer.getY();
+  public double distanceFromBin(double x, double y) {
     double distance = this.calculateDistance(x, y, bin.x, bin.y);
     return distance;
   }
@@ -416,13 +420,14 @@ public class GameNavigation {
   /**
    * Method used to set the initial map parameters
    */
-  public void setParameters() {
+  public void setGameParameters() {
     this.setColor();
     this.setStartingRegion();
     this.setCorner();
     this.setLimits();
     this.setTunnel();
     this.updateTunnelData();
+    this.generateLaunchPoints();
   }
 
   /**
@@ -437,8 +442,47 @@ public class GameNavigation {
     this.setLimits();
   }
 
-  public void calculateLaunchPoints() {
-    // TODO: method to find 3 possible launch points to consider that there might be obstacles
+  
+  /**
+   * Method used to calculate the closest possible launch point from the robot
+   */
+  public void calculateClosestLaunchPoint() {
+    double x = odometer.getX();
+    double y = odometer.getY();
+    Point minimal_point = launchPoints.get(0);
+    double minimal_distance = this.calculateDistance(x,y, minimal_point.x, minimal_point.y);
+    for(Point point : launchPoints) {
+      double distance = this.calculateDistance(x, y, point.x, point.y);
+      if(distance<=minimal_distance) {
+        minimal_distance = distance;
+        minimal_point = point;
+      }
+    }
+    this.launchPoint = minimal_point;
+  }
+  
+  
+  /**
+   * Method used to populate the array list of possible launch points depending on the island coordinates
+   */
+  public void generateLaunchPoints() {
+    double left = island.ll.x;
+    double right = island.ur.x;
+    double bottom = island.ll.y;
+    double top = island.ur.y;
+    
+    // for all inside x values of the island
+    for(int i = (int)(left+1); i< right; i++) {
+      // for all inside y values of the island
+      for(int j = (int)(bottom+1); j<top; j++) {
+        Point point = new Point(i,j);
+        double distance = this.distanceFromBin(i,j);
+        // if the distance is smaller than the maximal launching distance, add the point into the array of launching points
+        if(distance<= MAXIMAL_LAUNCH_DISTANCE) {
+          launchPoints.add(point);
+        }
+      }
+    }
   }
 
 
