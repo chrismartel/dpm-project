@@ -46,33 +46,45 @@ public class GameNavigation {
     double midX;
     double midY;
     boolean turnRight = false;
+    double firstTheta;
+    double secondTheta;
     // LIGHT LOCALIZE FOR THE Y VALUE FIRST.
     if(x > (odometer.getX()/TILE_SIZE)) {
       midX = x - 0.5;
       turnRight = true;
+      secondTheta = 90;
     }
     else {
       midX = x + 0.5;
+      secondTheta = 270;
     }
     if(y > (odometer.getY()/TILE_SIZE)) {
       midY = y - 0.5;
+      firstTheta = 0;
     }
     else {
       midY = y + 0.5;
+      firstTheta = 180;
+      secondTheta = Math.abs(secondTheta - 360);
     }
     
     Navigation.travelTo(midX, y, 200);
     odometer.setY(y*TILE_SIZE);
     //THE THETA NEEDS TO BE DYNAMICALLY SET
-    odometer.setTheta(0);
+    odometer.setTheta(firstTheta);
     Navigation.backUp((TILE_SIZE/1.2), 200);
+    
+    //This forced turn is to avoid detecting lines when it is turning.
     if(turnRight) {
       Navigation.turn(90, 200);
     }
+    else {
+      Navigation.turn(-90, 200);
+    }
 
-    
     Navigation.travelTo(x, midY, 200);
     odometer.setX(x*TILE_SIZE);
+    odometer.setTheta(secondTheta);
     
   }
   
