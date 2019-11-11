@@ -2,9 +2,9 @@ package ca.mcgill.ecse211.project.game;
 
 import static ca.mcgill.ecse211.project.game.GameResources.*;
 
-public class ObjectAvoider {
+public class ObstacleAvoider {
 
-  private int objectDistance;
+  private int obstacleDistance;
 
 
   /**
@@ -79,9 +79,9 @@ public class ObjectAvoider {
         leftMotor.setSpeed((int) leftSpeed);
         rightMotor.setSpeed((int) rightSpeed);
         endTime = System.currentTimeMillis();
-        if (endTime - startTime < OBJECT_AVOIDANCE_PERIOD) {
+        if (endTime - startTime < OBSTACLE_AVOIDANCE_PERIOD) {
           try {
-            Thread.sleep((long) (OBJECT_AVOIDANCE_PERIOD - (endTime - startTime)));
+            Thread.sleep((long) (OBSTACLE_AVOIDANCE_PERIOD - (endTime - startTime)));
           } catch (InterruptedException e) {
             // there is nothing to be done
           }
@@ -127,12 +127,12 @@ public class ObjectAvoider {
     return lateralDistance;
   }
 
-  public int getObjectDistance() {
-    return objectDistance;
+  public int getObstacleDistance() {
+    return obstacleDistance;
   }
 
-  public void setObjectDistance(int objectDistance) {
-    this.objectDistance = objectDistance;
+  public void setObstacleDistance(int obstacleDistance) {
+    this.obstacleDistance = obstacleDistance;
   }
 
 

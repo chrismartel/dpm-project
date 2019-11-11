@@ -192,6 +192,14 @@ public class Navigation {
         // exit the travel method if the destination is reached
         break;
       }
+      /*
+      if(enableCorrection) {
+        // TODO: Check for odometry correction
+        // if 2 sensors detect
+        Navigation.stopMotors();
+        // TODO: correct
+        Navigation.travelForward(speed);
+      }*/
     }
     stopMotors();
 
@@ -294,8 +302,8 @@ public class Navigation {
    * stop both motors at once
    */
   public static void stopMotors() {
-    rightMotor.stop(true);// does not wait for the motor to actually stop
-    leftMotor.stop(false);
+    rightMotor.setSpeed(0);// does not wait for the motor to actually stop
+    leftMotor.setSpeed(0);
   }
 
 

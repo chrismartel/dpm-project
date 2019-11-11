@@ -22,6 +22,8 @@ import lejos.hardware.sensor.EV3UltrasonicSensor;
 
 public class GameResources {
 
+
+
   // HARDWARE DESIGN CONSTANTS
 
   /**
@@ -34,12 +36,20 @@ public class GameResources {
    */
   public static final double TRACK = 15.06;// 14.77;
 
+
+
   // ENVIRONMENT CONSTANTS
 
   /**
    * The tile size in centimeters.
    */
   public static final double TILE_SIZE = 30.48;
+  /*
+   * Width of the black lines (cm)
+   */
+  public static final double LINE_WIDTH = 0.5;
+
+
 
   // MOTORS CONSTANTS
 
@@ -58,7 +68,8 @@ public class GameResources {
   public static final int ROTATE_SPEED_FAST = 150;
 
 
-  // ULTRASONIC POLLER CONSTANTS
+
+  // ULTRASONIC POLLER AND CONTROLLER CONSTANTS
 
   /**
    * Window size for the ultrasonic sensor data polling
@@ -91,6 +102,7 @@ public class GameResources {
   public static final int FALLINGEDGE_K = 2;
 
 
+
   // LIGHT LOCALIZATION CONSTANTS
 
   /**
@@ -98,38 +110,38 @@ public class GameResources {
    */
   public static final int DIFFERENTIAL_LINE_THRESHOLD = 12; // HAS TO BE DETERMINE BY TESTING
 
-
   /**
    * Window size for the ultrasonic sensor data polling
    */
+
   public static final int LL_WINDOW = 1;
-
-  /*
-   * Width of the black lines (cm)
-   */
-  public static final double LINE_WIDTH = 0.5;
-
   /**
    * Period of the light sensor operations
    */
+
   public static final long LIGHT_SENSOR_PERIOD = 235; // HAS TO BE DETERMINED BY TESTING
   /**
    * Light sensor to center of wheel-base distance
    */
   public static final double OFFSET_FROM_WHEELBASE = 12.6;
 
+
+
   // BALLISTIC LAUNCHER CONSTANTS
 
   /**
    * Coefficient of the launching process to adjust the speed of the motors in function of the distance
    */
-  public static final double  LAUNCH_COEFFICIENT = 6.8; // HAS TO BE DETERMINED BY TESTING
-
-
+  public static final double LAUNCH_COEFFICIENT = 6.8; // HAS TO BE DETERMINED BY TESTING
   /**
    * Angle of rotation of the launching motors during launch
    */
-  public static final int LAUNCHING_ANGLE = 180;
+  public static final int LAUNCHING_ANGLE = 120;
+  
+  /**
+   * Angle of rotation of the launching motors during reload
+   */
+  public static final int RELOAD_ANGLE = 130;
 
   /**
    * Distance to launch the ball
@@ -139,7 +151,7 @@ public class GameResources {
   /**
    * period of sleeping before launch
    */
-  public static final int LAUNCH_SLEEP = 5000;
+  public static final int LAUNCH_SLEEP = 2000;
 
   /**
    * period of sleeping after launch
@@ -147,10 +159,18 @@ public class GameResources {
   public static final int RELOAD_SLEEP = 500;
 
   /**
-   * The acceleration.
+   * The launching motors acceleration.
    */
-  public static final int LAUNCH_ACCELERATION = 9999;
+  public static final int LAUNCH_ACCELERATION = 3000;
   public static final int RELOAD_ACCELERATION = 3000;
+  
+  /**
+   * The number of balls that the robot holds
+   */
+  public static final int NUMBER_OF_BALLS = 1;
+
+
+
 
   // MOTORS AND SENSORS
 
@@ -178,7 +198,7 @@ public class GameResources {
    * The left ultrasonic sensor.
    */
   public static final EV3UltrasonicSensor leftUsSensor = new EV3UltrasonicSensor(SensorPort.S3);
-  
+
   /**
    * The ultrasonic sensor.
    */
@@ -188,7 +208,7 @@ public class GameResources {
    * The color sensor.
    */
   public static final EV3ColorSensor leftColorSensor = new EV3ColorSensor(SensorPort.S4);
-  
+
   /**
    * The color sensor.
    */
@@ -199,7 +219,8 @@ public class GameResources {
    */
   public static final TextLCD LCD = LocalEV3.get().getTextLCD();
 
-  
+
+
   // SINGLETONS
 
   /**
@@ -211,29 +232,56 @@ public class GameResources {
    * The ultrasonic poller singleton.
    */
   public static UltrasonicPoller ultrasonicPoller = UltrasonicPoller.getUltrasonicPoller();
-  
+
   // MAP CONSTANTS
   public static Region Tunnel = new Region(tng.ll, tng.ur); // default to green tunnel
-  public static Point STARTING_CORNER = new Point(0,0); // default to 0,0
+  public static Point STARTING_POINT = new Point(0, 0); // default to 0,0
   public static int CORNER_NUMBER = 1;
-  
-  // GAME CONSTANTS
-  public static GameState gameState;
-  public static boolean navigationCompleted = false;
-  public static boolean enableCorrection = false;
 
+  // GAME CONSTANTS
+  /**
+   * Current state of the game state machine
+   */
+  public static GameState gameState;
+  /**
+   * Indicates if the navigation was completed or not
+   */
+  public static boolean navigationCompleted = false;
+  /**
+   * Indicates if the odometry correction enable dor not
+   */
+  public static boolean enableCorrection = false;
+  /**
+   * Limits of the current zone
+   */
   public static double currentLeftLimit;
   public static double currentRightLimit;
   public static double currentTopLimit;
   public static double currentBottomLimit;
+  /**
+   * Current navigation destination
+   */
   public static NAVIGATION_DESTINATION navigationDestination;
+  /**
+   * Team color
+   */
   public static COLOR color;
+  /**
+   * Current region the robot is on
+   */
   public static REGION currentRegion;
-  public static Point navigationCoordinates = new Point(0,0);
-  public static Point localizationCoordinates = new Point(0,0);
+  /**
+   * Coordinates of the navigation destination
+   */
+  public static Point navigationCoordinates = new Point(0, 0);
+  /**
+   * Coordinates of the localization coordinates
+   */
+  public static Point localizationCoordinates = new Point(0, 0);
 
-  
-  // OBJECT AVOIDANCE
+
+
+  // OBSTACLE AVOIDANCE
   /*
    * Error acceptable for the orientation check during the wall folowing
    */
@@ -247,15 +295,15 @@ public class GameResources {
    */
   public static final int BAND_WIDTH = 3;
   /*
-   * gain constant used for the P-controller 
+   * gain constant used for the P-controller
    */
   public static final double GAIN_CONSTANT = 10;
   /*
-   * minimum speed used during wall following 
+   * minimum speed used during wall following
    */
   public static final double MIN_AVOID_SPEED = 100;
   /*
-   * maximum speed used during wall following 
+   * maximum speed used during wall following
    */
   public static final double MAX_AVOID_SPEED = 300;
   /*
@@ -269,19 +317,20 @@ public class GameResources {
   /*
    * Period of the check for distance in the wall following process
    */
-  public static final int OBJECT_AVOIDANCE_PERIOD = 50; // in ms
-  
+  public static final int OBSTACLE_AVOIDANCE_PERIOD = 50; // in ms
+
   /*
    * Distance of obstacle detection
    */
-  public static final int OBSTACLE_DETECTION_DISTANCE = 4; 
-  
-  
-  // enums
+  public static final int OBSTACLE_DETECTION_DISTANCE = 4;
+
+
+
+  // ENUMS
   public enum COLOR {
     GREEN, RED
   }
-  
+
   public enum REGION {
     RED, WATER, TUNNEL_RED, TUNNEL_GREEN, GREEN, ISLAND
   }
