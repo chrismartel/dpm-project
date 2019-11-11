@@ -177,6 +177,7 @@ public class GameController {
 
         case Launch:
           // perform the launches
+          ballisticLauncher.setDistance(gameNavigation.distanceFromBin(odometer.getX(), odometer.getY()));
           ballisticLauncher.multipleLaunch();
           // transition back to navigation
           gameState = GameState.Navigation;
