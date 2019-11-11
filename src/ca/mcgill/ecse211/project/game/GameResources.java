@@ -2,6 +2,7 @@ package ca.mcgill.ecse211.project.game;
 
 import ca.mcgill.ecse211.project.game.BallisticLauncher;
 import static ca.mcgill.ecse211.project.Resources.*;
+import java.util.LinkedList;
 import ca.mcgill.ecse211.project.Resources.Point;
 import ca.mcgill.ecse211.project.localization.LightLocalizer;
 import ca.mcgill.ecse211.project.game.Navigation;
@@ -335,7 +336,10 @@ public class GameResources {
    */
   public static final int OBSTACLE_DETECTION_DISTANCE = 4;
 
-
+  /*
+   * Restricted points on the island
+   */
+  public static LinkedList<Point> restrictedLaunchPoints = new LinkedList<Point>();
 
   // ENUMS
   public enum COLOR {

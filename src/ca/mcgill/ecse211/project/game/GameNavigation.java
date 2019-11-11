@@ -482,17 +482,27 @@ public class GameNavigation {
     double right = island.ur.x;
     double bottom = island.ll.y;
     double top = island.ur.y;
-
+    // initialize or clear the list
+    launchPoints = new LinkedList<Point>();
     // for all inside x values of the island
     for (int i = (int) (left + 1); i < right; i++) {
       // for all inside y values of the island
       for (int j = (int) (bottom + 1); j < top; j++) {
         Point point = new Point(i, j);
         double distance = this.distanceFromBin(i, j);
-        // if the distance is smaller than the maximal launching distance, add the point into the array of launching
-        // points
+        // if the distance is smaller than the maximal launching distance, add the point into the array of launching points
         if (distance <= MAXIMAL_LAUNCH_DISTANCE) {
-          launchPoints.add(point);
+          boolean restricted = false;
+          for(Point restrictedLaunchPoint : restrictedLaunchPoints) {
+            // if the point is restricted
+            if((restrictedLaunchPoint.x == point.x) && (restrictedLaunchPoint.y == point.y)) {
+              restricted = true;
+            }
+          }
+          // add the point to the list only if it is not restricted
+          if(!restricted) {
+            launchPoints.add(point);
+          }
         }
       }
     }

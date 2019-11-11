@@ -166,6 +166,8 @@ public class GameController {
         case Avoidance:
           // object avoidance procedure using wall follower with P-Controller
           obstacleAvoider.wallFollower();
+          // regenerate the launch points
+          gameNavigation.generateLaunchPoints();
 
           // LIGHT LOCALIZATION
           gameState = GameState.LightLocalization;
