@@ -1,6 +1,7 @@
 package ca.mcgill.ecse211.project.game;
 
 import static ca.mcgill.ecse211.project.game.GameResources.*;
+import java.util.LinkedList;
 import ca.mcgill.ecse211.project.game.GameResources.COLOR;
 import ca.mcgill.ecse211.project.game.GameResources.REGION;
 import static ca.mcgill.ecse211.project.Resources.*;
@@ -13,12 +14,17 @@ public class GameNavigation {
    */
   private Point tunnelEntrance;
   private Point tunnelExit;
-  
+
   /**
-   * coordinates of the luanch point
+   * coordinates of the launch point
    */
   private Point launchPoint;
-  
+
+  /**
+   * array of launch points on the island
+   */
+  private LinkedList<Point> launchPoints = new LinkedList<Point>();
+
   /**
    * length of the tunnel
    */
@@ -32,7 +38,7 @@ public class GameNavigation {
   public GameNavigation() {
     tunnelEntrance = new Point(0, 0);
     tunnelExit = new Point(0, 0);
-    launchPoint = new Point(0,0);
+    launchPoint = new Point(0, 0);
   }
 
 
@@ -99,13 +105,21 @@ public class GameNavigation {
     this.squareNavigation(tunnelEntrance.x, tunnelEntrance.y);
     Navigation.turnTo(tunnelTraversalOrientation, ROTATE_SPEED_SLOW);
   }
-  
+
   /**
-   * Method used to navigate to the launch point
-   * */
+   * Method used to navigate to the launch and to turn towards the bin
+   */
   public void navigateToLaunchPoint() {
-    this.squareNavigation(tunnelEntrance.x, tunnelEntrance.y);
-    Navigation.turnTo(tunnelTraversalOrientation, ROTATE_SPEED_SLOW);
+    // navigate to launch point
+    this.squareNavigation(launchPoint.x,launchPoint.y);
+    double currentX = odometer.getX();
+    double currentY = odometer.getY();
+    double binX = bin.x * TILE_SIZE;
+    double binY = bin.y * TILE_SIZE;
+    double dX = binX - currentX;
+    double dY = binY - currentY;
+    // turn towards launch point
+    Navigation.turnTo(Math.toDegrees(Math.atan2(dX, dY)), ROTATE_SPEED_SLOW);
   }
 
   /**
@@ -404,25 +418,27 @@ public class GameNavigation {
   /**
    * Method used to compute the distance of the robot from the bin
    * 
+   * @param x: x position in centimeters
+   * @param y: y position in centimeters
+   * 
    * @return: the distance between the robot and the bin
    */
-  public double distanceFromBin() {
-    double x = odometer.getX();
-    double y = odometer.getY();
-    double distance = this.calculateDistance(x, y, bin.x, bin.y);
+  public double distanceFromBin(double x, double y) {
+    double distance = this.calculateDistance(x, y, bin.x*TILE_SIZE, bin.y*TILE_SIZE);
     return distance;
   }
 
   /**
    * Method used to set the initial map parameters
    */
-  public void setParameters() {
+  public void setGameParameters() {
     this.setColor();
     this.setStartingRegion();
     this.setCorner();
     this.setLimits();
     this.setTunnel();
     this.updateTunnelData();
+    this.generateLaunchPoints();
   }
 
   /**
@@ -437,8 +453,59 @@ public class GameNavigation {
     this.setLimits();
   }
 
-  public void calculateLaunchPoints() {
-    // TODO: method to find 3 possible launch points to consider that there might be obstacles
+
+  /**
+   * Method used to calculate the closest possible launch point from the robot
+   */
+  public void calculateClosestLaunchPoint() {
+    double x = odometer.getX();
+    double y = odometer.getY();
+    Point minimal_point = launchPoints.get(0);
+    double minimal_distance =
+        this.calculateDistance(x, y, (minimal_point.x) * TILE_SIZE, (minimal_point.y) * TILE_SIZE);
+    for (Point point : launchPoints) {
+      double distance = this.calculateDistance(x, y, (point.x) * TILE_SIZE, (point.y) * TILE_SIZE);
+      if (distance <= minimal_distance) {
+        minimal_distance = distance;
+        minimal_point = point;
+      }
+    }
+    this.launchPoint = minimal_point;
+  }
+
+
+  /**
+   * Method used to populate the array list of possible launch points depending on the island coordinates
+   */
+  public void generateLaunchPoints() {
+    double left = island.ll.x;
+    double right = island.ur.x;
+    double bottom = island.ll.y;
+    double top = island.ur.y;
+    // initialize or clear the list
+    launchPoints = new LinkedList<Point>();
+    // for all inside x values of the island
+    for (int i = (int) (left + 1); i < right; i++) {
+      // for all inside y values of the island
+      for (int j = (int) (bottom + 1); j < top; j++) {
+        Point point = new Point(i, j);
+        double distance = this.distanceFromBin(i, j);
+        // if the distance is smaller than the maximal launching distance, add the point into the array of launching points
+        if (distance <= MAXIMAL_LAUNCH_DISTANCE) {
+          boolean restricted = false;
+          for(Point restrictedLaunchPoint : restrictedLaunchPoints) {
+            // if the point is restricted
+            if((restrictedLaunchPoint.x == point.x) && (restrictedLaunchPoint.y == point.y)) {
+              restricted = true;
+            }
+          }
+          // add the point to the list only if it is not restricted
+          if(!restricted) {
+            launchPoints.add(point);
+          }
+        }
+      }
+    }
   }
 
 
@@ -469,7 +536,6 @@ public class GameNavigation {
   public double getTunnelLength() {
     return tunnelLength;
   }
-
 
 
 

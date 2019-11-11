@@ -6,10 +6,6 @@ import ca.mcgill.ecse211.project.localization.UltrasonicLocalizer;
 
 public class GameController {
 
-  public enum NAVIGATION_DESTINATION {
-    TUNNEL1_ENTRANCE, TUNNEL2_ENTRANCE, LAUNCH_POINT, END_POINT, LOCALIZE
-  }
-
   public static void main(String[] args) {
     // initialize class instances needed
     GameNavigation gameNavigation = new GameNavigation();
@@ -35,8 +31,10 @@ public class GameController {
           Thread usPollerTread = new Thread(ultrasonicPoller);
           odometerThread.start();
           usPollerTread.start();
+          
           // Initialize map
-          gameNavigation.setParameters();
+          gameNavigation.setGameParameters();
+                    
           // set first waypoint
           navigationCoordinates = gameNavigation.getTunnelEntrance();
           navigationDestination = NAVIGATION_DESTINATION.TUNNEL1_ENTRANCE;
@@ -123,7 +121,7 @@ public class GameController {
               break;
             case LAUNCH_POINT:
               gameNavigation.squareNavigation(1, 1);
-              gameNavigation.calculateLaunchPoints();
+              gameNavigation.calculateClosestLaunchPoint();
               gameNavigation.navigateToLaunchPoint();
               if (navigationCompleted == true) {
 
@@ -168,6 +166,8 @@ public class GameController {
         case Avoidance:
           // object avoidance procedure using wall follower with P-Controller
           obstacleAvoider.wallFollower();
+          // regenerate the launch points
+          gameNavigation.generateLaunchPoints();
 
           // LIGHT LOCALIZATION
           gameState = GameState.LightLocalization;
@@ -179,6 +179,7 @@ public class GameController {
 
         case Launch:
           // perform the launches
+          ballisticLauncher.setDistance(gameNavigation.distanceFromBin(odometer.getX(), odometer.getY()));
           ballisticLauncher.multipleLaunch();
           // transition back to navigation
           gameState = GameState.Navigation;

@@ -11,7 +11,7 @@ public class BallisticLauncher {
   /**
    * The distance to launch to
    */
-  private int distance;
+  private double distance;
 
 
   /**
@@ -67,5 +67,11 @@ public class BallisticLauncher {
     }
   }
 
+  /**
+   * Setter for the launching distance
+   */
+  public void setDistance(double distance) {
+    this.distance = distance;
+  }
 
 }
