@@ -1,30 +1,28 @@
 package ca.mcgill.ecse211.project.game;
 
 import static ca.mcgill.ecse211.project.game.GameResources.*;
+import ca.mcgill.ecse211.project.game.GameResources.COLOR;
+import ca.mcgill.ecse211.project.game.GameResources.REGION;
 import static ca.mcgill.ecse211.project.Resources.*;
-
-import lejos.hardware.Button;
 
 
 
 public class GameNavigation {
-
-
-
   /**
    * coordinates of the tunnel entrance and exit
    */
   private Point tunnelEntrance;
   private Point tunnelExit;
+  
+  /**
+   * coordinates of the luanch point
+   */
+  private Point launchPoint;
+  
   /**
    * length of the tunnel
    */
   private double tunnelLength;
-
-  /**
-   * coordinates of the launch point
-   */
-  private Point launchPoint;
 
   /**
    * Orientation the robot needs to have to traverse the tunnel
@@ -32,15 +30,16 @@ public class GameNavigation {
   private double tunnelTraversalOrientation;
 
   public GameNavigation() {
-    tunnelEntrance = new Point(0,0);
-    tunnelExit = new Point(0,0);
+    tunnelEntrance = new Point(0, 0);
+    tunnelExit = new Point(0, 0);
     launchPoint = new Point(0,0);
   }
-  
+
+
   public void lightLocalize(Point closestPoint) {
-    
+
     // THE GAME STATE MUST BE IN LIGHTLOCALIZATION.
-    
+
     double x = closestPoint.x;
     double y = closestPoint.y;
     double midX;
@@ -49,49 +48,47 @@ public class GameNavigation {
     double firstTheta;
     double secondTheta;
     // LIGHT LOCALIZE FOR THE Y VALUE FIRST.
-    if(x > (odometer.getX()/TILE_SIZE)) {
+    if (x > (odometer.getX() / TILE_SIZE)) {
       midX = x - 0.5;
       turnRight = true;
       secondTheta = 90;
-    }
-    else {
+    } else {
       midX = x + 0.5;
       secondTheta = 270;
     }
-    if(y > (odometer.getY()/TILE_SIZE)) {
+    if (y > (odometer.getY() / TILE_SIZE)) {
       midY = y - 0.5;
       firstTheta = 0;
-    }
-    else {
+    } else {
       midY = y + 0.5;
       firstTheta = 180;
       secondTheta = Math.abs(secondTheta - 360);
     }
-    
+
     Navigation.travelTo(midX, y, 200);
-    odometer.setY(y*TILE_SIZE);
-    //THE THETA NEEDS TO BE DYNAMICALLY SET
+    odometer.setY(y * TILE_SIZE);
+    // THE THETA NEEDS TO BE DYNAMICALLY SET
     odometer.setTheta(firstTheta);
-    Navigation.backUp((TILE_SIZE/1.2), 200);
-    
-    //This forced turn is to avoid detecting lines when it is turning.
-    if(turnRight) {
+    Navigation.backUp((TILE_SIZE / 1.2), 200);
+
+    // This forced turn is to avoid detecting lines when it is turning.
+    if (turnRight) {
       Navigation.turn(90, 200);
-    }
-    else {
+    } else {
       Navigation.turn(-90, 200);
     }
 
     Navigation.travelTo(x, midY, 200);
-    odometer.setX(x*TILE_SIZE);
+    odometer.setX(x * TILE_SIZE);
     odometer.setTheta(secondTheta);
-    
+
   }
-  
+
+
   public void squareNavigation(double x, double y) {
     enableCorrection = true;
-    Navigation.travelTo(x, (odometer.getY()/TILE_SIZE), FORWARD_SPEED_NORMAL);
-    Navigation.travelTo((odometer.getX()/TILE_SIZE), y, FORWARD_SPEED_NORMAL);
+    Navigation.travelTo(x, (odometer.getY() / TILE_SIZE), FORWARD_SPEED_NORMAL);
+    Navigation.travelTo((odometer.getX() / TILE_SIZE), y, FORWARD_SPEED_NORMAL);
     enableCorrection = false;
   }
 
@@ -99,6 +96,14 @@ public class GameNavigation {
    * Method used to navigate to the tunnel entrance
    */
   public void navigateToTunnel() {
+    this.squareNavigation(tunnelEntrance.x, tunnelEntrance.y);
+    Navigation.turnTo(tunnelTraversalOrientation, ROTATE_SPEED_SLOW);
+  }
+  
+  /**
+   * Method used to navigate to the launch point
+   * */
+  public void navigateToLaunchPoint() {
     this.squareNavigation(tunnelEntrance.x, tunnelEntrance.y);
     Navigation.turnTo(tunnelTraversalOrientation, ROTATE_SPEED_SLOW);
   }
@@ -154,13 +159,13 @@ public class GameNavigation {
     int y1 = (int) (y / TILE_SIZE);
     int x2 = (int) x1 + 1;
     int y2 = (int) y1 + 1;
-    Point p1 = new Point(x1,y1);
-    Point p2 = new Point(x1,y2);
-    Point p3 = new Point(x2,y1);
-    Point p4 = new Point(x2,y2);
+    Point p1 = new Point(x1, y1);
+    Point p2 = new Point(x1, y2);
+    Point p3 = new Point(x2, y1);
+    Point p4 = new Point(x2, y2);
     // compute distances of 4 points from actual position
-    x = odometer.getX()/TILE_SIZE;
-    y = odometer.getY()/TILE_SIZE;
+    x = odometer.getX() / TILE_SIZE;
+    y = odometer.getY() / TILE_SIZE;
     double d1 = this.calculateDistance(x, y, x1, y1);
     double d2 = this.calculateDistance(x, y, x1, y2);
     double d3 = this.calculateDistance(x, y, x2, y1);
@@ -206,7 +211,7 @@ public class GameNavigation {
 
     REGION targetRegion;
     REGION tunnelBottom = this.regionCalculation((Tunnel.ll.x + 0.5), (Tunnel.ll.y - 0.5));
-    REGION tunnelTop = this.regionCalculation((Tunnel.ur.x - 0.5), (Tunnel.ur.y+ 0.5));
+    REGION tunnelTop = this.regionCalculation((Tunnel.ur.x - 0.5), (Tunnel.ur.y + 0.5));
     REGION tunnelLeft = this.regionCalculation((Tunnel.ll.x - 0.5), (Tunnel.ll.y + 0.5));
     REGION tunnelRight = this.regionCalculation((Tunnel.ur.x + 0.5), (Tunnel.ur.y - 0.5));
 
@@ -296,19 +301,20 @@ public class GameNavigation {
 
     }
   }
+
   /**
    * Method used to set the color
    */
   public void setColor() {
-    if(redTeam == TEAM_NUMBER) {
+    if (redTeam == TEAM_NUMBER) {
       color = COLOR.RED;
-    }
-    else if(greenTeam == TEAM_NUMBER){
+    } else if (greenTeam == TEAM_NUMBER) {
       color = COLOR.GREEN;
       System.out.println("GREEN TEAM SET");
     }
-    
+
   }
+
   /**
    * Method used to set the staring region depending on the team color
    */
@@ -323,6 +329,22 @@ public class GameNavigation {
   }
 
   /**
+   * Method used to update the region after a tunnel traversal
+   */
+  public void updateRegion() {
+    if (currentRegion == REGION.GREEN || currentRegion == REGION.RED) {
+      currentRegion = REGION.ISLAND;
+    } else if (currentRegion == REGION.ISLAND) {
+      if (color == COLOR.GREEN) {
+        currentRegion = REGION.GREEN;
+      } else {
+        currentRegion = REGION.RED;
+      }
+    }
+
+  }
+
+  /**
    * Method setting the coordinates of the starting corner
    */
   public void setCorner() {
@@ -330,48 +352,48 @@ public class GameNavigation {
     if (color == COLOR.GREEN) {
       switch (greenCorner) {
         case 0:
-          STARTING_CORNER.x = 0;
-          STARTING_CORNER.y = 0;
+          STARTING_POINT.x = 0;
+          STARTING_POINT.y = 0;
           CORNER_NUMBER = 0;
           break;
         case 1:
-          STARTING_CORNER.x = 15;
-          STARTING_CORNER.y = 0;
+          STARTING_POINT.x = 15;
+          STARTING_POINT.y = 0;
           CORNER_NUMBER = 1;
           System.out.println("CORNER 1 SET");
 
           break;
         case 2:
-          STARTING_CORNER.x = 15;
-          STARTING_CORNER.y = 9;
+          STARTING_POINT.x = 15;
+          STARTING_POINT.y = 9;
           CORNER_NUMBER = 2;
           break;
         case 3:
-          STARTING_CORNER.x = 0;
-          STARTING_CORNER.y = 9;
+          STARTING_POINT.x = 0;
+          STARTING_POINT.y = 9;
           CORNER_NUMBER = 3;
           break;
       }
     } else {
       switch (redCorner) {
         case 0:
-          STARTING_CORNER.x = 1;
-          STARTING_CORNER.y = 1;
+          STARTING_POINT.x = 1;
+          STARTING_POINT.y = 1;
           CORNER_NUMBER = 0;
           break;
         case 1:
-          STARTING_CORNER.x = 1;
-          STARTING_CORNER.y = 14;
+          STARTING_POINT.x = 1;
+          STARTING_POINT.y = 14;
           CORNER_NUMBER = 1;
           break;
         case 2:
-          STARTING_CORNER.x = 8;
-          STARTING_CORNER.y = 14;
+          STARTING_POINT.x = 8;
+          STARTING_POINT.y = 14;
           CORNER_NUMBER = 2;
           break;
         case 3:
-          STARTING_CORNER.x = 8;
-          STARTING_CORNER.y = 1;
+          STARTING_POINT.x = 8;
+          STARTING_POINT.y = 1;
           CORNER_NUMBER = 3;
           break;
       }
@@ -379,25 +401,76 @@ public class GameNavigation {
     }
   }
 
+  /**
+   * Method used to compute the distance of the robot from the bin
+   * 
+   * @return: the distance between the robot and the bin
+   */
+  public double distanceFromBin() {
+    double x = odometer.getX();
+    double y = odometer.getY();
+    double distance = this.calculateDistance(x, y, bin.x, bin.y);
+    return distance;
+  }
+
+  /**
+   * Method used to set the initial map parameters
+   */
+  public void setParameters() {
+    this.setColor();
+    this.setStartingRegion();
+    this.setCorner();
+    this.setLimits();
+    this.setTunnel();
+    this.updateTunnelData();
+  }
+
+  /**
+   * Method used to update the map parameters after a tunnel traversal
+   */
+  public void updateParameters() {
+    // update the current region of the robot
+    this.updateRegion();
+    // update the tunnel data
+    this.updateTunnelData();
+    // set the new zone limits
+    this.setLimits();
+  }
+
   public void calculateLaunchPoints() {
     // TODO: method to find 3 possible launch points to consider that there might be obstacles
   }
 
 
+  /**
+   * Getter Method for the tunnel entrance
+   */
   public Point getTunnelEntrance() {
     return tunnelEntrance;
   }
 
+  /**
+   * Getter Method for the tunnel exit
+   */
   public Point getTunnelExit() {
     return tunnelExit;
   }
 
+  /**
+   * Getter Method for the tunnel traversal orientation
+   */
   public double getTunnelTraversalOrientation() {
     return tunnelTraversalOrientation;
   }
 
+  /**
+   * Getter Method for the tunnel length
+   */
   public double getTunnelLength() {
     return tunnelLength;
   }
+
+
+
 
 }

@@ -6,27 +6,13 @@ import static ca.mcgill.ecse211.project.game.GameResources.*;
  * This class implements the behaviour of the ballistic launcher of the robot
  */
 public class BallisticLauncher {
-  /**
-   * The motors launching speed
-   */
-  private int motorLaunchingSpeed;
-  /**
-   * Instance of the ballistic launcher returned as singleton
-   */
-  private static BallisticLauncher bl;
 
+  
   /**
-   * Method to get the coordinates of the launching point of the robot
-   * 
-   * @return : the array of coordinates of the launching point
+   * The distance to launch to
    */
-  public double[] launchLocation(double x, double y) {
-    y = (y - 4.5);
-    double[] location = new double[2];
-    location[0] = x;
-    location[1] = y;
-    return location;
-  }
+  private int distance;
+
 
   /**
    * Method implementing the behaviour of the ballistic motors during launch
@@ -40,7 +26,7 @@ public class BallisticLauncher {
     } catch (InterruptedException e) {
     }
     // set the launching speed to a constant (only for lab 5)
-    motorLaunchingSpeed = (int)(distance * LAUNCH_COEFFICIENT);
+    int  motorLaunchingSpeed = (int)(distance * LAUNCH_COEFFICIENT);
     // set the speeds and accelerations of the launching motors
     leftBallisticMotor.setSpeed(motorLaunchingSpeed);
     rightBallisticMotor.setSpeed(motorLaunchingSpeed);
@@ -66,21 +52,20 @@ public class BallisticLauncher {
     leftBallisticMotor.setAcceleration(RELOAD_ACCELERATION);
     rightBallisticMotor.setAcceleration(RELOAD_ACCELERATION);
     // reload the launcher by rotating back the motors
-    leftBallisticMotor.rotate(LAUNCHING_ANGLE, true);
-    rightBallisticMotor.rotate(LAUNCHING_ANGLE, false);
+    leftBallisticMotor.rotate(RELOAD_ANGLE, true);
+    rightBallisticMotor.rotate(RELOAD_ANGLE, false);
 
   }
-
+  
   /**
-   * Returns the BallisticLauncher object. Use this method to obtain an instance of Launcher. Method used to make sure
-   * there is just one instance of BallisticLauncher throughout the code
-   * 
-   * @return the BallisticLauncher Object
+   * Method implementing multiple launches and reload depending on how many balls the robot is carrying
    */
-  public synchronized static BallisticLauncher getBallisticLauncher() {
-    if (bl == null) {
-      bl = new BallisticLauncher();
+  public void multipleLaunch() {
+    for(int i = 0 ; i< NUMBER_OF_BALLS; i++) {
+      this.launch(this.distance);
+      this.reload();
     }
-    return bl;
   }
+
+
 }
