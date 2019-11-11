@@ -1,13 +1,10 @@
 package ca.mcgill.ecse211.project.game;
 
 import static ca.mcgill.ecse211.project.game.GameResources.*;
-import ca.mcgill.ecse211.project.Display;
 import static ca.mcgill.ecse211.project.Resources.*;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
-import ca.mcgill.ecse211.project.localization.LightLocalizer;
 import ca.mcgill.ecse211.project.localization.UltrasonicLocalizer;
-import lejos.hardware.Button;
 
 public class GameController {
 

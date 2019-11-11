@@ -4,14 +4,10 @@ import static ca.mcgill.ecse211.project.game.GameResources.*;
 import ca.mcgill.ecse211.project.game.GameResources.COLOR;
 import ca.mcgill.ecse211.project.game.GameResources.REGION;
 import static ca.mcgill.ecse211.project.Resources.*;
-import lejos.hardware.Button;
 
 
 
 public class GameNavigation {
-
-
-
   /**
    * coordinates of the tunnel entrance and exit
    */
@@ -23,11 +19,6 @@ public class GameNavigation {
   private double tunnelLength;
 
   /**
-   * coordinates of the launch point
-   */
-  private Point launchPoint;
-
-  /**
    * Orientation the robot needs to have to traverse the tunnel
    */
   private double tunnelTraversalOrientation;
@@ -35,14 +26,13 @@ public class GameNavigation {
   public GameNavigation() {
     tunnelEntrance = new Point(0, 0);
     tunnelExit = new Point(0, 0);
-    launchPoint = new Point(0, 0);
   }
 
-  
+
   public void lightLocalize(Point closestPoint) {
-    
+
     // THE GAME STATE MUST BE IN LIGHTLOCALIZATION.
-    
+
     double x = closestPoint.x;
     double y = closestPoint.y;
     double midX;
@@ -51,45 +41,42 @@ public class GameNavigation {
     double firstTheta;
     double secondTheta;
     // LIGHT LOCALIZE FOR THE Y VALUE FIRST.
-    if(x > (odometer.getX()/TILE_SIZE)) {
+    if (x > (odometer.getX() / TILE_SIZE)) {
       midX = x - 0.5;
       turnRight = true;
       secondTheta = 90;
-    }
-    else {
+    } else {
       midX = x + 0.5;
       secondTheta = 270;
     }
-    if(y > (odometer.getY()/TILE_SIZE)) {
+    if (y > (odometer.getY() / TILE_SIZE)) {
       midY = y - 0.5;
       firstTheta = 0;
-    }
-    else {
+    } else {
       midY = y + 0.5;
       firstTheta = 180;
       secondTheta = Math.abs(secondTheta - 360);
     }
-    
+
     Navigation.travelTo(midX, y, 200);
-    odometer.setY(y*TILE_SIZE);
-    //THE THETA NEEDS TO BE DYNAMICALLY SET
+    odometer.setY(y * TILE_SIZE);
+    // THE THETA NEEDS TO BE DYNAMICALLY SET
     odometer.setTheta(firstTheta);
-    Navigation.backUp((TILE_SIZE/1.2), 200);
-    
-    //This forced turn is to avoid detecting lines when it is turning.
-    if(turnRight) {
+    Navigation.backUp((TILE_SIZE / 1.2), 200);
+
+    // This forced turn is to avoid detecting lines when it is turning.
+    if (turnRight) {
       Navigation.turn(90, 200);
-    }
-    else {
+    } else {
       Navigation.turn(-90, 200);
     }
 
     Navigation.travelTo(x, midY, 200);
-    odometer.setX(x*TILE_SIZE);
+    odometer.setX(x * TILE_SIZE);
     odometer.setTheta(secondTheta);
-    
+
   }
-  
+
 
   public void squareNavigation(double x, double y) {
     enableCorrection = true;
@@ -325,7 +312,7 @@ public class GameNavigation {
       currentRegion = REGION.RED;
     }
   }
-  
+
   /**
    * Method used to update the region after a tunnel traversal
    */
@@ -339,7 +326,7 @@ public class GameNavigation {
         currentRegion = REGION.RED;
       }
     }
-    
+
   }
 
   /**
@@ -410,6 +397,7 @@ public class GameNavigation {
     double distance = this.calculateDistance(x, y, bin.x, bin.y);
     return distance;
   }
+
   /**
    * Method used to set the initial map parameters
    */
@@ -421,7 +409,7 @@ public class GameNavigation {
     this.setTunnel();
     this.updateTunnelData();
   }
-  
+
   /**
    * Method used to update the map parameters after a tunnel traversal
    */
@@ -431,7 +419,7 @@ public class GameNavigation {
     // update the tunnel data
     this.updateTunnelData();
     // set the new zone limits
-    this.setLimits(); 
+    this.setLimits();
   }
 
   public void calculateLaunchPoints() {
@@ -439,18 +427,30 @@ public class GameNavigation {
   }
 
 
+  /**
+   * Getter Method for the tunnel entrance
+   */
   public Point getTunnelEntrance() {
     return tunnelEntrance;
   }
 
+  /**
+   * Getter Method for the tunnel exit
+   */
   public Point getTunnelExit() {
     return tunnelExit;
   }
 
+  /**
+   * Getter Method for the tunnel traversal orientation
+   */
   public double getTunnelTraversalOrientation() {
     return tunnelTraversalOrientation;
   }
 
+  /**
+   * Getter Method for the tunnel length
+   */
   public double getTunnelLength() {
     return tunnelLength;
   }

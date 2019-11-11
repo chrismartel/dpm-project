@@ -2,11 +2,7 @@ package ca.mcgill.ecse211.project.localization;
 
 import static ca.mcgill.ecse211.project.game.GameResources.*;
 import ca.mcgill.ecse211.project.Resources.Point;
-import ca.mcgill.ecse211.project.game.GameState;
 import ca.mcgill.ecse211.project.game.Navigation;
-import ca.mcgill.ecse211.project.game.Navigation.Turn;
-import lejos.hardware.Button;
-import lejos.hardware.Sound;
 
 /**
  * This class implements the methods used to execute the light localization using 2 sensors at the back of the robot
@@ -54,15 +50,10 @@ public class LightLocalizer {
    * Constructor of the light localization class
    */
   public LightLocalizer() {
-    // initialize the data list
-    // llDataQueue = new LinkedList<Float>();
-    // llDataList = new LinkedList<Float>();
 
     // set sensor to use red light alone
     leftColorSensor.setCurrentMode("Red");
     rightColorSensor.setCurrentMode("Red");
-
-    //    leftSensorData = new float[leftColorSensor.sampleSize()];
 
     // initiate the current readings of the sensor
     leftColorSensor.fetchSample(leftSensorData, 0);
@@ -93,12 +84,7 @@ public class LightLocalizer {
   }
 
   
-  /**
-   * Method performs the light localization routine. Robot rotates around center of rotation on point (1,1). The angle
-   * values recorded when a black line is detected is used to correct the robots heading and position on the point
-   * (1,1). The robot returns to a 0 degree stop at the end of the process.
-   * 
-   */
+
 
   public boolean lightLocalize() {
     
