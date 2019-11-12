@@ -40,11 +40,11 @@ public class GameController {
           navigationDestination = NAVIGATION_DESTINATION.TUNNEL1_ENTRANCE;
 
 
-          gameState = GameState.Test;
-          LCD.clear();
-          LCD.drawString("PRESS TO START", 1, 1);
-          buttonChoice = Button.waitForAnyPress();
-          LCD.clear();
+          gameState = GameState.LightLocalization;
+//          LCD.clear();
+//          LCD.drawString("PRESS TO START", 1, 1);
+//          buttonChoice = Button.waitForAnyPress();
+//          LCD.clear();
           break;
 
 
@@ -61,10 +61,11 @@ public class GameController {
 
 
         case LightLocalization:
+          odometer.setX(0.5 * TILE_SIZE);
+          odometer.setY(0.5 * TILE_SIZE);
           gameNavigation.lightLocalize(STARTING_POINT);
           LCD.drawString("PRESS TO START NAV", 1, 1);
           buttonChoice = Button.waitForAnyPress();
-          LCD.clear();
           break;
 
 
