@@ -38,6 +38,7 @@ public class UltrasonicLocalizer {
       distances = ultrasonicPoller.getFrontUsController().getDistances();
       currentDistance = distances[0];
       lastDistance = distances[1];
+      
       if (lastDistance > (FALLINGEDGE_D + FALLINGEDGE_K) && currentDistance < (FALLINGEDGE_D - FALLINGEDGE_K)) {
         System.out.println("differential: "+(lastDistance-currentDistance));
         this.alpha = odometer.getTheta();
