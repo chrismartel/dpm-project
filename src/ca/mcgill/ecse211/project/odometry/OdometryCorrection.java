@@ -75,110 +75,53 @@ public class OdometryCorrection {
     
   }
   
-  public void correctValues() {
-    if((leftValues != null)) {
-      leftMotor.stop();
+  public static void correctValues() {
+    int difference = 5;
+    double lowerBound = odometer.getTheta() - difference;
+    double upperBound = odometer.getTheta() + difference;
+    if((lowerBound >= (0 - difference) || lowerBound >= (360 - (2 * difference))) && 
+        ((0 + (2 * difference)) >= upperBound || upperBound <= (360 + difference))) {
+      //The robot is going forward
+      double currentYLine = odometer.getY() - OFFSET_FROM_WHEELBASE;
+      int lineCount = (int) Math.round(currentYLine / TILE_SIZE); 
+      odometer.setY(lineCount * TILE_SIZE);
+      odometer.setTheta(0);
+      
     }
-    if((rightValues != null)) {
-      rightMotor.stop();
-    }
-    if((leftValues != null) && (rightValues != null)) {
-      
-      //continue since the robot is aligned.
-      
-      // calculate correction.
-      
-      // apply correction.
+    else if(lowerBound >= (90 - (2 * difference)) && upperBound <= (90 + (2 * difference)) ) {
+      //going right
+      double currentXLine = odometer.getX() - OFFSET_FROM_WHEELBASE;
+      int lineCount = (int) Math.round(currentXLine / TILE_SIZE); 
       Sound.beep();
-      
-      leftValues = null;
-      rightValues = null;
+      System.out.println("line count" + lineCount);
+      odometer.setX(lineCount * TILE_SIZE);
+      odometer.setTheta(90);
     }
-
+    else if(lowerBound >= (180 - (2 * difference) ) && upperBound <= (180 + (2 * difference)) ) {
+      //going backward
+      double currentYLine = odometer.getY() + OFFSET_FROM_WHEELBASE;
+      int lineCount = (int) Math.round(currentYLine / TILE_SIZE); 
+      odometer.setY(lineCount * TILE_SIZE);
+      odometer.setTheta(180);
+    }
+    else if(lowerBound >= (270 - (2 * difference) ) && upperBound <= (270 + (2 * difference)) ){
+      //going left
+      double currentXLine = odometer.getX() + OFFSET_FROM_WHEELBASE;
+      int lineCount = (int) Math.round(currentXLine / TILE_SIZE); 
+      odometer.setX(lineCount * TILE_SIZE);
+      odometer.setTheta(270);
+    }
+    else {
+      Sound.beep();
+    }
   }
   
   
   public void correction() {
-    while(gameState == GameState.Navigation) {
-      int lines = lineDetected();
-      if(lines == 1) {
-        //only left sensor detected
-        leftValues = odometer.getXYT();
-        
-      }
-      else if (lines == 2) {
-        //only right sensor detected
-        rightValues = odometer.getXYT();
-      }
-      else {
-        // Both lines detected or no lines detected. 
-        // Therefore, do nothing
-        
-      }
-      correctValues();
-      
-      if (endTime - startTime < LIGHT_SENSOR_PERIOD) {
-        // Sleep the correct amount of time
-        try {
-          Thread.sleep(LIGHT_SENSOR_PERIOD - (endTime - startTime));
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-      }
-      
-    }
-  }
-
-
-  /**
-   * Method determining if a line is detected
-   * 
-   * @return : 0 if no line has been detected, 1 if left sensor detected a line, 2 if right sensor detected a line
-   * and 3 if both sensors detected a line.
-   */
-  public int lineDetected() {
-
-    // keep track of the execution time of the method to adjust the period
-    startTime = System.currentTimeMillis();
-    // no line detected initially
-    int line = 0;
-    // fetch sample from the light sensor
-    leftColorSensor.fetchSample(leftSensorData, 0);
-    rightColorSensor.fetchSample(rightSensorData, 0);
-    float temporaryLeftColorValue = leftSensorData[0] * 100;
-    float temporaryRightColorValue = rightSensorData[0] * 100;
-
-    // set the current color value
-    this.currentLeftColorValue = temporaryLeftColorValue;
-    this.currentRightColorValue = temporaryRightColorValue;
-
-    // Check if the difference between the previous reading and the current reading is bigger than the differential line
-    // threshold
-    float leftLineDifference = this.lastLeftColorValue - this.currentLeftColorValue;
-    float rightLineDifference = this.lastRightColorValue - this.currentRightColorValue;
-    if (leftLineDifference >= DIFFERENTIAL_LINE_THRESHOLD && !leftCurrentlyOnLine) {
-      // System.out.println("DIFF: " + (this.lastColorValue - this.currentColorValue));
-      leftCurrentlyOnLine = true;
-      line += 1;
-    }
-    else if(-leftLineDifference >= DIFFERENTIAL_LINE_THRESHOLD) {
-      leftCurrentlyOnLine = false;
-    }
-    if(rightLineDifference >= DIFFERENTIAL_LINE_THRESHOLD && !rightCurrentlyOnLine) {
-      rightCurrentlyOnLine = true;
-      line += 2;
-    }
-    else if(-rightLineDifference >= DIFFERENTIAL_LINE_THRESHOLD) {
-      rightCurrentlyOnLine = false;
-    }
     
-    // update the last reading of the light sensor with the current one
-    lastLeftColorValue = currentLeftColorValue;
-    lastRightColorValue = currentRightColorValue;
-    // pause the thread to respect the line detection period
-    endTime = System.currentTimeMillis();
-    return line;
   }
+
+
 
 
 

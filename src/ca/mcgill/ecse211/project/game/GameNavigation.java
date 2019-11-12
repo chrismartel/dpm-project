@@ -78,6 +78,7 @@ public class GameNavigation {
       else {
         newX = x * TILE_SIZE - OFFSET_FROM_WHEELBASE;
       }
+
     } else {
       midY = y + 0.5;
       firstTheta = 180;
@@ -85,10 +86,13 @@ public class GameNavigation {
       newY = x * TILE_SIZE - OFFSET_FROM_WHEELBASE;
       if(turnRight) {
         newX = x * TILE_SIZE - OFFSET_FROM_WHEELBASE;
+        Navigation.turn(-180, speed);
       }
       else {
         newX = x * TILE_SIZE + OFFSET_FROM_WHEELBASE;
+        Navigation.turn(180, speed);
       }
+
 
     }
 
@@ -101,7 +105,7 @@ public class GameNavigation {
     System.out.println("angle: "+odometer.getTheta());
     Button.waitForAnyPress();
     
-    Navigation.backUp((TILE_SIZE / 3), speed);
+    Navigation.backUp((OFFSET_FROM_WHEELBASE),speed);
 
     // This forced turn is to avoid detecting lines when it is turning.
     if (turnRight) {
@@ -621,18 +625,18 @@ public class GameNavigation {
   public void odometerInitialSet() {
     switch(CORNER_NUMBER) {
       case 0:
-        odometer.setXYT(0.4*TILE_SIZE, 0.6*TILE_SIZE, odometer.getTheta());
+        odometer.setXYT(0.5*TILE_SIZE, 0.6*TILE_SIZE, odometer.getTheta());
         break;
       case 1:
-        odometer.setXYT(14.4*TILE_SIZE, 0.6*TILE_SIZE, odometer.getTheta());
+        odometer.setXYT(14.5*TILE_SIZE, 0.6*TILE_SIZE, odometer.getTheta());
 
         break;
       case 2:
-        odometer.setXYT(14.4*TILE_SIZE, 8.4*TILE_SIZE, odometer.getTheta());
+        odometer.setXYT(14.5*TILE_SIZE, 8.4*TILE_SIZE, odometer.getTheta());
 
         break;
       case 3:
-        odometer.setXYT(0.6*TILE_SIZE, 8.4*TILE_SIZE, odometer.getTheta());
+        odometer.setXYT(0.5*TILE_SIZE, 8.4*TILE_SIZE, odometer.getTheta());
 
         break;
       

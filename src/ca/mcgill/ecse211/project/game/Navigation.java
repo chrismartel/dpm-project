@@ -4,6 +4,7 @@ package ca.mcgill.ecse211.project.game;
 
 import static ca.mcgill.ecse211.project.game.GameResources.*;
 import ca.mcgill.ecse211.project.localization.LightLocalizer;
+import ca.mcgill.ecse211.project.odometry.OdometryCorrection;
 
 /**
  * The navigation class is used to define all the low level navigation movements of the robot.
@@ -196,17 +197,19 @@ public class Navigation {
         if(gameState == GameState.Navigation) {
           navigationCompleted = true;
         }
+
         // exit the travel method if the destination is reached
         break;
       }
-      /*
       if(enableCorrection) {
-        // TODO: Check for odometry correction
-        // if 2 sensors detect
-        Navigation.stopMotors();
-        // TODO: correct
-        Navigation.travelForward(speed);
-      }*/
+        if(!lightLocalization.lightLocalize()) {
+          OdometryCorrection.correctValues();
+          System.out.println("x: "+odometer.getX());
+          System.out.println("y: "+odometer.getY());
+          Navigation.travelForward(speed);
+        }
+      }
+
     }
     stopMotors();
 
