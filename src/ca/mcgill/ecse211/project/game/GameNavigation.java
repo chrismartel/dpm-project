@@ -91,6 +91,8 @@ public class GameNavigation {
     odometer.setTheta(secondTheta);
 
   }
+  // Aly's light localization method
+  /*
   public void twoLineDetection() {
     float lastLeftValue = -1000;
     float currentLeftValue = 0;
@@ -135,7 +137,7 @@ public class GameNavigation {
     Sound.playTone(440,100);
     Sound.playTone(440,100);
     Sound.playTone(660,200);
-  }
+  }*/
 
   public void squareNavigation(double x, double y) {
     enableCorrection = true;
@@ -143,6 +145,8 @@ public class GameNavigation {
     Navigation.travelTo((odometer.getX() / TILE_SIZE), y, FORWARD_SPEED_NORMAL);
     enableCorrection = false;
   }
+  
+  /*
   public void navigateWithCorrection(double x, double y,int speed) {
     Navigation.travelTo(x-0.5, y-0.5, speed);
     Navigation.turnTo(0,100);
@@ -160,6 +164,8 @@ public class GameNavigation {
     odometer.setXYT(x, y, 0);
     Button.waitForAnyPress();
   }
+  */
+  
   /**
    * Method used to navigate to the tunnel entrance
    */

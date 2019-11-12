@@ -17,7 +17,7 @@ public class BallisticLauncher {
   /**
    * Method implementing the behaviour of the ballistic motors during launch
    * 
-   * @param : the distance we want the ball to travel
+   * @param : the distance we want the ball to travel in cm
    */
   public void launch(double distance) {
     // sleeps 5 seconds before launch

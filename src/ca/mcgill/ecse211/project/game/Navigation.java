@@ -199,14 +199,14 @@ public class Navigation {
         // exit the travel method if the destination is reached
         break;
       }
-      /*
+      
       if(enableCorrection) {
         // TODO: Check for odometry correction
         // if 2 sensors detect
         Navigation.stopMotors();
         // TODO: correct
         Navigation.travelForward(speed);
-      }*/
+      }
     }
     stopMotors();
 

@@ -62,7 +62,6 @@ public class GameController {
 
         case LightLocalization:
           gameNavigation.lightLocalize(STARTING_POINT);
-
           LCD.drawString("PRESS TO START NAV", 1, 1);
           buttonChoice = Button.waitForAnyPress();
           LCD.clear();
@@ -120,7 +119,6 @@ public class GameController {
               }
               break;
             case LAUNCH_POINT:
-              gameNavigation.squareNavigation(1, 1);
               gameNavigation.calculateClosestLaunchPoint();
               gameNavigation.navigateToLaunchPoint();
               if (navigationCompleted == true) {
