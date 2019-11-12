@@ -4,6 +4,8 @@ import static ca.mcgill.ecse211.project.game.GameResources.*;
 import java.util.LinkedList;
 import ca.mcgill.ecse211.project.game.GameResources.COLOR;
 import ca.mcgill.ecse211.project.game.GameResources.REGION;
+import lejos.hardware.Button;
+import lejos.hardware.Sound;
 import static ca.mcgill.ecse211.project.Resources.*;
 
 
@@ -89,7 +91,51 @@ public class GameNavigation {
     odometer.setTheta(secondTheta);
 
   }
+  public void twoLineDetection() {
+    float lastLeftValue = -1000;
+    float currentLeftValue = 0;
+    float lastRightValue = -1000;
+    float currentRightValue = 0;
+    leftColorSensor.setCurrentMode("Red");
+    rightColorSensor.setCurrentMode("Red");
+    boolean left =false, right = false;
+    float[] leftSensorData = new float[3];
+    float[] rightSensorData = new float[3];
+    Navigation.travelForward(100);
+    while(!(left && right)) {
+      leftColorSensor.fetchSample(leftSensorData, 0);
+      rightColorSensor.fetchSample(rightSensorData, 0);
+      currentLeftValue = leftSensorData[0]*100;
+      currentRightValue = rightSensorData[0]*100;
 
+
+
+      if(-currentLeftValue + lastLeftValue>=DIFFERENTIAL_LINE_THRESHOLD)
+      {
+        left = true;
+        Sound.playTone(880,10);
+        leftMotor.setSpeed(0);
+      }
+      if(-currentRightValue + lastRightValue>=DIFFERENTIAL_LINE_THRESHOLD)
+      {
+        right = true;
+        Sound.playTone(880,10);
+        rightMotor.setSpeed(0);
+      }
+      lastLeftValue = currentLeftValue;
+      lastRightValue = currentRightValue;
+      try {
+        Thread.sleep(75);
+      } catch (InterruptedException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+
+    }
+    Sound.playTone(440,100);
+    Sound.playTone(440,100);
+    Sound.playTone(660,200);
+  }
 
   public void squareNavigation(double x, double y) {
     enableCorrection = true;
@@ -97,7 +143,23 @@ public class GameNavigation {
     Navigation.travelTo((odometer.getX() / TILE_SIZE), y, FORWARD_SPEED_NORMAL);
     enableCorrection = false;
   }
-
+  public void navigateWithCorrection(double x, double y,int speed) {
+    Navigation.travelTo(x-0.5, y-0.5, speed);
+    Navigation.turnTo(0,100);
+    lightCorrect(x,y,speed);
+  }
+  public void lightCorrect(double x, double y, int speed) {
+    twoLineDetection();
+    Navigation.backUp(OFFSET_FROM_WHEELBASE);
+    Navigation.turn(90, 100);
+    odometer.setXYT(odometer.getX(), y , odometer.getTheta());
+    Button.waitForAnyPress();
+    twoLineDetection();
+    Navigation.backUp(OFFSET_FROM_WHEELBASE);
+    Navigation.turn(-90, 100);
+    odometer.setXYT(x, y, 0);
+    Button.waitForAnyPress();
+  }
   /**
    * Method used to navigate to the tunnel entrance
    */

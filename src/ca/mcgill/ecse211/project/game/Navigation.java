@@ -244,7 +244,14 @@ public class Navigation {
   }
 
 
+  public static void backUp(double travelDistance) {
+    leftMotor.setSpeed(-75);
+    rightMotor.setSpeed(-75);
 
+    leftMotor.rotate(-convertDistance(travelDistance),true);
+    rightMotor.rotate(-convertDistance(travelDistance));
+
+  }
   /**
    * set both motors forward
    */

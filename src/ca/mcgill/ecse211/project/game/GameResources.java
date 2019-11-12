@@ -35,7 +35,7 @@ public class GameResources {
   /**
    * The robot width.
    */
-  public static final double TRACK = 15.06;// 14.77;
+  public static final double TRACK = 15.52;// 14.77;
 
 
 
@@ -81,7 +81,7 @@ public class GameResources {
    * The ultrasonic sensor update period in ms. Was calculated in order to have approximately 3 pollings per degree of
    * rotation during slow rotation
    */
-  public static final long US_PERIOD = 100;
+  public static final long US_PERIOD = 75;
 
   /**
    * Filter out constant to filter the distance seen by the us sensor
@@ -95,7 +95,7 @@ public class GameResources {
   /**
    * Arbitrary threshold constant for rising and falling edge cases for the ultrasonic localizer
    */
-  public static final int FALLINGEDGE_D = 37;
+  public static final int FALLINGEDGE_D = 40;
 
   /**
    * Noise margin constant for falling edge ultrasonic localizer
@@ -109,7 +109,7 @@ public class GameResources {
   /**
    * Differential value to determine if a black line is detected or not
    */
-  public static final int DIFFERENTIAL_LINE_THRESHOLD = 20; // HAS TO BE DETERMINE BY TESTING
+  public static final int DIFFERENTIAL_LINE_THRESHOLD = 10; // HAS TO BE DETERMINE BY TESTING
 
   /**
    * Window size for the ultrasonic sensor data polling
@@ -124,7 +124,7 @@ public class GameResources {
   /**
    * Light sensor to center of wheel-base distance
    */
-  public static final double OFFSET_FROM_WHEELBASE = 12.6;
+  public static final double OFFSET_FROM_WHEELBASE = 11.8;
 
 
 
