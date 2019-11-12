@@ -1,6 +1,6 @@
 package ca.mcgill.ecse211.project;
 
-import ca.mcgill.ecse211.wificlient.WifiConnection;
+//import ca.mcgill.ecse211.wificlient.WifiConnection;
 import java.math.BigDecimal;
 import java.util.Map;
 
@@ -51,7 +51,7 @@ public class Resources {
   
   // This static initializer MUST be declared before any Wi-Fi parameters.
   static {
-    receiveWifiParameters();
+   // receiveWifiParameters();
   }
   
   /**
@@ -108,15 +108,15 @@ public class Resources {
   /**
    * Receives Wi-Fi parameters from the server program.
    */
-  public static void receiveWifiParameters() {
+  /*public static void receiveWifiParameters() {
     // Only initialize the parameters if needed
     if (!RECEIVE_WIFI_PARAMS || wifiParameters != null) {
-      return;
-    }
-    System.out.println("Waiting to receive Wi-Fi parameters.");
+      return
+    }*/
+    //System.out.println("Waiting to receive Wi-Fi parameters.");
 
     // Connect to server and get the data, catching any errors that might occur
-    try (WifiConnection conn =
+   /* try (WifiConnection conn =
         new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT)) {
       /*
        * getData() will connect to the server and wait until the user/TA presses the "Start" button
@@ -128,12 +128,12 @@ public class Resources {
        * example, if TEAM_NUMBER is set to 1 above but the server expects teams 17 and 5, this robot
        * will receive a message saying an invalid team number was specified and getData() will throw
        * an exception letting you know.
-       */
+       
       wifiParameters = conn.getData();
     } catch (Exception e) {
       System.err.println("Error: " + e.getMessage());
     }
-  }
+  }*/
   
   /**
    * Returns the Wi-Fi parameter int value associated with the given key.

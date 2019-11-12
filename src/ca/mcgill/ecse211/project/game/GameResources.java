@@ -95,7 +95,7 @@ public class GameResources {
   /**
    * Arbitrary threshold constant for rising and falling edge cases for the ultrasonic localizer
    */
-  public static final int FALLINGEDGE_D = 40;
+  public static final int FALLINGEDGE_D = 37;
 
   /**
    * Noise margin constant for falling edge ultrasonic localizer

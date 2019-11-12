@@ -1,7 +1,7 @@
 package ca.mcgill.ecse211.project.sensor;
 
 import static ca.mcgill.ecse211.project.game.GameResources.*;
-import ca.mcgill.ecse211.project.game.GameController.NAVIGATION_DESTINATION;
+//import ca.mcgill.ecse211.project.game.GameController.NAVIGATION_DESTINATION;
 import ca.mcgill.ecse211.project.game.GameState;
 
 /**
