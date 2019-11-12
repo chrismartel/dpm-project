@@ -64,7 +64,8 @@ public class GameController {
 
         case LightLocalization:
           gameNavigation.odometerInitialSet();
-          gameNavigation.lightLocalize(STARTING_POINT);
+          //gameNavigation.lightLocalize(STARTING_POINT);
+          gameNavigation.lightCorrect(STARTING_POINT.x,STARTING_POINT.y,ROTATE_SPEED_NORMAL);
           gameState = GameState.Navigation;
 
           LCD.drawString("PRESS TO START NAV", 1, 1);
