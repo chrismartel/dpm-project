@@ -25,7 +25,7 @@ public class Resources {
    * beta demo and competition.
    */
 
-  public static final String SERVER_IP = "192.168.2.18";
+  public static final String SERVER_IP = "192.168.2.45";
 
   
   /**
@@ -41,7 +41,7 @@ public class Resources {
   /**
    * Enable this to attempt to receive Wi-Fi parameters at the start of the program.
    */
-  public static final boolean RECEIVE_WIFI_PARAMS = true; // ENABLE TO TRUE TO RECEIVE FROM WIFI
+  public static final boolean RECEIVE_WIFI_PARAMS = false; // ENABLE TO TRUE TO RECEIVE FROM WIFI
  
   
   /**

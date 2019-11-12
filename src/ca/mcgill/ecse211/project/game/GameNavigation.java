@@ -47,7 +47,7 @@ public class GameNavigation {
   public void lightLocalize(Point closestPoint) {
 
     // THE GAME STATE MUST BE IN LIGHTLOCALIZATION.
-
+    int speed = 150;
     double x = closestPoint.x;
     double y = closestPoint.y;
     double midX;
@@ -55,6 +55,8 @@ public class GameNavigation {
     boolean turnRight = false;
     double firstTheta;
     double secondTheta;
+    double newY;
+    double newX;
     // LIGHT LOCALIZE FOR THE Y VALUE FIRST.
     if (x > (odometer.getX() / TILE_SIZE)) {
       midX = x - 0.5;
@@ -67,27 +69,43 @@ public class GameNavigation {
     if (y > (odometer.getY() / TILE_SIZE)) {
       midY = y - 0.5;
       firstTheta = 0;
+      newY = y * TILE_SIZE + OFFSET_FROM_WHEELBASE;
+      if(turnRight) {
+        newX = x * TILE_SIZE + OFFSET_FROM_WHEELBASE;
+      }
+      else {
+        newX = x * TILE_SIZE - OFFSET_FROM_WHEELBASE;
+      }
     } else {
       midY = y + 0.5;
       firstTheta = 180;
       secondTheta = Math.abs(secondTheta - 360);
+      newY = x * TILE_SIZE - OFFSET_FROM_WHEELBASE;
+      if(turnRight) {
+        newX = x * TILE_SIZE - OFFSET_FROM_WHEELBASE;
+      }
+      else {
+        newX = x * TILE_SIZE + OFFSET_FROM_WHEELBASE;
+      }
+
     }
 
-    Navigation.travelTo(midX, y, 200);
-    odometer.setY(y * TILE_SIZE);
+    Navigation.travelTo(midX, y, speed);
+    odometer.setY(newY);
     // THE THETA NEEDS TO BE DYNAMICALLY SET
     odometer.setTheta(firstTheta);
-    Navigation.backUp((TILE_SIZE / 1.2), 200);
+    Button.waitForAnyPress();
+    Navigation.backUp((TILE_SIZE / 1.2), speed);
 
     // This forced turn is to avoid detecting lines when it is turning.
     if (turnRight) {
-      Navigation.turn(90, 200);
+      Navigation.turn(90, speed);
     } else {
-      Navigation.turn(-90, 200);
+      Navigation.turn(-90, speed);
     }
-
-    Navigation.travelTo(x, midY, 200);
-    odometer.setX(x * TILE_SIZE);
+//    Button.waitForAnyPress();
+    Navigation.travelTo(x, midY, speed);
+    odometer.setX(newX);
     odometer.setTheta(secondTheta);
 
   }

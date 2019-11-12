@@ -124,7 +124,7 @@ public class GameResources {
   /**
    * Light sensor to center of wheel-base distance
    */
-  public static final double OFFSET_FROM_WHEELBASE = 11.8;
+  public static final double OFFSET_FROM_WHEELBASE = 11.4;
 
 
 
