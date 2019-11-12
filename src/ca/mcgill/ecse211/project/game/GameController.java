@@ -87,6 +87,7 @@ public class GameController {
                 // LIGHT LOCALIZATION
                 gameState = GameState.LightLocalization;
                 gameNavigation.lightLocalize(gameNavigation.closestPoint());
+                gameState = GameState.Navigation;
                 gameNavigation.navigateToTunnel();
 
 
@@ -110,6 +111,7 @@ public class GameController {
                 // LIGHT LOCALIZATION
                 gameState = GameState.LightLocalization;
                 gameNavigation.lightLocalize(gameNavigation.closestPoint());
+                gameState = GameState.Navigation;
                 gameNavigation.navigateToTunnel();
 
                 // transition to tunnel state
@@ -128,6 +130,7 @@ public class GameController {
                 // LIGHT LOCALIZATION
                 gameState = GameState.LightLocalization;            
                 gameNavigation.lightLocalize(gameNavigation.closestPoint());
+                gameState = GameState.Navigation;
                 gameNavigation.navigateToLaunchPoint();
 
                 // Transit to launch state
@@ -156,8 +159,7 @@ public class GameController {
 
           // LIGHT LOCALIZATION
           gameState = GameState.LightLocalization;
-          localizationCoordinates = gameNavigation.closestPoint();
-          gameNavigation.lightLocalize(localizationCoordinates);
+          gameNavigation.lightLocalize(gameNavigation.closestPoint());
           gameState = GameState.Navigation;
           break;
 
