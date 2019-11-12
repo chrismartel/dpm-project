@@ -24,7 +24,6 @@ public class GameController {
 
           break;
 
-
         case Initialization:
           // start threads
           Thread odometerThread = new Thread(odometer);
@@ -35,16 +34,20 @@ public class GameController {
           // Initialize map
           gameNavigation.setGameParameters();
                     
-          // set first waypoint
-          navigationCoordinates = gameNavigation.getTunnelEntrance();
+          // set first checkpoint
           navigationDestination = NAVIGATION_DESTINATION.TUNNEL1_ENTRANCE;
-
-
-          gameState = GameState.LightLocalization;
-//          LCD.clear();
-//          LCD.drawString("PRESS TO START", 1, 1);
-//          buttonChoice = Button.waitForAnyPress();
-//          LCD.clear();
+          
+          //Warm up motors
+          Navigation.travel(2, FORWARD_SPEED_NORMAL);
+          Navigation.backUp(2, FORWARD_SPEED_NORMAL);
+          leftBallisticMotor.rotate(-5, true);
+          rightBallisticMotor.rotate(5, false);
+          
+          // transit to ultrasonic localization state
+          gameState = GameState.UltrasonicLocalization;
+          LCD.drawString("PRESS TO START US", 1, 1);
+          buttonChoice = Button.waitForAnyPress();
+          LCD.clear();
           break;
 
 
@@ -53,7 +56,6 @@ public class GameController {
           ultrasonicLocalizer.fallingEdge();
           // when us localization is done --> transition to light localization
           gameState = GameState.LightLocalization;
-          localizationCoordinates = STARTING_POINT;
           LCD.drawString("PRESS TO START LIGHT", 1, 1);
           buttonChoice = Button.waitForAnyPress();
           LCD.clear();
@@ -61,9 +63,10 @@ public class GameController {
 
 
         case LightLocalization:
-          odometer.setX(0.5 * TILE_SIZE);
-          odometer.setY(0.5 * TILE_SIZE);
+          gameNavigation.odometerInitialSet();
           gameNavigation.lightLocalize(STARTING_POINT);
+          gameState = GameState.Navigation;
+
           LCD.drawString("PRESS TO START NAV", 1, 1);
           buttonChoice = Button.waitForAnyPress();
           break;
@@ -83,8 +86,7 @@ public class GameController {
 
                 // LIGHT LOCALIZATION
                 gameState = GameState.LightLocalization;
-                localizationCoordinates = gameNavigation.closestPoint();
-                gameNavigation.lightLocalize(localizationCoordinates);
+                gameNavigation.lightLocalize(gameNavigation.closestPoint());
                 gameNavigation.navigateToTunnel();
 
 
@@ -107,8 +109,7 @@ public class GameController {
 
                 // LIGHT LOCALIZATION
                 gameState = GameState.LightLocalization;
-                localizationCoordinates = gameNavigation.closestPoint();
-                gameNavigation.lightLocalize(localizationCoordinates);
+                gameNavigation.lightLocalize(gameNavigation.closestPoint());
                 gameNavigation.navigateToTunnel();
 
                 // transition to tunnel state
@@ -125,9 +126,8 @@ public class GameController {
               if (navigationCompleted == true) {
 
                 // LIGHT LOCALIZATION
-                gameState = GameState.LightLocalization;
-                localizationCoordinates = gameNavigation.closestPoint();
-                gameNavigation.lightLocalize(localizationCoordinates);
+                gameState = GameState.LightLocalization;            
+                gameNavigation.lightLocalize(gameNavigation.closestPoint());
                 gameNavigation.navigateToLaunchPoint();
 
                 // Transit to launch state
@@ -170,8 +170,7 @@ public class GameController {
 
           // LIGHT LOCALIZATION
           gameState = GameState.LightLocalization;
-          localizationCoordinates = gameNavigation.closestPoint();
-          gameNavigation.lightLocalize(localizationCoordinates);
+          gameNavigation.lightLocalize(gameNavigation.closestPoint());
           gameState = GameState.Navigation;
           break;
 

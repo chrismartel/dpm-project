@@ -43,7 +43,9 @@ public class GameNavigation {
     launchPoint = new Point(0, 0);
   }
 
-
+  /**
+   * Method used to light localize to the closest point from the robot
+   */
   public void lightLocalize(Point closestPoint) {
 
     // THE GAME STATE MUST BE IN LIGHTLOCALIZATION.
@@ -92,10 +94,14 @@ public class GameNavigation {
 
     Navigation.travelTo(midX, y, speed);
     odometer.setY(newY);
+    System.out.println("corrected y: "+odometer.getY());
+
     // THE THETA NEEDS TO BE DYNAMICALLY SET
     odometer.setTheta(firstTheta);
+    System.out.println("angle: "+odometer.getTheta());
     Button.waitForAnyPress();
-    Navigation.backUp((TILE_SIZE / 1.2), speed);
+    
+    Navigation.backUp((TILE_SIZE / 3), speed);
 
     // This forced turn is to avoid detecting lines when it is turning.
     if (turnRight) {
@@ -103,14 +109,17 @@ public class GameNavigation {
     } else {
       Navigation.turn(-90, speed);
     }
-//    Button.waitForAnyPress();
-    Navigation.travelTo(x, midY, speed);
+    Navigation.travelTo(x , (odometer.getY()/TILE_SIZE), speed);
     odometer.setX(newX);
     odometer.setTheta(secondTheta);
+    System.out.println("corrected x: "+odometer.getX());
+    System.out.println("angle: "+odometer.getTheta());
+
+
 
   }
   // Aly's light localization method
-  /*
+  
   public void twoLineDetection() {
     float lastLeftValue = -1000;
     float currentLeftValue = 0;
@@ -155,7 +164,7 @@ public class GameNavigation {
     Sound.playTone(440,100);
     Sound.playTone(440,100);
     Sound.playTone(660,200);
-  }*/
+  }
 
   public void squareNavigation(double x, double y) {
     enableCorrection = true;
@@ -164,7 +173,7 @@ public class GameNavigation {
     enableCorrection = false;
   }
   
-  /*
+  
   public void navigateWithCorrection(double x, double y,int speed) {
     Navigation.travelTo(x-0.5, y-0.5, speed);
     Navigation.turnTo(0,100);
@@ -182,7 +191,7 @@ public class GameNavigation {
     odometer.setXYT(x, y, 0);
     Button.waitForAnyPress();
   }
-  */
+  
   
   /**
    * Method used to navigate to the tunnel entrance
@@ -452,25 +461,25 @@ public class GameNavigation {
     if (color == COLOR.GREEN) {
       switch (greenCorner) {
         case 0:
-          STARTING_POINT.x = 0;
-          STARTING_POINT.y = 0;
+          STARTING_POINT.x = 1;
+          STARTING_POINT.y = 1;
           CORNER_NUMBER = 0;
           break;
         case 1:
-          STARTING_POINT.x = 15;
-          STARTING_POINT.y = 0;
+          STARTING_POINT.x = 14;
+          STARTING_POINT.y = 1;
           CORNER_NUMBER = 1;
           System.out.println("CORNER 1 SET");
 
           break;
         case 2:
-          STARTING_POINT.x = 15;
-          STARTING_POINT.y = 9;
+          STARTING_POINT.x = 14;
+          STARTING_POINT.y = 8;
           CORNER_NUMBER = 2;
           break;
         case 3:
-          STARTING_POINT.x = 0;
-          STARTING_POINT.y = 9;
+          STARTING_POINT.x = 1;
+          STARTING_POINT.y = 8;
           CORNER_NUMBER = 3;
           break;
       }
@@ -607,6 +616,27 @@ public class GameNavigation {
    */
   public Point getTunnelExit() {
     return tunnelExit;
+  }
+  
+  public void odometerInitialSet() {
+    switch(CORNER_NUMBER) {
+      case 0:
+        odometer.setXYT(0.4*TILE_SIZE, 0.6*TILE_SIZE, odometer.getTheta());
+        break;
+      case 1:
+        odometer.setXYT(14.4*TILE_SIZE, 0.6*TILE_SIZE, odometer.getTheta());
+
+        break;
+      case 2:
+        odometer.setXYT(14.4*TILE_SIZE, 8.4*TILE_SIZE, odometer.getTheta());
+
+        break;
+      case 3:
+        odometer.setXYT(0.6*TILE_SIZE, 8.4*TILE_SIZE, odometer.getTheta());
+
+        break;
+      
+    }
   }
 
   /**
