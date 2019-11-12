@@ -76,6 +76,7 @@ public class GameNavigation {
       else {
         newX = x * TILE_SIZE - OFFSET_FROM_WHEELBASE;
       }
+
     } else {
       midY = y + 0.5;
       firstTheta = 180;
@@ -83,10 +84,13 @@ public class GameNavigation {
       newY = x * TILE_SIZE - OFFSET_FROM_WHEELBASE;
       if(turnRight) {
         newX = x * TILE_SIZE - OFFSET_FROM_WHEELBASE;
+        Navigation.turn(-180, speed);
       }
       else {
         newX = x * TILE_SIZE + OFFSET_FROM_WHEELBASE;
+        Navigation.turn(180, speed);
       }
+
 
     }
 

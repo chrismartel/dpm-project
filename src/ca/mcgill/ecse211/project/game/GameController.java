@@ -63,6 +63,8 @@ public class GameController {
         case LightLocalization:
           odometer.setX(0.5 * TILE_SIZE);
           odometer.setY(0.5 * TILE_SIZE);
+          STARTING_POINT.x = 0;
+          STARTING_POINT.y = 0;
           gameNavigation.lightLocalize(STARTING_POINT);
           System.out.println(odometer.getX());
           System.out.println(odometer.getY());
