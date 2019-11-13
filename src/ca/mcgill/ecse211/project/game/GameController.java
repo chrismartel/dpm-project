@@ -202,6 +202,7 @@ public class GameController {
         case Demo:
           gameNavigation.squareNavigation(bin.x, bin.y);
           gameNavigation.lightLocalize2(Resources.bin);
+          Navigation.backUp(OFFSET_FROM_WHEELBASE, FORWARD_SPEED_NORMAL);
           Navigation.turnTo(tnr.ur.x, ROTATE_SPEED_NORMAL);
           Sound.beep();
           Sound.beep();
