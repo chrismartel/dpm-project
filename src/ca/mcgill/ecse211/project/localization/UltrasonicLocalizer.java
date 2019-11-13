@@ -26,14 +26,14 @@ public class UltrasonicLocalizer {
    * rotation to record the value for alpha. Then it rotates in the anti-clockwise direction to record value for beta.
    * Using the values recorded, the robot will then appropriately orient itself accordingly along the 0 degree y-axis.
    */
-  public void fallingEdge() {
+  public void fallingEdge(int rotateSpeed) {
 
     double angleAdjustment = 0;
     int[] distances;
     int currentDistance;
     int lastDistance;
     // clockwise rotation to record value for alpha
-    Navigation.rotate(Turn.CLOCK_WISE, ROTATE_SPEED_SLOW);
+    Navigation.rotate(Turn.CLOCK_WISE, rotateSpeed);
     while (true) {
       distances = ultrasonicPoller.getFrontUsController().getDistances();
       currentDistance = distances[0];
@@ -49,7 +49,7 @@ public class UltrasonicLocalizer {
 
     // anti-clockwise rotation to record beta value
     Navigation.turn(-50, ROTATE_SPEED_SLOW);
-    Navigation.rotate(Turn.COUNTER_CLOCK_WISE, ROTATE_SPEED_SLOW);
+    Navigation.rotate(Turn.COUNTER_CLOCK_WISE, rotateSpeed);
     while (true) {
       distances = ultrasonicPoller.getFrontUsController().getDistances();
       currentDistance = distances[0];
@@ -65,7 +65,7 @@ public class UltrasonicLocalizer {
     angleAdjustment = this.angleHeadingAdjustment();
     // Adjust the current theta of the odometer by adding the computed heading
     odometer.update(0, 0, angleAdjustment);
-    Navigation.turnTo(0, ROTATE_SPEED_SLOW);
+    Navigation.turnTo(0, rotateSpeed);
     // set theta depending on the starting corner
     switch(CORNER_NUMBER) {
       case 0:

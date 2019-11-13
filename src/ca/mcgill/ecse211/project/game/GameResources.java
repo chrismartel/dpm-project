@@ -4,7 +4,7 @@ import ca.mcgill.ecse211.project.game.BallisticLauncher;
 import static ca.mcgill.ecse211.project.Resources.*;
 import java.util.LinkedList;
 import ca.mcgill.ecse211.project.Resources.Point;
-import ca.mcgill.ecse211.project.localization.LightLocalizer;
+import ca.mcgill.ecse211.project.Localization.LightLocalizer;
 import ca.mcgill.ecse211.project.game.Navigation;
 import ca.mcgill.ecse211.project.odometry.Odometer;
 import ca.mcgill.ecse211.project.sensor.UltrasonicPoller;
@@ -238,7 +238,7 @@ public class GameResources {
   /**
    * Light localizer
    */
-  public static LightLocalizer lightLocalization = LightLocalizer.getLightLocalizer();
+  public static LightLocalizer lightLocalizer = LightLocalizer.getLightLocalizer();
   
   
 
@@ -282,14 +282,7 @@ public class GameResources {
    * Current region the robot is on
    */
   public static REGION currentRegion;
-  /**
-   * Coordinates of the navigation destination
-   */
-  public static Point navigationCoordinates = new Point(0, 0);
-  /**
-   * Coordinates of the localization coordinates
-   */
-  public static Point localizationCoordinates = new Point(0, 0);
+
 
 
 

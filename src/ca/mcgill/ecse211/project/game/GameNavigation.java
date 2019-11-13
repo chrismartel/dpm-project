@@ -1,42 +1,10 @@
 package ca.mcgill.ecse211.project.game;
 
-import static ca.mcgill.ecse211.project.Resources.TEAM_NUMBER;
-import static ca.mcgill.ecse211.project.Resources.bin;
-import static ca.mcgill.ecse211.project.Resources.green;
-import static ca.mcgill.ecse211.project.Resources.greenCorner;
-import static ca.mcgill.ecse211.project.Resources.greenTeam;
-import static ca.mcgill.ecse211.project.Resources.island;
-import static ca.mcgill.ecse211.project.Resources.red;
-import static ca.mcgill.ecse211.project.Resources.redCorner;
-import static ca.mcgill.ecse211.project.Resources.redTeam;
-import static ca.mcgill.ecse211.project.Resources.tng;
-import static ca.mcgill.ecse211.project.Resources.tnr;
-import static ca.mcgill.ecse211.project.game.GameResources.CORNER_NUMBER;
-import static ca.mcgill.ecse211.project.game.GameResources.DIFFERENTIAL_LINE_THRESHOLD;
-import static ca.mcgill.ecse211.project.game.GameResources.FORWARD_SPEED_NORMAL;
-import static ca.mcgill.ecse211.project.game.GameResources.MAXIMAL_LAUNCH_DISTANCE;
-import static ca.mcgill.ecse211.project.game.GameResources.OFFSET_FROM_WHEELBASE;
-import static ca.mcgill.ecse211.project.game.GameResources.ROTATE_SPEED_SLOW;
-import static ca.mcgill.ecse211.project.game.GameResources.STARTING_POINT;
-import static ca.mcgill.ecse211.project.game.GameResources.TILE_SIZE;
-import static ca.mcgill.ecse211.project.game.GameResources.Tunnel;
-import static ca.mcgill.ecse211.project.game.GameResources.color;
-import static ca.mcgill.ecse211.project.game.GameResources.currentBottomLimit;
-import static ca.mcgill.ecse211.project.game.GameResources.currentLeftLimit;
-import static ca.mcgill.ecse211.project.game.GameResources.currentRegion;
-import static ca.mcgill.ecse211.project.game.GameResources.currentRightLimit;
-import static ca.mcgill.ecse211.project.game.GameResources.currentTopLimit;
-import static ca.mcgill.ecse211.project.game.GameResources.enableCorrection;
-import static ca.mcgill.ecse211.project.game.GameResources.leftColorSensor;
-import static ca.mcgill.ecse211.project.game.GameResources.leftMotor;
-import static ca.mcgill.ecse211.project.game.GameResources.odometer;
-import static ca.mcgill.ecse211.project.game.GameResources.restrictedLaunchPoints;
-import static ca.mcgill.ecse211.project.game.GameResources.rightColorSensor;
-import static ca.mcgill.ecse211.project.game.GameResources.rightMotor;
-import static ca.mcgill.ecse211.project.game.GameResources.gameState;
+import static ca.mcgill.ecse211.project.Resources.*;
+import static ca.mcgill.ecse211.project.game.GameResources.*;
+
 import java.util.LinkedList;
 import ca.mcgill.ecse211.project.Resources.Point;
-import ca.mcgill.ecse211.project.game.GameResources.COLOR;
 import ca.mcgill.ecse211.project.game.GameResources.REGION;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
@@ -75,7 +43,21 @@ public class GameNavigation {
     tunnelExit = new Point(0, 0);
     launchPoint = new Point(0, 0);
   }
-
+  
+  /**
+   * Method used to light localize when the robot is already approximately on the localize point
+   */
+  public void lightLocalize2(Point point) {
+    Navigation.turn(0, ROTATE_SPEED_NORMAL);
+    twoLineDetection();
+    Navigation.backUp(OFFSET_FROM_WHEELBASE);
+    odometer.setXYT(odometer.getX(),point.y*TILE_SIZE , 0);
+    Navigation.turnTo(90, ROTATE_SPEED_NORMAL);
+    twoLineDetection();
+    Navigation.backUp(OFFSET_FROM_WHEELBASE);
+    odometer.setXYT(point.x*TILE_SIZE,odometer.getY(),90);
+  }
+  
   /**
    * Method used to light localize to the closest point from the robot
    */
@@ -139,7 +121,6 @@ public class GameNavigation {
     // THE THETA NEEDS TO BE DYNAMICALLY SET
     odometer.setTheta(firstTheta);
     System.out.println("angle: "+odometer.getTheta());
-    Button.waitForAnyPress();
     
     Navigation.backUp((TILE_SIZE / 3), speed);
 
@@ -158,8 +139,12 @@ public class GameNavigation {
 
 
   }
-  // Aly's light localization method
   
+  /**
+   * Method in which the robot travels forward until one of its 2 light sensors detects a line. When a sensor detects a line, 
+   * the corresponding motor stops, and the other motor turns until its light sensor also detects a line. When 2 lines are
+   * detected, the robot stops.
+   */
   public void twoLineDetection() {
     float lastLeftValue = -1000;
     float currentLeftValue = 0;
@@ -170,25 +155,21 @@ public class GameNavigation {
     boolean left =false, right = false;
     float[] leftSensorData = new float[3];
     float[] rightSensorData = new float[3];
-    Navigation.travelForward(100);
+    Navigation.travelForward(FORWARD_SPEED_NORMAL);
     while(!(left && right)) {
       leftColorSensor.fetchSample(leftSensorData, 0);
       rightColorSensor.fetchSample(rightSensorData, 0);
       currentLeftValue = leftSensorData[0]*100;
       currentRightValue = rightSensorData[0]*100;
 
-
-
       if(-currentLeftValue + lastLeftValue>=DIFFERENTIAL_LINE_THRESHOLD)
       {
         left = true;
-        Sound.playTone(880,10);
         leftMotor.setSpeed(0);
       }
       if(-currentRightValue + lastRightValue>=DIFFERENTIAL_LINE_THRESHOLD)
       {
         right = true;
-        Sound.playTone(880,10);
         rightMotor.setSpeed(0);
       }
       lastLeftValue = currentLeftValue;
@@ -201,33 +182,17 @@ public class GameNavigation {
       }
 
     }
-    Sound.playTone(440,100);
-    Sound.playTone(440,100);
-    Sound.playTone(660,200);
   }
 
+  /**
+   * Method used to travel on the field by following the black lines directions, it enables the correction it the travel() method 
+   * in the Navigation class. It allows heading correction to be peform each time 2 lines are detected.
+   */
   public void squareNavigation(double x, double y) {
     enableCorrection = true;
     Navigation.travelTo(x, (odometer.getY() / TILE_SIZE), FORWARD_SPEED_NORMAL);
     Navigation.travelTo((odometer.getX() / TILE_SIZE), y, FORWARD_SPEED_NORMAL);
     enableCorrection = false;
-  }
-  
-  
-  public void navigateWithCorrection(double x, double y,int speed) {
-    Navigation.travelTo(x-0.5, y-0.5, speed);
-    Navigation.turnTo(0,100);
-    lightCorrect(x,y,speed);
-  }
-  public void lightCorrect(double x, double y, int speed) {
-    twoLineDetection();
-    Navigation.backUp(OFFSET_FROM_WHEELBASE);
-    Navigation.turn(90, 100);
-    odometer.setXYT(odometer.getX(), y , odometer.getTheta());
-    twoLineDetection();
-    Navigation.backUp(OFFSET_FROM_WHEELBASE);
-    odometer.setXYT(x, y, 90);
-    Button.waitForAnyPress();
   }
   
   
@@ -492,7 +457,7 @@ public class GameNavigation {
   }
 
   /**
-   * Method setting the coordinates of the starting corner
+   * Method setting the coordinates of the starting corner depending on the corner of the team color
    */
   public void setCorner() {
     // TODO: determine which is the corner 0
@@ -507,8 +472,6 @@ public class GameNavigation {
           STARTING_POINT.x = 14;
           STARTING_POINT.y = 1;
           CORNER_NUMBER = 1;
-          System.out.println("CORNER 1 SET");
-
           break;
         case 2:
           STARTING_POINT.x = 14;

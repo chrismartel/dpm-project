@@ -60,9 +60,9 @@ public class BallisticLauncher {
   /**
    * Method implementing multiple launches and reload depending on how many balls the robot is carrying
    */
-  public void multipleLaunch() {
+  public void multipleLaunch(double distance) {
     for(int i = 0 ; i< NUMBER_OF_BALLS; i++) {
-      this.launch(this.distance);
+      this.launch(distance);
       this.reload();
     }
   }

@@ -179,15 +179,6 @@ public class Navigation {
     // robot travels forward
     travelForward(speed);
     
-    if(gameState == GameState.LightLocalization) {
-//      LightLocalizer lightLocalization = LightLocalizer.getLightLocalizer();
-      while (lightLocalization.lightLocalize()) {
-        continue;
-      }
-      // set odometer
-      
-    }
-    
     // navigates as long as the state is not in avoidance
     while (gameState != GameState.Avoidance && gameState != GameState.LightLocalization) {
       dX = Math.abs(odometer.getX() - lastX);
@@ -203,7 +194,7 @@ public class Navigation {
         break;
       }
       if(enableCorrection) {
-        if(!lightLocalization.lightLocalize()) {
+        if(!lightLocalizer.lightLocalize()) {
           OdometryCorrection.correctValues();
           System.out.println("x: "+odometer.getX());
           System.out.println("y: "+odometer.getY());
