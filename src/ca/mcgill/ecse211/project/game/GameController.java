@@ -3,6 +3,7 @@ package ca.mcgill.ecse211.project.game;
 import static ca.mcgill.ecse211.project.game.GameResources.*;
 import ca.mcgill.ecse211.project.Resources;
 import static ca.mcgill.ecse211.project.Resources.*;
+import ca.mcgill.ecse211.project.Localization.LightLocalizer;
 import ca.mcgill.ecse211.project.Localization.UltrasonicLocalizer;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
@@ -67,7 +68,7 @@ public class GameController {
           gameNavigation.odometerInitialSet();
 
           //gameNavigation.lightLocalize(STARTING_POINT);
-          gameNavigation.lightLocalize2(STARTING_POINT);
+          LightLocalizer.lightLocalize(STARTING_POINT);
           gameState = GameState.Navigation;
           break;
 
@@ -98,7 +99,7 @@ public class GameController {
                 // LIGHT LOCALIZATION
                 closestPoint = gameNavigation.closestPoint();
                 Navigation.travelTo(closestPoint.x, closestPoint.y, FORWARD_SPEED_NORMAL);
-                gameNavigation.lightLocalize2(closestPoint);
+                LightLocalizer.lightLocalize(closestPoint);
                 gameState = GameState.Navigation;
                 
                 // go to tunnel entrance
@@ -119,7 +120,7 @@ public class GameController {
                 // LIGHT LOCALIZATION
                 closestPoint = gameNavigation.closestPoint();
                 Navigation.travelTo(closestPoint.x, closestPoint.y, FORWARD_SPEED_NORMAL);
-                gameNavigation.lightLocalize2(closestPoint);
+                LightLocalizer.lightLocalize(closestPoint);
                 gameState = GameState.Navigation;
                 
                 // navigate to launch point after localizing
@@ -146,7 +147,7 @@ public class GameController {
 
         case Tunnel:
           // adjust heading
-          gameNavigation.twoLineDetection();
+          LightLocalizer.twoLineDetection();
           // position center of rotation at tunnel entrance
           Navigation.backUp(OFFSET_FROM_WHEELBASE, FORWARD_SPEED_NORMAL);
           // correct odometer according to tunnel entrance data
@@ -155,7 +156,7 @@ public class GameController {
           gameNavigation.navigateThroughTunnel();
           // update the region, the tunnel data and the zone limits
           // adjust heading
-          gameNavigation.twoLineDetection();
+          LightLocalizer.twoLineDetection();
           gameNavigation.updateParameters();
           
           // LIGHT LOCALIZATION
@@ -167,7 +168,7 @@ public class GameController {
           System.out.println("position after getting to closest point: "+odometer.getX()/TILE_SIZE+ " "+ odometer.getY()/TILE_SIZE + " "+ odometer.getTheta());
 
           // localize according to the closest point
-          gameNavigation.lightLocalize2(closestPoint);
+          LightLocalizer.lightLocalize(closestPoint);
           System.out.println("position after localizing to closest point: "+odometer.getX()/TILE_SIZE+ " "+ odometer.getY()/TILE_SIZE + " "+ odometer.getTheta());
 
           // transition back to navigation
@@ -187,7 +188,7 @@ public class GameController {
           // LIGHT LOCALIZATION
           closestPoint = gameNavigation.closestPoint();
           Navigation.travelTo(closestPoint.x, closestPoint.y, FORWARD_SPEED_NORMAL);
-          gameNavigation.lightLocalize2(closestPoint);
+          LightLocalizer.lightLocalize(closestPoint);
           gameState = GameState.Navigation;
 
           break;
@@ -201,7 +202,7 @@ public class GameController {
           break;
         case Demo:
           gameNavigation.squareNavigation(bin.x, bin.y);
-          gameNavigation.lightLocalize2(Resources.bin);
+          LightLocalizer.lightLocalize(bin);
           Navigation.backUp(OFFSET_FROM_WHEELBASE, FORWARD_SPEED_NORMAL);
           Navigation.turnTo(tnr.ur.x, ROTATE_SPEED_NORMAL);
           Sound.beep();

@@ -5,6 +5,7 @@ import static ca.mcgill.ecse211.project.game.GameResources.*;
 
 import java.util.LinkedList;
 import ca.mcgill.ecse211.project.Resources.Point;
+import ca.mcgill.ecse211.project.Localization.LightLocalizer;
 import ca.mcgill.ecse211.project.game.GameResources.REGION;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
@@ -44,144 +45,7 @@ public class GameNavigation {
     launchPoint = new Point(0, 0);
   }
   
-  /**
-   * Method used to light localize when the robot is already approximately on the localize point
-   */
-  public void lightLocalize2(Point point) {
-    Navigation.turnTo(0, ROTATE_SPEED_NORMAL);
-    twoLineDetection();
-    Navigation.backUp(OFFSET_FROM_WHEELBASE, FORWARD_SPEED_NORMAL);
-    odometer.setXYT(odometer.getX(),point.y*TILE_SIZE , 0);
-    Navigation.turnTo(90, ROTATE_SPEED_NORMAL);
-    twoLineDetection();
-    odometer.setXYT(point.x*TILE_SIZE+OFFSET_FROM_WHEELBASE,odometer.getY(),90);
-  }
-  
-  /**
-   * Method used to light localize to the closest point from the robot
-   */
-  public void lightLocalize(Point closestPoint) {
 
-    // THE GAME STATE MUST BE IN LIGHTLOCALIZATION.
-    int speed = 150;
-    double x = closestPoint.x;
-    double y = closestPoint.y;
-    double midX;
-    double midY;
-    boolean turnRight = false;
-    double firstTheta;
-    double secondTheta;
-    double newY;
-    double newX;
-    // LIGHT LOCALIZE FOR THE Y VALUE FIRST.
-    if (x > (odometer.getX() / TILE_SIZE)) {
-      midX = x - 0.5;
-      turnRight = true;
-      secondTheta = 90;
-    } else {
-      midX = x + 0.5;
-      secondTheta = 270;
-    }
-    if (y > (odometer.getY() / TILE_SIZE)) {
-      midY = y - 0.5;
-      firstTheta = 0;
-      newY = y * TILE_SIZE + OFFSET_FROM_WHEELBASE;
-      if(turnRight) {
-        newX = x * TILE_SIZE + OFFSET_FROM_WHEELBASE;
-      }
-      else {
-        newX = x * TILE_SIZE - OFFSET_FROM_WHEELBASE;
-      }
-
-    } else {
-      midY = y + 0.5;
-      firstTheta = 180;
-      secondTheta = Math.abs(secondTheta - 360);
-      newY = x * TILE_SIZE - OFFSET_FROM_WHEELBASE;
-      if(turnRight) {
-        newX = x * TILE_SIZE - OFFSET_FROM_WHEELBASE;
-//        Navigation.turn(-180, speed);
-      }
-      else {
-        newX = x * TILE_SIZE + OFFSET_FROM_WHEELBASE;
-//        Navigation.turn(180, speed);
-      }
-
-    }
-    
-//    gameState = GameState.Navigation;
-
-//    gameState = GameState.LightLocalization;
-    Navigation.turnTo(midX, y, speed);
-    Navigation.travelTo(midX, y, speed);
-    odometer.setY(newY);
-   // System.out.println("corrected y: "+odometer.getY());
-
-    // THE THETA NEEDS TO BE DYNAMICALLY SET
-    odometer.setTheta(firstTheta);
-    //System.out.println("angle: "+odometer.getTheta());
-    
-    Navigation.backUp((TILE_SIZE / 3), speed);
-
-    // This forced turn is to avoid detecting lines when it is turning.
-    if (turnRight) {
-      Navigation.turn(90, speed);
-    } else {
-      Navigation.turn(-90, speed);
-    }
-    Navigation.travelTo(x , (odometer.getY()/TILE_SIZE), speed);
-    odometer.setX(newX);
-    odometer.setTheta(secondTheta);
-  //  System.out.println("corrected x: "+odometer.getX());
-    //System.out.println("angle: "+odometer.getTheta());
-
-
-
-  }
-  
-  /**
-   * Method in which the robot travels forward until one of its 2 light sensors detects a line. When a sensor detects a line, 
-   * the corresponding motor stops, and the other motor turns until its light sensor also detects a line. When 2 lines are
-   * detected, the robot stops.
-   */
-  public void twoLineDetection() {
-    float lastLeftValue = -1000;
-    float currentLeftValue = 0;
-    float lastRightValue = -1000;
-    float currentRightValue = 0;
-    leftColorSensor.setCurrentMode("Red");
-    rightColorSensor.setCurrentMode("Red");
-    boolean left =false, right = false;
-    float[] leftSensorData = new float[3];
-    float[] rightSensorData = new float[3];
-    Navigation.travelForward(FORWARD_SPEED_NORMAL);
-    while(!(left && right)) {
-      leftColorSensor.fetchSample(leftSensorData, 0);
-      rightColorSensor.fetchSample(rightSensorData, 0);
-      currentLeftValue = leftSensorData[0]*100;
-      currentRightValue = rightSensorData[0]*100;
-
-      if(-currentLeftValue + lastLeftValue>=DIFFERENTIAL_LINE_THRESHOLD)
-      {
-        left = true;
-        leftMotor.setSpeed(0);
-      }
-      if(-currentRightValue + lastRightValue>=DIFFERENTIAL_LINE_THRESHOLD)
-      {
-        right = true;
-        rightMotor.setSpeed(0);
-      }
-      lastLeftValue = currentLeftValue;
-      lastRightValue = currentRightValue;
-      try {
-        Thread.sleep(75);
-      } catch (InterruptedException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-
-    }
-  }
 
   /**
    * Method used to travel on the field by following the black lines directions, it enables the correction it the travel() method 

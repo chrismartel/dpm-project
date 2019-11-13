@@ -40,10 +40,6 @@ public class LightLocalizer {
   
   private static LightLocalizer loc; // Returned as singleton
   
-  /**
-   * coordinates to reach with light localization
-   */
-  private Point coordinates;
 
 
   /**
@@ -65,7 +61,6 @@ public class LightLocalizer {
 
     currentRightColorValue = (rightSensorData[0] * 100);
     lastRightColorValue = currentRightColorValue;
-
   }
   
   
@@ -83,31 +78,70 @@ public class LightLocalizer {
     return loc;
   }
 
-  
+  /**
+   * Method in which the robot travels forward until one of its 2 light sensors detects a line. When a sensor detects a line, 
+   * the corresponding motor stops, and the other motor turns until its light sensor also detects a line. When 2 lines are
+   * detected, the robot stops.
+   */
+  public static void twoLineDetection() {
+    float lastLeftValue = -1000;
+    float currentLeftValue = 0;
+    float lastRightValue = -1000;
+    float currentRightValue = 0;
+    leftColorSensor.setCurrentMode("Red");
+    rightColorSensor.setCurrentMode("Red");
+    boolean left =false, right = false;
+    float[] leftSensorData = new float[3];
+    float[] rightSensorData = new float[3];
+    Navigation.travelForward(FORWARD_SPEED_NORMAL);
+    while(!(left && right)) {
+      leftColorSensor.fetchSample(leftSensorData, 0);
+      rightColorSensor.fetchSample(rightSensorData, 0);
+      currentLeftValue = leftSensorData[0]*100;
+      currentRightValue = rightSensorData[0]*100;
 
+      if(-currentLeftValue + lastLeftValue>=DIFFERENTIAL_LINE_THRESHOLD)
+      {
+        left = true;
+        leftMotor.setSpeed(0);
+      }
+      if(-currentRightValue + lastRightValue>=DIFFERENTIAL_LINE_THRESHOLD)
+      {
+        right = true;
+        rightMotor.setSpeed(0);
+      }
+      lastLeftValue = currentLeftValue;
+      lastRightValue = currentRightValue;
+      try {
+        Thread.sleep(75);
+      } catch (InterruptedException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
 
+    }
+  }
+
+  /**
+   * Method that checks if lines are detected and stops the corresponding motors accordingly
+   * 
+   * @return : false if both motors are stopped, true if 0 or 1 motor is stopped
+   */
   public boolean lightLocalize() {
-    
-    // Perform full rotation to record angle values at each black line
-//    Navigation.rotate(Turn.COUNTER_CLOCK_WISE, ROTATE_SPEED_SLOW);
-    
       int lines = lineDetected();
       if(lines == 1) {
         //only left sensor detected
-//        leftValues = odometer.getXYT();
         leftMotor.setSpeed(0);
       }
       else if (lines == 2) {
         //only right sensor detected
         rightMotor.setSpeed(0);
-//        rightValues = odometer.sgetXYT();
       }
       else if (lines == 3){
         Navigation.stopMotors();
         // Both lines detected or no lines detected. 
         // Therefore, do nothing
       }
-      
       if(leftMotor.getSpeed() == 0 && rightMotor.getSpeed() == 0) {
         // SET THE ODOMETER HERE
         return false;
@@ -122,7 +156,6 @@ public class LightLocalizer {
         }
       }
       return true;
-
   }
 
 
@@ -179,15 +212,19 @@ public class LightLocalizer {
     endTime = System.currentTimeMillis();
     return line;
   }
-
+  
   /**
-   * getter and setter for the goal coordinates of the light localization [x, y]
+   * Method used to light localize when the robot is already approximately on the localize point
    */
-  public void setCoordinates(Point coordinates) {
-    this.coordinates = coordinates;
+  public static void lightLocalize(Point point) {
+    Navigation.turnTo(0, ROTATE_SPEED_NORMAL);
+    LightLocalizer.twoLineDetection();
+    Navigation.backUp(OFFSET_FROM_WHEELBASE, FORWARD_SPEED_NORMAL);
+    odometer.setXYT(odometer.getX(),point.y*TILE_SIZE , 0);
+    Navigation.turnTo(90, ROTATE_SPEED_NORMAL);
+    LightLocalizer.twoLineDetection();
+    odometer.setXYT(point.x*TILE_SIZE+OFFSET_FROM_WHEELBASE,odometer.getY(),90);
   }
 
-  public Point getCoordinates() {
-    return coordinates;
-  }
+
 }
