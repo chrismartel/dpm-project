@@ -1,12 +1,45 @@
 package ca.mcgill.ecse211.project.game;
 
-import static ca.mcgill.ecse211.project.game.GameResources.*;
+import static ca.mcgill.ecse211.project.Resources.TEAM_NUMBER;
+import static ca.mcgill.ecse211.project.Resources.bin;
+import static ca.mcgill.ecse211.project.Resources.green;
+import static ca.mcgill.ecse211.project.Resources.greenCorner;
+import static ca.mcgill.ecse211.project.Resources.greenTeam;
+import static ca.mcgill.ecse211.project.Resources.island;
+import static ca.mcgill.ecse211.project.Resources.red;
+import static ca.mcgill.ecse211.project.Resources.redCorner;
+import static ca.mcgill.ecse211.project.Resources.redTeam;
+import static ca.mcgill.ecse211.project.Resources.tng;
+import static ca.mcgill.ecse211.project.Resources.tnr;
+import static ca.mcgill.ecse211.project.game.GameResources.CORNER_NUMBER;
+import static ca.mcgill.ecse211.project.game.GameResources.DIFFERENTIAL_LINE_THRESHOLD;
+import static ca.mcgill.ecse211.project.game.GameResources.FORWARD_SPEED_NORMAL;
+import static ca.mcgill.ecse211.project.game.GameResources.MAXIMAL_LAUNCH_DISTANCE;
+import static ca.mcgill.ecse211.project.game.GameResources.OFFSET_FROM_WHEELBASE;
+import static ca.mcgill.ecse211.project.game.GameResources.ROTATE_SPEED_SLOW;
+import static ca.mcgill.ecse211.project.game.GameResources.STARTING_POINT;
+import static ca.mcgill.ecse211.project.game.GameResources.TILE_SIZE;
+import static ca.mcgill.ecse211.project.game.GameResources.Tunnel;
+import static ca.mcgill.ecse211.project.game.GameResources.color;
+import static ca.mcgill.ecse211.project.game.GameResources.currentBottomLimit;
+import static ca.mcgill.ecse211.project.game.GameResources.currentLeftLimit;
+import static ca.mcgill.ecse211.project.game.GameResources.currentRegion;
+import static ca.mcgill.ecse211.project.game.GameResources.currentRightLimit;
+import static ca.mcgill.ecse211.project.game.GameResources.currentTopLimit;
+import static ca.mcgill.ecse211.project.game.GameResources.enableCorrection;
+import static ca.mcgill.ecse211.project.game.GameResources.leftColorSensor;
+import static ca.mcgill.ecse211.project.game.GameResources.leftMotor;
+import static ca.mcgill.ecse211.project.game.GameResources.odometer;
+import static ca.mcgill.ecse211.project.game.GameResources.restrictedLaunchPoints;
+import static ca.mcgill.ecse211.project.game.GameResources.rightColorSensor;
+import static ca.mcgill.ecse211.project.game.GameResources.rightMotor;
+import static ca.mcgill.ecse211.project.game.GameResources.gameState;
 import java.util.LinkedList;
+import ca.mcgill.ecse211.project.Resources.Point;
 import ca.mcgill.ecse211.project.game.GameResources.COLOR;
 import ca.mcgill.ecse211.project.game.GameResources.REGION;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
-import static ca.mcgill.ecse211.project.Resources.*;
 
 
 
@@ -86,16 +119,19 @@ public class GameNavigation {
       newY = x * TILE_SIZE - OFFSET_FROM_WHEELBASE;
       if(turnRight) {
         newX = x * TILE_SIZE - OFFSET_FROM_WHEELBASE;
-        Navigation.turn(-180, speed);
+//        Navigation.turn(-180, speed);
       }
       else {
         newX = x * TILE_SIZE + OFFSET_FROM_WHEELBASE;
-        Navigation.turn(180, speed);
+//        Navigation.turn(180, speed);
       }
 
-
     }
+    
+//    gameState = GameState.Navigation;
 
+//    gameState = GameState.LightLocalization;
+    Navigation.turnTo(midX, y, speed);
     Navigation.travelTo(midX, y, speed);
     odometer.setY(newY);
     System.out.println("corrected y: "+odometer.getY());
@@ -105,7 +141,7 @@ public class GameNavigation {
     System.out.println("angle: "+odometer.getTheta());
     Button.waitForAnyPress();
     
-    Navigation.backUp((OFFSET_FROM_WHEELBASE),speed);
+    Navigation.backUp((TILE_SIZE / 3), speed);
 
     // This forced turn is to avoid detecting lines when it is turning.
     if (turnRight) {
@@ -625,18 +661,18 @@ public class GameNavigation {
   public void odometerInitialSet() {
     switch(CORNER_NUMBER) {
       case 0:
-        odometer.setXYT(0.5*TILE_SIZE, 0.6*TILE_SIZE, odometer.getTheta());
+        odometer.setXYT(0.4*TILE_SIZE, 0.6*TILE_SIZE, odometer.getTheta());
         break;
       case 1:
-        odometer.setXYT(14.5*TILE_SIZE, 0.6*TILE_SIZE, odometer.getTheta());
+        odometer.setXYT(14.4*TILE_SIZE, 0.6*TILE_SIZE, odometer.getTheta());
 
         break;
       case 2:
-        odometer.setXYT(14.5*TILE_SIZE, 8.4*TILE_SIZE, odometer.getTheta());
+        odometer.setXYT(14.4*TILE_SIZE, 8.4*TILE_SIZE, odometer.getTheta());
 
         break;
       case 3:
-        odometer.setXYT(0.5*TILE_SIZE, 8.4*TILE_SIZE, odometer.getTheta());
+        odometer.setXYT(0.6*TILE_SIZE, 8.4*TILE_SIZE, odometer.getTheta());
 
         break;
       

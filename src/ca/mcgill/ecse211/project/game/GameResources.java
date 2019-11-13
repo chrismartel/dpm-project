@@ -109,7 +109,7 @@ public class GameResources {
   /**
    * Differential value to determine if a black line is detected or not
    */
-  public static final int DIFFERENTIAL_LINE_THRESHOLD = 10; // HAS TO BE DETERMINE BY TESTING
+  public static final int DIFFERENTIAL_LINE_THRESHOLD = 7; // HAS TO BE DETERMINE BY TESTING
 
   /**
    * Window size for the ultrasonic sensor data polling
@@ -120,7 +120,7 @@ public class GameResources {
    * Period of the light sensor operations
    */
 
-  public static final long LIGHT_SENSOR_PERIOD = 50; // HAS TO BE DETERMINED BY TESTING was 235
+  public static final long LIGHT_SENSOR_PERIOD = 25; // HAS TO BE DETERMINED BY TESTING was 235
   /**
    * Light sensor to center of wheel-base distance
    */

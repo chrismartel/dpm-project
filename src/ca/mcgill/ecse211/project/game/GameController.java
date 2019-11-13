@@ -1,8 +1,19 @@
 package ca.mcgill.ecse211.project.game;
 
-import static ca.mcgill.ecse211.project.game.GameResources.*;
-import lejos.hardware.Button;
+import static ca.mcgill.ecse211.project.game.GameResources.FORWARD_SPEED_NORMAL;
+import static ca.mcgill.ecse211.project.game.GameResources.LCD;
+import static ca.mcgill.ecse211.project.game.GameResources.STARTING_POINT;
+import static ca.mcgill.ecse211.project.game.GameResources.gameState;
+import static ca.mcgill.ecse211.project.game.GameResources.leftBallisticMotor;
+import static ca.mcgill.ecse211.project.game.GameResources.navigationCompleted;
+import static ca.mcgill.ecse211.project.game.GameResources.navigationCoordinates;
+import static ca.mcgill.ecse211.project.game.GameResources.navigationDestination;
+import static ca.mcgill.ecse211.project.game.GameResources.odometer;
+import static ca.mcgill.ecse211.project.game.GameResources.rightBallisticMotor;
+import static ca.mcgill.ecse211.project.game.GameResources.ultrasonicPoller;
+import ca.mcgill.ecse211.project.game.GameResources.NAVIGATION_DESTINATION;
 import ca.mcgill.ecse211.project.localization.UltrasonicLocalizer;
+import lejos.hardware.Button;
 
 public class GameController {
 
@@ -89,8 +100,9 @@ public class GameController {
               if (navigationCompleted == true) {
 
                 // LIGHT LOCALIZATION
-                gameState = GameState.LightLocalization;
-                gameNavigation.lightLocalize(gameNavigation.closestPoint());
+//                gameState = GameState.LightLocalization;
+//                gameNavigation.lightLocalize(gameNavigation.closestPoint());
+                
                 gameState = GameState.Navigation;
                 gameNavigation.navigateToTunnel();
 

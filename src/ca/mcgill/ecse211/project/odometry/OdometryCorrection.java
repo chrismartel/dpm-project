@@ -79,40 +79,46 @@ public class OdometryCorrection {
     int difference = 5;
     double lowerBound = odometer.getTheta() - difference;
     double upperBound = odometer.getTheta() + difference;
-    if((lowerBound >= (0 - difference) || lowerBound >= (360 - (2 * difference))) && 
-        ((0 + (2 * difference)) >= upperBound || upperBound <= (360 + difference))) {
+    
+    if((lowerBound >= (0 - difference) && upperBound <= (0 + (2* difference))) ||
+        (lowerBound >= (360 - (2 * difference)) && upperBound <= (360 + difference))) {
       //The robot is going forward
       double currentYLine = odometer.getY() - OFFSET_FROM_WHEELBASE;
       int lineCount = (int) Math.round(currentYLine / TILE_SIZE); 
-      odometer.setY(lineCount * TILE_SIZE);
+      odometer.setY(lineCount * TILE_SIZE + OFFSET_FROM_WHEELBASE);
       odometer.setTheta(0);
-      
+      System.out.println("GOING FORWARD");
     }
+
     else if(lowerBound >= (90 - (2 * difference)) && upperBound <= (90 + (2 * difference)) ) {
       //going right
       double currentXLine = odometer.getX() - OFFSET_FROM_WHEELBASE;
       int lineCount = (int) Math.round(currentXLine / TILE_SIZE); 
       Sound.beep();
       System.out.println("line count" + lineCount);
-      odometer.setX(lineCount * TILE_SIZE);
+      odometer.setX(lineCount * TILE_SIZE + OFFSET_FROM_WHEELBASE);
       odometer.setTheta(90);
+      System.out.println("GOING right");
     }
     else if(lowerBound >= (180 - (2 * difference) ) && upperBound <= (180 + (2 * difference)) ) {
       //going backward
       double currentYLine = odometer.getY() + OFFSET_FROM_WHEELBASE;
       int lineCount = (int) Math.round(currentYLine / TILE_SIZE); 
-      odometer.setY(lineCount * TILE_SIZE);
+      odometer.setY(lineCount * TILE_SIZE - OFFSET_FROM_WHEELBASE);
       odometer.setTheta(180);
+      System.out.println("GOING backward");
     }
     else if(lowerBound >= (270 - (2 * difference) ) && upperBound <= (270 + (2 * difference)) ){
       //going left
       double currentXLine = odometer.getX() + OFFSET_FROM_WHEELBASE;
       int lineCount = (int) Math.round(currentXLine / TILE_SIZE); 
-      odometer.setX(lineCount * TILE_SIZE);
+      odometer.setX(lineCount * TILE_SIZE - OFFSET_FROM_WHEELBASE);
       odometer.setTheta(270);
+      System.out.println("GOING left");
     }
     else {
       Sound.beep();
+      System.out.println("gonig where??");
     }
   }
   
