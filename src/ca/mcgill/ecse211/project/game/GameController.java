@@ -2,7 +2,7 @@ package ca.mcgill.ecse211.project.game;
 
 import static ca.mcgill.ecse211.project.game.GameResources.*;
 import ca.mcgill.ecse211.project.Resources;
-import ca.mcgill.ecse211.project.Resources.*;
+import static ca.mcgill.ecse211.project.Resources.*;
 import ca.mcgill.ecse211.project.Localization.UltrasonicLocalizer;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
@@ -49,6 +49,7 @@ public class GameController {
           rightBallisticMotor.rotate(+5, false);
           
           // transit to ultrasonic localization state
+          Button.waitForAnyPress();
           gameState = GameState.UltrasonicLocalization;
           break;
 
@@ -100,8 +101,8 @@ public class GameController {
                 gameNavigation.lightLocalize2(closestPoint);
                 gameState = GameState.Navigation;
                 
+                // go to tunnel entrance
                 gameNavigation.navigateToTunnel();
-
 
                 // transition to tunnel state
                 gameState = GameState.Tunnel;
@@ -121,7 +122,7 @@ public class GameController {
                 gameNavigation.lightLocalize2(closestPoint);
                 gameState = GameState.Navigation;
                 
-                // navigate to launch poitn after localizing
+                // navigate to launch point after localizing
                 gameNavigation.navigateToLaunchPoint();
 
                 // Transit to launch state
@@ -147,22 +148,28 @@ public class GameController {
           // adjust heading
           gameNavigation.twoLineDetection();
           // position center of rotation at tunnel entrance
-          Navigation.backUp(OFFSET_FROM_WHEELBASE);
+          Navigation.backUp(OFFSET_FROM_WHEELBASE, FORWARD_SPEED_NORMAL);
           // correct odometer according to tunnel entrance data
-          odometer.setXYT(gameNavigation.getTunnelEntrance().x, gameNavigation.getTunnelEntrance().y, gameNavigation.getTunnelTraversalOrientation());
+          odometer.setXYT(gameNavigation.getTunnelEntrance().x*TILE_SIZE, gameNavigation.getTunnelEntrance().y*TILE_SIZE, gameNavigation.getTunnelTraversalOrientation());
           // navigate through tunnel
           gameNavigation.navigateThroughTunnel();
           // update the region, the tunnel data and the zone limits
+          // adjust heading
+          gameNavigation.twoLineDetection();
           gameNavigation.updateParameters();
           
           // LIGHT LOCALIZATION
           // find closest point
           closestPoint = gameNavigation.closestPoint();
+          System.out.println("closest point: "+closestPoint.x+ " "+ closestPoint.y);
           // travel to closest point
           Navigation.travelTo(closestPoint.x, closestPoint.y, FORWARD_SPEED_NORMAL);
+          System.out.println("position after getting to closest point: "+odometer.getX()/TILE_SIZE+ " "+ odometer.getY()/TILE_SIZE + " "+ odometer.getTheta());
+
           // localize according to the closest point
           gameNavigation.lightLocalize2(closestPoint);
-          
+          System.out.println("position after localizing to closest point: "+odometer.getX()/TILE_SIZE+ " "+ odometer.getY()/TILE_SIZE + " "+ odometer.getTheta());
+
           // transition back to navigation
 //          gameState = GameState.Navigation;
           
@@ -193,14 +200,16 @@ public class GameController {
           gameState = GameState.Navigation;
           break;
         case Demo:
-          Navigation.travelTo(Resources.bin.x, Resources.bin.y, FORWARD_SPEED_NORMAL);
-          gameNavigation.lightLocalize(Resources.bin);
-          Navigation.turnTo(Resources.tnr.ur.x, ROTATE_SPEED_NORMAL);
+          gameNavigation.squareNavigation(bin.x, bin.y);
+          gameNavigation.lightLocalize2(Resources.bin);
+          Navigation.turnTo(tnr.ur.x, ROTATE_SPEED_NORMAL);
           Sound.beep();
           Sound.beep();
           Sound.beep();
           ballisticLauncher.multipleLaunch(MAXIMAL_LAUNCH_DISTANCE);
           Sound.beep();
+          gameState = GameState.Done;
+
           break;
         default:
           break;

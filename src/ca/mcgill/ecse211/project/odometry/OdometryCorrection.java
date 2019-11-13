@@ -87,18 +87,17 @@ public class OdometryCorrection {
       int lineCount = (int) Math.round(currentYLine / TILE_SIZE); 
       odometer.setY(lineCount * TILE_SIZE + OFFSET_FROM_WHEELBASE);
       odometer.setTheta(0);
-      System.out.println("GOING FORWARD");
+      //System.out.println("GOING FORWARD");
     }
 
     else if(lowerBound >= (90 - (2 * difference)) && upperBound <= (90 + (2 * difference)) ) {
       //going right
       double currentXLine = odometer.getX() - OFFSET_FROM_WHEELBASE;
       int lineCount = (int) Math.round(currentXLine / TILE_SIZE); 
-      Sound.beep();
-      System.out.println("line count" + lineCount);
+     // System.out.println("line count" + lineCount);
       odometer.setX(lineCount * TILE_SIZE + OFFSET_FROM_WHEELBASE);
       odometer.setTheta(90);
-      System.out.println("GOING right");
+      //System.out.println("GOING right");
     }
     else if(lowerBound >= (180 - (2 * difference) ) && upperBound <= (180 + (2 * difference)) ) {
       //going backward
@@ -106,7 +105,7 @@ public class OdometryCorrection {
       int lineCount = (int) Math.round(currentYLine / TILE_SIZE); 
       odometer.setY(lineCount * TILE_SIZE - OFFSET_FROM_WHEELBASE);
       odometer.setTheta(180);
-      System.out.println("GOING backward");
+      //System.out.println("GOING backward");
     }
     else if(lowerBound >= (270 - (2 * difference) ) && upperBound <= (270 + (2 * difference)) ){
       //going left
@@ -114,12 +113,12 @@ public class OdometryCorrection {
       int lineCount = (int) Math.round(currentXLine / TILE_SIZE); 
       odometer.setX(lineCount * TILE_SIZE - OFFSET_FROM_WHEELBASE);
       odometer.setTheta(270);
-      System.out.println("GOING left");
+     // System.out.println("GOING left");
     }
     else {
-      Sound.beep();
-      System.out.println("gonig where??");
+     // System.out.println("gonig where??");
     }
+    System.out.println("ODOMETRY CORRECTION"+ odometer.getX()/TILE_SIZE+ ", "+ odometer.getY()/TILE_SIZE+ ", ");
   }
   
   

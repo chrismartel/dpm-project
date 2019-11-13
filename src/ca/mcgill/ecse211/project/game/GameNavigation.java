@@ -48,14 +48,13 @@ public class GameNavigation {
    * Method used to light localize when the robot is already approximately on the localize point
    */
   public void lightLocalize2(Point point) {
-    Navigation.turn(0, ROTATE_SPEED_NORMAL);
+    Navigation.turnTo(0, ROTATE_SPEED_NORMAL);
     twoLineDetection();
-    Navigation.backUp(OFFSET_FROM_WHEELBASE);
+    Navigation.backUp(OFFSET_FROM_WHEELBASE, FORWARD_SPEED_NORMAL);
     odometer.setXYT(odometer.getX(),point.y*TILE_SIZE , 0);
     Navigation.turnTo(90, ROTATE_SPEED_NORMAL);
     twoLineDetection();
-    Navigation.backUp(OFFSET_FROM_WHEELBASE);
-    odometer.setXYT(point.x*TILE_SIZE,odometer.getY(),90);
+    odometer.setXYT(point.x*TILE_SIZE+OFFSET_FROM_WHEELBASE,odometer.getY(),90);
   }
   
   /**
@@ -116,11 +115,11 @@ public class GameNavigation {
     Navigation.turnTo(midX, y, speed);
     Navigation.travelTo(midX, y, speed);
     odometer.setY(newY);
-    System.out.println("corrected y: "+odometer.getY());
+   // System.out.println("corrected y: "+odometer.getY());
 
     // THE THETA NEEDS TO BE DYNAMICALLY SET
     odometer.setTheta(firstTheta);
-    System.out.println("angle: "+odometer.getTheta());
+    //System.out.println("angle: "+odometer.getTheta());
     
     Navigation.backUp((TILE_SIZE / 3), speed);
 
@@ -133,8 +132,8 @@ public class GameNavigation {
     Navigation.travelTo(x , (odometer.getY()/TILE_SIZE), speed);
     odometer.setX(newX);
     odometer.setTheta(secondTheta);
-    System.out.println("corrected x: "+odometer.getX());
-    System.out.println("angle: "+odometer.getTheta());
+  //  System.out.println("corrected x: "+odometer.getX());
+    //System.out.println("angle: "+odometer.getTheta());
 
 
 

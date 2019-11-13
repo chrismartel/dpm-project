@@ -274,6 +274,12 @@ public class GameResources {
    * Current navigation destination
    */
   public static NAVIGATION_DESTINATION navigationDestination;
+  
+  /**
+   * Current navigation coordinates point
+   */
+  public static Point navigationCoordinates;
+
   /**
    * Team color
    */

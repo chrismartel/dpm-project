@@ -3,7 +3,7 @@ package ca.mcgill.ecse211.project.game;
 
 
 import static ca.mcgill.ecse211.project.game.GameResources.*;
-import ca.mcgill.ecse211.project.localization.LightLocalizer;
+import ca.mcgill.ecse211.project.Localization.LightLocalizer;
 import ca.mcgill.ecse211.project.odometry.OdometryCorrection;
 
 /**
@@ -180,7 +180,7 @@ public class Navigation {
     travelForward(speed);
     
     // navigates as long as the state is not in avoidance
-    while (gameState != GameState.Avoidance && gameState != GameState.LightLocalization) {
+    while (gameState != GameState.Avoidance) {
       dX = Math.abs(odometer.getX() - lastX);
       dY = Math.abs(odometer.getY() - lastY);
       // TODO: if game state is in tunnel--> check if the wall is too close and adjust

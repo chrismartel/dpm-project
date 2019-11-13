@@ -1,4 +1,4 @@
-package ca.mcgill.ecse211.project.localization;
+package ca.mcgill.ecse211.project.Localization;
 
 import static ca.mcgill.ecse211.project.game.GameResources.*;
 import ca.mcgill.ecse211.project.Resources.Point;
