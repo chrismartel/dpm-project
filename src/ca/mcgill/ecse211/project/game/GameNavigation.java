@@ -224,11 +224,9 @@ public class GameNavigation {
     Navigation.backUp(OFFSET_FROM_WHEELBASE);
     Navigation.turn(90, 100);
     odometer.setXYT(odometer.getX(), y , odometer.getTheta());
-    Button.waitForAnyPress();
     twoLineDetection();
     Navigation.backUp(OFFSET_FROM_WHEELBASE);
-    Navigation.turn(-90, 100);
-    odometer.setXYT(x, y, 0);
+    odometer.setXYT(x, y, 90);
     Button.waitForAnyPress();
   }
   

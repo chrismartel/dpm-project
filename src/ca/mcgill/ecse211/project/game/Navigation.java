@@ -55,7 +55,8 @@ public class Navigation {
     // Convert the coordinates to centimeters
     x = x * TILE_SIZE;
     y = y * TILE_SIZE;
-
+    leftMotor.setSpeed(speed);
+    rightMotor.setSpeed(speed);
     // Poll the odometer for info about current the position
     double currentX = odometer.getX();
     double currentY = odometer.getY();
