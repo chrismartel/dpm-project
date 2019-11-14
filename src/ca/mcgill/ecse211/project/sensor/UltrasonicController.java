@@ -45,7 +45,7 @@ public class UltrasonicController {
   }
 
 
-  void processDistance(int distance) {
+  public void processDistance(int distance) {
     int temporaryDistance;
     // distance initially not changed by the filter out method
     this.previousDistance = this.currentDistance;
@@ -78,7 +78,7 @@ public class UltrasonicController {
    * 
    * @param the distance in cm to filter
    */
-  void filter(int distance) {
+  public void filter(int distance) {
     if (distance >= 255 && filterControl < FILTER_OUT) {
       // bad value, do not set the distance var, however do increment the filter value
       filterControl++;

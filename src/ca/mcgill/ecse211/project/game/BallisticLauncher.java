@@ -7,13 +7,6 @@ import static ca.mcgill.ecse211.project.game.GameResources.*;
  */
 public class BallisticLauncher {
 
-  
-  /**
-   * The distance to launch to
-   */
-  private double distance;
-
-
   /**
    * Method implementing the behaviour of the ballistic motors during launch
    * 
@@ -67,11 +60,6 @@ public class BallisticLauncher {
     }
   }
 
-  /**
-   * Setter for the launching distance
-   */
-  public void setDistance(double distance) {
-    this.distance = distance;
-  }
+
 
 }

@@ -246,6 +246,9 @@ public class GameResources {
   public static Region Tunnel = new Region(tng.ll, tng.ur); // default to green tunnel
   public static Point STARTING_POINT = new Point(0, 0); // default to 0,0
   public static int CORNER_NUMBER = 1;
+  
+  public static int FIELD_RIGHT=15;
+  public static int FIELD_TOP=9;
 
   // GAME CONSTANTS
   /**

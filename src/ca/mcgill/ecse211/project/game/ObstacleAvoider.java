@@ -131,9 +131,7 @@ public class ObstacleAvoider {
     return obstacleDistance;
   }
 
-  public void setObstacleDistance(int obstacleDistance) {
-    this.obstacleDistance = obstacleDistance;
-  }
+
 
 
   

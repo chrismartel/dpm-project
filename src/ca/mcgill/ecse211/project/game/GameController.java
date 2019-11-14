@@ -65,7 +65,6 @@ public class GameController {
 
         case LightLocalization:
 
-          gameNavigation.odometerInitialSet();
 
           //gameNavigation.lightLocalize(STARTING_POINT);
           LightLocalizer.lightLocalize(STARTING_POINT);
@@ -156,8 +155,6 @@ public class GameController {
           gameNavigation.navigateThroughTunnel();
           // update the region, the tunnel data and the zone limits
           // adjust heading
-          LightLocalizer.twoLineDetection();
-          gameNavigation.updateParameters();
           
           // LIGHT LOCALIZATION
           // find closest point

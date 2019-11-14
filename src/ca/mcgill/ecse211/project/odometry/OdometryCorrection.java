@@ -25,10 +25,7 @@ public class OdometryCorrection {
   // Variables and values to operate color sensor
   private float[] leftSensorData = new float[leftColorSensor.sampleSize()]; // array of sensor readings
   private float[] rightSensorData = new float[rightColorSensor.sampleSize()]; // array of sensor readings
-  /**
-   * coordinates to reach with light localization
-   */
-  private int[] coordinates;
+
   
   /**
    * Booleans indicating if either sensor is currently detecting a line.
@@ -121,13 +118,6 @@ public class OdometryCorrection {
     System.out.println("ODOMETRY CORRECTION"+ odometer.getX()/TILE_SIZE+ ", "+ odometer.getY()/TILE_SIZE+ ", ");
   }
   
-  
-  public void correction() {
-    
-  }
-
-
-
 
 
   // when one line is detected, save odometer X, Y, Theta
