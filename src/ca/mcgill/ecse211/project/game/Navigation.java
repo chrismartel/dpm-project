@@ -18,11 +18,6 @@ public class Navigation {
   private static double lastY;
 
 
-  /**
-   * boolean representing if the robot is traveling to a way point it is set to false ONLY when a way point is reached
-   */
-  private static boolean navigating = false;
-
   private static Navigation nav; // Returned as singleton
 
   public static enum Turn {
@@ -113,25 +108,6 @@ public class Navigation {
     turn(rotation, speed);
   }
 
-
-  /**
-   * checks the navigating state
-   * 
-   * @return navigating : the navigation state of the robot
-   */
-  public boolean isNavigating() {
-    return navigating;
-  }
-
-  /**
-   * Sets the navigating state
-   * 
-   * @param isNavigating : true if the robot is navigating towards a way point, false if the robot has reached a way
-   *        point
-   */
-  public void setNavigating(boolean isNavigating) {
-    navigating = isNavigating;
-  }
 
   /**
    * Converts input distance to the total rotation of each wheel needed to cover that distance.
@@ -239,14 +215,7 @@ public class Navigation {
   }
 
 
-  public static void backUp(double travelDistance) {
-    leftMotor.setSpeed(-75);
-    rightMotor.setSpeed(-75);
 
-    leftMotor.rotate(-convertDistance(travelDistance),true);
-    rightMotor.rotate(-convertDistance(travelDistance));
-
-  }
   /**
    * set both motors forward
    */
@@ -289,7 +258,6 @@ public class Navigation {
    * 
    */
   public static void rotate(Turn direction, int speed) {
-    navigating = true;
     leftMotor.setSpeed(speed);
     rightMotor.setSpeed(speed);
     switch (direction) {
@@ -302,7 +270,6 @@ public class Navigation {
         leftMotor.backward();
         break;
     }
-    navigating = false;
   }
 
 

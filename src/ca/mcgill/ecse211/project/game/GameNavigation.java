@@ -2,7 +2,6 @@ package ca.mcgill.ecse211.project.game;
 
 import static ca.mcgill.ecse211.project.Resources.*;
 import static ca.mcgill.ecse211.project.game.GameResources.*;
-
 import java.util.LinkedList;
 import ca.mcgill.ecse211.project.Resources.Point;
 import ca.mcgill.ecse211.project.Localization.LightLocalizer;
@@ -29,10 +28,7 @@ public class GameNavigation {
    */
   private LinkedList<Point> launchPoints = new LinkedList<Point>();
 
-  /**
-   * length of the tunnel
-   */
-  private double tunnelLength;
+
 
   /**
    * Orientation the robot needs to have to traverse the tunnel
@@ -44,12 +40,14 @@ public class GameNavigation {
     tunnelExit = new Point(0, 0);
     launchPoint = new Point(0, 0);
   }
-  
+
 
 
   /**
-   * Method used to travel on the field by following the black lines directions, it enables the correction it the travel() method 
-   * in the Navigation class. It allows heading correction to be peform each time 2 lines are detected.
+   * Method used to travel on the field by following the black lines directions, it enables the correction it the
+   * travel() method in the Navigation class. It allows heading correction to be peform each time 2 lines are detected.
+   * 
+   * @param : x is the goal coordinate on the x axis, y is the goal coordinate on the y axis
    */
   public void squareNavigation(double x, double y) {
     enableCorrection = true;
@@ -57,8 +55,8 @@ public class GameNavigation {
     Navigation.travelTo((odometer.getX() / TILE_SIZE), y, FORWARD_SPEED_NORMAL);
     enableCorrection = false;
   }
-  
-  
+
+
   /**
    * Method used to navigate to the tunnel entrance
    */
@@ -72,7 +70,7 @@ public class GameNavigation {
    */
   public void navigateToLaunchPoint() {
     // navigate to launch point
-    this.squareNavigation(launchPoint.x,launchPoint.y);
+    this.squareNavigation(launchPoint.x, launchPoint.y);
     double currentX = odometer.getX();
     double currentY = odometer.getY();
     double binX = bin.x * TILE_SIZE;
@@ -84,10 +82,14 @@ public class GameNavigation {
   }
 
   /**
-   * Method used to navigate through the tunnel entrance
+   * Method used to navigate through the tunnel entrance, localize on the black line of the tunnel exit
+   * back up and update the map parameters 
    */
   public void navigateThroughTunnel() {
     Navigation.travelTo(tunnelExit.x, tunnelExit.y, FORWARD_SPEED_NORMAL);
+    LightLocalizer.twoLineDetection();
+    Navigation.backUp(OFFSET_FROM_WHEELBASE, FORWARD_SPEED_NORMAL);
+    this.updateParameters();
   }
 
   /**
@@ -323,51 +325,50 @@ public class GameNavigation {
    * Method setting the coordinates of the starting corner depending on the corner of the team color
    */
   public void setCorner() {
-    // TODO: determine which is the corner 0
     if (color == COLOR.GREEN) {
       switch (greenCorner) {
+        // lower left corner
         case 0:
-          STARTING_POINT.x = 1;
-          STARTING_POINT.y = 1;
           CORNER_NUMBER = 0;
+          STARTING_POINT = new Point(1,1);
           break;
+          // lower right corner
         case 1:
-          STARTING_POINT.x = 14;
-          STARTING_POINT.y = 1;
           CORNER_NUMBER = 1;
+          STARTING_POINT = new Point(FIELD_RIGHT-1,1);
           break;
+          // top right corner
         case 2:
-          STARTING_POINT.x = 14;
-          STARTING_POINT.y = 8;
           CORNER_NUMBER = 2;
+          STARTING_POINT = new Point(FIELD_RIGHT-1,FIELD_TOP-1);
           break;
+          // top left corner
         case 3:
-          STARTING_POINT.x = 1;
-          STARTING_POINT.y = 8;
           CORNER_NUMBER = 3;
+          STARTING_POINT = new Point(1,FIELD_TOP-1);
           break;
       }
     } else {
       switch (redCorner) {
+        // lower left corner
         case 0:
-          STARTING_POINT.x = 1;
-          STARTING_POINT.y = 1;
           CORNER_NUMBER = 0;
+          STARTING_POINT = new Point(1,1);
           break;
+          // lower right corner
         case 1:
-          STARTING_POINT.x = 1;
-          STARTING_POINT.y = 14;
           CORNER_NUMBER = 1;
+          STARTING_POINT = new Point(FIELD_RIGHT-1,1);
           break;
+          // top right corner
         case 2:
-          STARTING_POINT.x = 8;
-          STARTING_POINT.y = 14;
           CORNER_NUMBER = 2;
+          STARTING_POINT = new Point(FIELD_RIGHT-1,FIELD_TOP-1);
           break;
+          // top left corner
         case 3:
-          STARTING_POINT.x = 8;
-          STARTING_POINT.y = 1;
           CORNER_NUMBER = 3;
+          STARTING_POINT = new Point(1,FIELD_TOP-1);
           break;
       }
 
@@ -383,7 +384,7 @@ public class GameNavigation {
    * @return: the distance between the robot and the bin
    */
   public double distanceFromBin(double x, double y) {
-    double distance = this.calculateDistance(x, y, bin.x*TILE_SIZE, bin.y*TILE_SIZE);
+    double distance = this.calculateDistance(x, y, bin.x * TILE_SIZE, bin.y * TILE_SIZE);
     return distance;
   }
 
@@ -449,17 +450,18 @@ public class GameNavigation {
       for (int j = (int) (bottom + 1); j < top; j++) {
         Point point = new Point(i, j);
         double distance = this.distanceFromBin(i, j);
-        // if the distance is smaller than the maximal launching distance, add the point into the array of launching points
+        // if the distance is smaller than the maximal launching distance, add the point into the array of launching
+        // points
         if (distance <= MAXIMAL_LAUNCH_DISTANCE) {
           boolean restricted = false;
-          for(Point restrictedLaunchPoint : restrictedLaunchPoints) {
+          for (Point restrictedLaunchPoint : restrictedLaunchPoints) {
             // if the point is restricted
-            if((restrictedLaunchPoint.x == point.x) && (restrictedLaunchPoint.y == point.y)) {
+            if ((restrictedLaunchPoint.x == point.x) && (restrictedLaunchPoint.y == point.y)) {
               restricted = true;
             }
           }
           // add the point to the list only if it is not restricted
-          if(!restricted) {
+          if (!restricted) {
             launchPoints.add(point);
           }
         }
@@ -481,40 +483,14 @@ public class GameNavigation {
   public Point getTunnelExit() {
     return tunnelExit;
   }
-  
-  public void odometerInitialSet() {
-    switch(CORNER_NUMBER) {
-      case 0:
-        odometer.setXYT(0.4*TILE_SIZE, 0.6*TILE_SIZE, odometer.getTheta());
-        break;
-      case 1:
-        odometer.setXYT(14.4*TILE_SIZE, 0.6*TILE_SIZE, odometer.getTheta());
 
-        break;
-      case 2:
-        odometer.setXYT(14.4*TILE_SIZE, 8.4*TILE_SIZE, odometer.getTheta());
 
-        break;
-      case 3:
-        odometer.setXYT(0.6*TILE_SIZE, 8.4*TILE_SIZE, odometer.getTheta());
-
-        break;
-      
-    }
-  }
 
   /**
    * Getter Method for the tunnel traversal orientation
    */
   public double getTunnelTraversalOrientation() {
     return tunnelTraversalOrientation;
-  }
-
-  /**
-   * Getter Method for the tunnel length
-   */
-  public double getTunnelLength() {
-    return tunnelLength;
   }
 
 

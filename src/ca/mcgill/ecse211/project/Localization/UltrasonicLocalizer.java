@@ -68,24 +68,21 @@ public class UltrasonicLocalizer {
     Navigation.turnTo(0, rotateSpeed);
     // set theta depending on the starting corner
     switch(CORNER_NUMBER) {
+      // lower left corner
       case 0:
         odometer.setTheta(0);
-        STARTING_POINT = new Point(1,1);
         break;
+        // lower right corner
       case 1:
         odometer.setTheta(270);
-        STARTING_POINT = new Point(14,1);
-
         break;
       case 2:
+        // top right corner
         odometer.setTheta(180);
-        STARTING_POINT = new Point(14,8);
-
         break;
       case 3:
+        // top left corner
         odometer.setTheta(90);
-        STARTING_POINT = new Point(1,8);
-
         break;
     }
     
@@ -99,7 +96,7 @@ public class UltrasonicLocalizer {
    * 
    * @return : the heading to add to the odometer
    */
-  private double angleHeadingAdjustment() {
+  public double angleHeadingAdjustment() {
     double deltaTheta = 0;
     // Formulas to compute the change in heading of the robot
     if (alpha < beta) {
