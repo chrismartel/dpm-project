@@ -66,7 +66,7 @@ public class GameResources {
    */
   public static final int ROTATE_SPEED_SLOW = 80;
   public static final int ROTATE_SPEED_NORMAL = 100;
-  public static final int ROTATE_SPEED_FAST = 150;
+  public static final int ROTATE_SPEED_FAST = 200;
 
 
 
@@ -147,7 +147,7 @@ public class GameResources {
   /**
    * Distance to launch the ball
    */
-  public static final int MAXIMAL_LAUNCH_DISTANCE = 200;
+  public static final int MAXIMAL_LAUNCH_DISTANCE = 300;
 
   /**
    * period of sleeping before launch
@@ -244,11 +244,11 @@ public class GameResources {
 
   // MAP CONSTANTS
   public static Region Tunnel = new Region(tng.ll, tng.ur); // default to green tunnel
-  public static Point STARTING_POINT = new Point(0, 0); // default to 0,0
+  public static Point STARTING_POINT; // default to 0,0
   public static int CORNER_NUMBER = 1;
   
-  public static int FIELD_RIGHT=15;
-  public static int FIELD_TOP=9;
+  public static int FIELD_RIGHT=8;
+  public static int FIELD_TOP=8;
 
   // GAME CONSTANTS
   /**

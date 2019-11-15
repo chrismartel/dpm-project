@@ -82,13 +82,13 @@ public class GameNavigation {
   }
 
   /**
-   * Method used to navigate through the tunnel entrance, localize on the black line of the tunnel exit
-   * back up and update the map parameters 
+   * Method used to navigate through the tunnel entrance, localize on the black line of the tunnel exit back up and
+   * update the map parameters
    */
   public void navigateThroughTunnel() {
-    Navigation.travelTo(tunnelExit.x, tunnelExit.y, FORWARD_SPEED_NORMAL);
+    Navigation.travelTo(tunnelExit.x, tunnelExit.y, FORWARD_SPEED_FAST);
     LightLocalizer.twoLineDetection();
-    Navigation.backUp(OFFSET_FROM_WHEELBASE, FORWARD_SPEED_NORMAL);
+    Navigation.backUp(OFFSET_FROM_WHEELBASE, FORWARD_SPEED_FAST);
     this.updateParameters();
   }
 
@@ -136,34 +136,39 @@ public class GameNavigation {
     int y1 = (int) (y / TILE_SIZE);
     int x2 = (int) x1 + 1;
     int y2 = (int) y1 + 1;
+    // array of closest points
+    LinkedList<Point> closestPoints = new LinkedList<Point>();
     Point p1 = new Point(x1, y1);
     Point p2 = new Point(x1, y2);
     Point p3 = new Point(x2, y1);
     Point p4 = new Point(x2, y2);
+
+    // check if the 4 points generated are localizable
+    // if they are, add them to the array
+    if (GameNavigation.localizablePoint(p1))
+      closestPoints.add(p1);
+    if (GameNavigation.localizablePoint(p2))
+      closestPoints.add(p2);
+    if (GameNavigation.localizablePoint(p3))
+      closestPoints.add(p3);
+    if (GameNavigation.localizablePoint(p4))
+      closestPoints.add(p4);
+
     // compute distances of 4 points from actual position
     x = odometer.getX() / TILE_SIZE;
     y = odometer.getY() / TILE_SIZE;
-    double d1 = this.calculateDistance(x, y, x1, y1);
-    double d2 = this.calculateDistance(x, y, x1, y2);
-    double d3 = this.calculateDistance(x, y, x2, y1);
-    double d4 = this.calculateDistance(x, y, x2, y2);
 
-    // find the minimal distance
-    double d = Math.min(d1, d2);
-    d = Math.min(d, d3);
-    d = Math.min(d, d4);
-    // return the closest point
-    if (d == d1) {
-      return p1;
-    } else if (d == d2) {
-      return p2;
+    Point minimalPoint = closestPoints.get(0);
+    double minimalDistance = this.calculateDistance(x, y, minimalPoint.x, minimalPoint.y);
 
-    } else if (d == d3) {
-      return p3;
-
-    } else {
-      return p4;
+    for (Point point : closestPoints) {
+      double distance = this.calculateDistance(x, y, point.x, point.y);
+      if (distance < minimalDistance) {
+        minimalPoint = point;
+        minimalDistance = distance;
+      }
     }
+    return minimalPoint;
   }
 
   /**
@@ -242,6 +247,8 @@ public class GameNavigation {
       Tunnel.ur.x = tnr.ur.x;
       Tunnel.ur.y = tnr.ur.y;
     } else {
+      System.out.println("GREEN TUNNEL SET");
+
       Tunnel.ll.x = tng.ll.x;
       Tunnel.ll.y = tng.ll.y;
       Tunnel.ur.x = tng.ur.x;
@@ -298,7 +305,7 @@ public class GameNavigation {
   public void setStartingRegion() {
     if (color == COLOR.GREEN) {
       currentRegion = REGION.GREEN;
-      System.out.println("STARTING REGION SET");
+      System.out.println("STARTING REGION SET TO GREEN");
 
     } else {
       currentRegion = REGION.RED;
@@ -330,22 +337,34 @@ public class GameNavigation {
         // lower left corner
         case 0:
           CORNER_NUMBER = 0;
-          STARTING_POINT = new Point(1,1);
+          STARTING_POINT = new Point(1, 1);
           break;
-          // lower right corner
+        // lower right corner
         case 1:
+          System.out.println("GREEN CORNER SET TO 1");
+
           CORNER_NUMBER = 1;
-          STARTING_POINT = new Point(FIELD_RIGHT-1,1);
+          STARTING_POINT = new Point(FIELD_RIGHT - 1, 1);
+          System.out.println("STARTING POINT: " + STARTING_POINT.x + ", " + STARTING_POINT.y);
+
           break;
-          // top right corner
+        // top right corner
         case 2:
+          System.out.println("GREEN CORNER SET TO 2");
+
           CORNER_NUMBER = 2;
-          STARTING_POINT = new Point(FIELD_RIGHT-1,FIELD_TOP-1);
+          STARTING_POINT = new Point(FIELD_RIGHT - 1, FIELD_TOP - 1);
+          System.out.println("STARTING POINT: " + STARTING_POINT.x + ", " + STARTING_POINT.y);
+
           break;
-          // top left corner
+        // top left corner
         case 3:
+          System.out.println("GREEN CORNER SET TO 3");
+
           CORNER_NUMBER = 3;
-          STARTING_POINT = new Point(1,FIELD_TOP-1);
+          STARTING_POINT = new Point(1, FIELD_TOP - 1);
+          System.out.println("STARTING POINT: " + STARTING_POINT.x + ", " + STARTING_POINT.y);
+
           break;
       }
     } else {
@@ -353,22 +372,22 @@ public class GameNavigation {
         // lower left corner
         case 0:
           CORNER_NUMBER = 0;
-          STARTING_POINT = new Point(1,1);
+          STARTING_POINT = new Point(1, 1);
           break;
-          // lower right corner
+        // lower right corner
         case 1:
           CORNER_NUMBER = 1;
-          STARTING_POINT = new Point(FIELD_RIGHT-1,1);
+          STARTING_POINT = new Point(FIELD_RIGHT - 1, 1);
           break;
-          // top right corner
+        // top right corner
         case 2:
           CORNER_NUMBER = 2;
-          STARTING_POINT = new Point(FIELD_RIGHT-1,FIELD_TOP-1);
+          STARTING_POINT = new Point(FIELD_RIGHT - 1, FIELD_TOP - 1);
           break;
-          // top left corner
+        // top left corner
         case 3:
           CORNER_NUMBER = 3;
-          STARTING_POINT = new Point(1,FIELD_TOP-1);
+          STARTING_POINT = new Point(1, FIELD_TOP - 1);
           break;
       }
 
@@ -384,7 +403,7 @@ public class GameNavigation {
    * @return: the distance between the robot and the bin
    */
   public double distanceFromBin(double x, double y) {
-    double distance = this.calculateDistance(x, y, bin.x * TILE_SIZE, bin.y * TILE_SIZE);
+    double distance = this.calculateDistance(x, y, bin.x, bin.y);
     return distance;
   }
 
@@ -422,9 +441,9 @@ public class GameNavigation {
     double y = odometer.getY();
     Point minimal_point = launchPoints.get(0);
     double minimal_distance =
-        this.calculateDistance(x, y, (minimal_point.x) * TILE_SIZE, (minimal_point.y) * TILE_SIZE);
+        this.calculateDistance(x, y, minimal_point.x, minimal_point.y);
     for (Point point : launchPoints) {
-      double distance = this.calculateDistance(x, y, (point.x) * TILE_SIZE, (point.y) * TILE_SIZE);
+      double distance = this.calculateDistance(x, y, point.x, point.y);
       if (distance <= minimal_distance) {
         minimal_distance = distance;
         minimal_point = point;
@@ -454,6 +473,7 @@ public class GameNavigation {
         // points
         if (distance <= MAXIMAL_LAUNCH_DISTANCE) {
           boolean restricted = false;
+          // check if the point is restricted
           for (Point restrictedLaunchPoint : restrictedLaunchPoints) {
             // if the point is restricted
             if ((restrictedLaunchPoint.x == point.x) && (restrictedLaunchPoint.y == point.y)) {
@@ -467,6 +487,22 @@ public class GameNavigation {
         }
       }
     }
+  }
+
+  /**
+   * Method that checks if a point is on the border of the current zone. This is used to filter out the localization
+   * points
+   * 
+   * @return: true if the point is not on any border and is localizable, false if the point is on a border and is not
+   *          localizable
+   */
+  public static boolean localizablePoint(Point point) {
+    // check if the point is on one of the current zone limits
+    if ((point.x != currentLeftLimit) && (point.x != currentRightLimit) && (point.y != currentBottomLimit)
+        && (point.y != currentTopLimit)) {
+      return true;
+    }
+    return false;
   }
 
 
