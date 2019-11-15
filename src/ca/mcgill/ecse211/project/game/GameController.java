@@ -26,7 +26,21 @@ public class GameController {
       switch (gameState) {
         case Test:
 
-          break;
+          /*
+           * // on a point odometer.setXYT(1*TILE_SIZE, 1*TILE_SIZE, 0); Point point = gameNavigation.closestPoint();
+           * System.out.println("cloest point1: "+ point.x+ ", " + point.y); // expected 1,1
+           * 
+           * // close to a border odometer.setXYT(1*TILE_SIZE, 2.7*TILE_SIZE, 0); point = gameNavigation.closestPoint();
+           * System.out.println("cloest point2: "+ point.x+ ", " + point.y); // expected 1,2
+           * 
+           * // middle odometer.setXYT(3.5*TILE_SIZE, 2.5*TILE_SIZE, 0); point = gameNavigation.closestPoint();
+           * System.out.println("cloest point3: "+ point.x+ ", " + point.y); //expected 3,2 or 4,2
+           * 
+           * // on a border --> does not work odometer.setXYT(1*TILE_SIZE, 3*TILE_SIZE, 0); point =
+           * gameNavigation.closestPoint(); System.out.println("cloest point4: "+ point.x+ ", " + point.y); // expected
+           * 1,2 or 2,3 gameState = GameState.Done;
+           */
+
 
         case Initialization:
           // start threads
@@ -34,40 +48,40 @@ public class GameController {
           Thread usPollerTread = new Thread(ultrasonicPoller);
           odometerThread.start();
           usPollerTread.start();
-          
+
           // Initialize map
           gameNavigation.setGameParameters();
-                    
+
           // set first checkpoint
           navigationDestination = NAVIGATION_DESTINATION.TUNNEL1_ENTRANCE;
-          
-          //Warm up motors
+
+          // Warm up motors
           Navigation.travel(2, FORWARD_SPEED_NORMAL);
           Navigation.backUp(2, FORWARD_SPEED_NORMAL);
           leftBallisticMotor.rotate(-5, true);
           rightBallisticMotor.rotate(-5, false);
           leftBallisticMotor.rotate(+5, true);
           rightBallisticMotor.rotate(+5, false);
-          
+
           // transit to ultrasonic localization state
           Button.waitForAnyPress();
           gameState = GameState.UltrasonicLocalization;
+
           break;
 
 
         case UltrasonicLocalization:
-          // perform ultrasonic localization using falling edge routine
+          // ultrasonic localization using falling edge routine
           ultrasonicLocalizer.fallingEdge(ROTATE_SPEED_NORMAL);
-          // when us localization is done --> transition to light localization
+          // transition to light localization state
           gameState = GameState.LightLocalization;
           break;
 
 
         case LightLocalization:
-
-
-          //gameNavigation.lightLocalize(STARTING_POINT);
-          LightLocalizer.lightLocalize(STARTING_POINT);
+          // initial localization depending on the starting point and starting corner
+          LightLocalizer.initialLightLocalize(STARTING_POINT, CORNER_NUMBER);
+          // transit to navigation state
           gameState = GameState.Navigation;
           break;
 
@@ -75,10 +89,13 @@ public class GameController {
         case Navigation:
           // navigation is considered uncompleted initially
           navigationCompleted = false;
-          // check the current navigation type
+          
+          // check the current navigation destination
           switch (navigationDestination) {
+            
+            // navigation to first tunnel entrance
             case TUNNEL1_ENTRANCE:
-              // square travel to the tunnel entrance using correction
+              // navigate to tunnel entrance and turn to traversal orientation
               gameNavigation.navigateToTunnel();
               
               if (navigationCompleted == true) {
@@ -89,47 +106,45 @@ public class GameController {
               }
               break;
             case TUNNEL2_ENTRANCE:
-              // travel to the tunnel entrance
+              // travel to the second tunnel entrance
               gameNavigation.navigateToTunnel();
-              // if navigation is completed --> transition to tunnel state + update the navigation point to the launch
-              // point
-              if (navigationCompleted == true) {
-
+              
+              if (navigationCompleted == true) {    
+                /*
                 // LIGHT LOCALIZATION
                 closestPoint = gameNavigation.closestPoint();
                 Navigation.travelTo(closestPoint.x, closestPoint.y, FORWARD_SPEED_NORMAL);
                 LightLocalizer.lightLocalize(closestPoint);
                 gameState = GameState.Navigation;
-                
                 // go to tunnel entrance
                 gameNavigation.navigateToTunnel();
-
+                */
+                // update new checkpoint
+                navigationDestination = NAVIGATION_DESTINATION.END_POINT;
                 // transition to tunnel state
                 gameState = GameState.Tunnel;
-
-                // update new checkpoint
-                navigationDestination = NAVIGATION_DESTINATION.LAUNCH_POINT;
               }
               break;
             case LAUNCH_POINT:
+              // compute the closest launch point
               gameNavigation.calculateClosestLaunchPoint();
+              // navigate to the closest launch point
               gameNavigation.navigateToLaunchPoint();
+
               if (navigationCompleted == true) {
 
                 // LIGHT LOCALIZATION
                 closestPoint = gameNavigation.closestPoint();
                 Navigation.travelTo(closestPoint.x, closestPoint.y, FORWARD_SPEED_NORMAL);
                 LightLocalizer.lightLocalize(closestPoint);
-                gameState = GameState.Navigation;
-                
+
                 // navigate to launch point after localizing
                 gameNavigation.navigateToLaunchPoint();
 
-                // Transit to launch state
-                gameState = GameState.Launch;
-
                 // update new checkpoint
                 navigationDestination = NAVIGATION_DESTINATION.TUNNEL2_ENTRANCE;
+                // Transit to launch state
+                gameState = GameState.Launch;
               }
               break;
             case END_POINT:
@@ -145,34 +160,29 @@ public class GameController {
 
 
         case Tunnel:
+          
           // adjust heading
           LightLocalizer.twoLineDetection();
           // position center of rotation at tunnel entrance
           Navigation.backUp(OFFSET_FROM_WHEELBASE, FORWARD_SPEED_NORMAL);
           // correct odometer according to tunnel entrance data
-          odometer.setXYT(gameNavigation.getTunnelEntrance().x*TILE_SIZE, gameNavigation.getTunnelEntrance().y*TILE_SIZE, gameNavigation.getTunnelTraversalOrientation());
+          odometer.setXYT(gameNavigation.getTunnelEntrance().x * TILE_SIZE, gameNavigation.getTunnelEntrance().y * TILE_SIZE, gameNavigation.getTunnelTraversalOrientation());
           // navigate through tunnel
           gameNavigation.navigateThroughTunnel();
-          // update the region, the tunnel data and the zone limits
-          // adjust heading
+          // update new zone parameters
+          gameNavigation.updateParameters();
+
           
           // LIGHT LOCALIZATION
-          // find closest point
           closestPoint = gameNavigation.closestPoint();
-          System.out.println("closest point: "+closestPoint.x+ " "+ closestPoint.y);
-          // travel to closest point
           Navigation.travelTo(closestPoint.x, closestPoint.y, FORWARD_SPEED_NORMAL);
-          System.out.println("position after getting to closest point: "+odometer.getX()/TILE_SIZE+ " "+ odometer.getY()/TILE_SIZE + " "+ odometer.getTheta());
-
-          // localize according to the closest point
           LightLocalizer.lightLocalize(closestPoint);
-          System.out.println("position after localizing to closest point: "+odometer.getX()/TILE_SIZE+ " "+ odometer.getY()/TILE_SIZE + " "+ odometer.getTheta());
 
           // transition back to navigation
-//          gameState = GameState.Navigation;
-          
-          //***** FOR DEMO
-          gameState = GameState.Demo;
+          gameState = GameState.Navigation;
+
+          // ***** FOR DEMO
+          // gameState = GameState.Demo;
           break;
 
 

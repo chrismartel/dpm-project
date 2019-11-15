@@ -162,10 +162,10 @@ public class Navigation {
       // TODO: if game state is in tunnel--> check if the wall is too close and adjust
       // Reached goal coordinates condition
       if (Math.pow(dX, 2) + Math.pow(dY, 2) >= Math.pow(travelDistance, 2)) {
+        // navigation is considered completed when the distance is reached while being in navigation state
         if(gameState == GameState.Navigation) {
           navigationCompleted = true;
         }
-
         // exit the travel method if the destination is reached
         break;
       }
