@@ -299,15 +299,15 @@ public class GameResources {
   /*
    * Error acceptable for the orientation check during the wall folowing
    */
-  public static final int ORIENTATION_CHECK_ERROR = 3;
+  public static final double ORIENTATION_CHECK_ERROR = 3;
   /*
    * band center for the wall following
    */
-  public static final int BAND_CENTER = 20;
+  public static final double BAND_CENTER = 20;
   /*
    * band width for the wall following
    */
-  public static final int BAND_WIDTH = 3;
+  public static final double BAND_WIDTH = 3;
   /*
    * gain constant used for the P-controller
    */
@@ -315,19 +315,19 @@ public class GameResources {
   /*
    * minimum speed used during wall following
    */
-  public static final double MIN_AVOID_SPEED = 100;
+  public static final double MIN_AVOID_SPEED = 50;
   /*
    * maximum speed used during wall following
    */
-  public static final double MAX_AVOID_SPEED = 300;
+  public static final double MAX_AVOID_SPEED = 250;
   /*
    * Maximal bound on the error
    */
-  public static final int MAXIMAL_ERROR = 10;
+  public static final double MAXIMAL_ERROR = 10;
   /*
    * Minimal bound on the error
    */
-  public static final int MINIMAL_ERROR = -5;
+  public static final double MINIMAL_ERROR = -5;
   /*
    * Period of the check for distance in the wall following process
    */
@@ -336,7 +336,22 @@ public class GameResources {
   /*
    * Distance of obstacle detection
    */
-  public static final int OBSTACLE_DETECTION_DISTANCE = 4;
+  public static final double OBSTACLE_DETECTION_DISTANCE = 4;
+  
+  /*
+   * Average width of obstacles
+   */
+  public static final double OBSTACLE_WIDTH = TILE_SIZE;
+  
+  /*
+   * Distance seen when facing a convex corner
+   */
+  public static final double CONVEX_CORNER_CONSTANT = 30;
+  
+  /*
+   * Distance seen when facing a convex corner
+   */
+  public static final double CONVEX_CORNER_ADJUSTMENT_DISTANCE = 12;
 
   /*
    * Restricted points on the island

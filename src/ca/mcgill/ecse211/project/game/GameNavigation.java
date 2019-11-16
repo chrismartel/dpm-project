@@ -56,6 +56,7 @@ public class GameNavigation {
    */
   public void squareNavigation(double x, double y) {
     enableCorrection = true;
+    navigationCoordinates = new Point(x,y);
     Navigation.travelTo(x, (odometer.getY() / TILE_SIZE), FORWARD_SPEED_NORMAL);
     Navigation.travelTo((odometer.getX() / TILE_SIZE), y, FORWARD_SPEED_NORMAL);
     enableCorrection = false;
@@ -144,23 +145,53 @@ public class GameNavigation {
     int y1 = (int) (y / TILE_SIZE);
     int x2 = (int) x1 + 1;
     int y2 = (int) y1 + 1;
+    int x3 = (int) x1-1;
+    int y3 = (int) y1-1;
     // array of closest points
     LinkedList<Point> closestPoints = new LinkedList<Point>();
     Point p1 = new Point(x1, y1);
     Point p2 = new Point(x1, y2);
-    Point p3 = new Point(x2, y1);
-    Point p4 = new Point(x2, y2);
+    Point p3 = new Point(x1, y3);
+    
+    Point p4 = new Point(x2, y1);
+    Point p5 = new Point(x2, y2);
+    Point p6 = new Point(x2, y3);
+    
+    Point p7 = new Point(x3, y1);
+    Point p8 = new Point(x3, y2);
+    Point p9 = new Point(x3, y3);
+    
+
 
     // check if the 4 points generated are localizable
     // if they are, add them to the array
-    if (GameNavigation.localizablePoint(p1))
+    if (GameNavigation.localizablePoint(p1)) {
       closestPoints.add(p1);
-    if (GameNavigation.localizablePoint(p2))
+    }
+    if (GameNavigation.localizablePoint(p2)) {
       closestPoints.add(p2);
-    if (GameNavigation.localizablePoint(p3))
+    }
+    if (GameNavigation.localizablePoint(p3)) {
       closestPoints.add(p3);
-    if (GameNavigation.localizablePoint(p4))
+    }
+    if (GameNavigation.localizablePoint(p4)) {
       closestPoints.add(p4);
+    }
+    if (GameNavigation.localizablePoint(p5)) {
+      closestPoints.add(p5);
+    }
+    if (GameNavigation.localizablePoint(p6)) {
+      closestPoints.add(p6);
+    }
+    if (GameNavigation.localizablePoint(p7)) {
+      closestPoints.add(p7);
+    }
+    if (GameNavigation.localizablePoint(p8)) {
+      closestPoints.add(p8);
+    }
+    if (GameNavigation.localizablePoint(p9)) {
+      closestPoints.add(p9);
+    }
 
     // compute distances of 4 points from actual position
     x = odometer.getX() / TILE_SIZE;
@@ -450,8 +481,10 @@ public class GameNavigation {
   /**
    * Method used to calculate the closest possible launch point from the robot and to set the current launch point of
    * the game navigation instance
+   * 
+   * @return: The closest possible launch point from the robot positon
    */
-  public void calculateClosestLaunchPoint() {
+  public Point calculateClosestLaunchPoint() {
     double x = odometer.getX() / TILE_SIZE;
     double y = odometer.getY() / TILE_SIZE;
     Point minimal_point = launchPoints.get(0);
@@ -463,7 +496,9 @@ public class GameNavigation {
         minimal_point = point;
       }
     }
+    // set the launch point of the class instance and return it
     this.launchPoint = minimal_point;
+    return minimal_point;
   }
 
 
@@ -522,6 +557,7 @@ public class GameNavigation {
           return false;
         }
       }
+      // point is not in restricted array and not on a border--> localizable point
       return true;
     }
     return false;
@@ -557,6 +593,34 @@ public class GameNavigation {
     return tunnelTraversalOrientation;
   }
 
+  
+  public void createRestrictedPoints() {
+    double x = odometer.getX();
+    double y = odometer.getY();
+    double theta = odometer.getTheta();
+    
+    // heading approximatly towards 0 degrees
+    if((theta>= 355 && theta <= 360)||(theta>=0 && theta <= 5)) {
+      y = y + OBSTACLE_DETECTION_DISTANCE+OBSTACLE_WIDTH;
+    }
+    // heading approximatly towards 90 degrees
+    else if(theta >= 85 && theta<=95) {
+      x = x + OBSTACLE_DETECTION_DISTANCE+OBSTACLE_WIDTH;
+    }
+    // heading approximately towards 180 degrees
+    else if(theta >= 175 && theta <= 185) {
+      y = y - OBSTACLE_DETECTION_DISTANCE-OBSTACLE_WIDTH;
+    }
+    // heading approximately towards 270 degrees
+    else if(theta >= 265 && theta <= 275) {
+      y = x - OBSTACLE_DETECTION_DISTANCE-OBSTACLE_WIDTH;
+    }
+    // x and y represent approximatly the coordinates of the center of the obstacle
+    int x1 = (int) (x/TILE_SIZE);
+    int y1 = (int) (y/TILE_SIZE);
+    int x2 = x1+1;
+    int y2 = y1+1;
+  }
 
 
 }

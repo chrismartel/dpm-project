@@ -1,6 +1,7 @@
 package ca.mcgill.ecse211.project.game;
 
 import static ca.mcgill.ecse211.project.game.GameResources.*;
+import ca.mcgill.ecse211.project.game.Navigation.Turn;
 
 public class ObstacleAvoider {
 
@@ -10,27 +11,59 @@ public class ObstacleAvoider {
   /**
    * Method describing the wall following process using P-Controller
    */
-  public void wallFollower() {
-    // TODO: implement conditions that checks the current limits and generates unreal obstacles at those limits
+  public void wallFollower(int speed) {
     // initial positioning
-    Navigation.turn(90, ROTATE_SPEED_NORMAL);
+    Navigation.turn(90, ROTATE_SPEED_FAST);
     double wallDistance;
     double leftSpeed;
     double rightSpeed;
     double startTime;
     double endTime;
-    Navigation.travelForward(FORWARD_SPEED_SLOW);
+    int convexCornerCounter=0;
+    Navigation.travelForward(speed);
     while (!orientationCheck()) {
       startTime = System.currentTimeMillis();
+      // get distance from obstacle
       wallDistance = ultrasonicPoller.getLeftUsController().getDistance();
       wallDistance = this.calculateLateralDistance(wallDistance);
+      
+      // CONVEX CORNER HANDLING
+      if(wallDistance>=CONVEX_CORNER_CONSTANT) {
+        convexCornerCounter++;
+      }
+      //convex corner is faced
+      if(convexCornerCounter>5) {
+        convexCornerCounter=0;
+        // convex corner procedure
+        Navigation.travel(CONVEX_CORNER_ADJUSTMENT_DISTANCE/2, FORWARD_SPEED_FAST);
+        double currentTheta = odometer.getTheta();
+        double goalTheta = currentTheta-90;
+        if(goalTheta<0) {
+          goalTheta = goalTheta+360;
+        }
+        // 90 degrees turn towards the left
+        Navigation.rotate(Turn.COUNTER_CLOCK_WISE, ROTATE_SPEED_SLOW);
+        while(!orientationCheck()) {
+          if(Math.abs(odometer.getTheta()-goalTheta)<=1) {
+            break;
+          }
+        }
+        Navigation.travel(CONVEX_CORNER_ADJUSTMENT_DISTANCE, FORWARD_SPEED_FAST);
+        // after passing the convex corner, get new distance and restart time counter
+        wallDistance = ultrasonicPoller.getLeftUsController().getDistance();
+        wallDistance = this.calculateLateralDistance(wallDistance);
+        startTime = System.currentTimeMillis();
+      }
+      
+      
+      // GENERAL WALL FOLLOWING PROCEDURE
       double error = wallDistance - BAND_CENTER;
       // both motors go forward, robot is at correct distance from obstacle
-      if ((-1) * BAND_WIDTH <= error && error <= BAND_WIDTH) {
+      if (Math.abs(error)<=BAND_WIDTH) {
         leftMotor.forward();
         rightMotor.forward();
-        leftMotor.setSpeed(FORWARD_SPEED_SLOW);
-        rightMotor.setSpeed(FORWARD_SPEED_SLOW);
+        leftMotor.setSpeed(speed);
+        rightMotor.setSpeed(speed);
       } else {
         // robot is too far from wall
         if (error > 0) {
@@ -38,15 +71,15 @@ public class ObstacleAvoider {
           if (error > MAXIMAL_ERROR) {
             leftMotor.forward();
             rightMotor.backward();
-            leftSpeed = FORWARD_SPEED_SLOW;
-            rightSpeed = FORWARD_SPEED_SLOW;
+            leftSpeed = speed;
+            rightSpeed = speed;
           }
           // normal adjustment
           else {
             leftMotor.forward();
             rightMotor.forward();
-            leftSpeed = (int) (FORWARD_SPEED_SLOW - this.calculateGain(error));
-            rightSpeed = (int) (FORWARD_SPEED_SLOW + this.calculateGain(error));
+            leftSpeed = (int) (speed - this.calculateGain(error));
+            rightSpeed = (int) (speed + this.calculateGain(error));
           }
         }
         // robot is too close to wall
@@ -54,15 +87,15 @@ public class ObstacleAvoider {
           if (error < MINIMAL_ERROR) {
             leftMotor.backward();
             rightMotor.forward();
-            leftSpeed = FORWARD_SPEED_SLOW;
-            rightSpeed = FORWARD_SPEED_SLOW;
+            leftSpeed = speed;
+            rightSpeed = speed;
           }
           // normal adjustment
           else {
             leftMotor.forward();
             rightMotor.forward();
-            leftSpeed = (int) (FORWARD_SPEED_SLOW + this.calculateGain(error));
-            rightSpeed = (int) (FORWARD_SPEED_SLOW - this.calculateGain(error));
+            leftSpeed = (int) (speed + this.calculateGain(error));
+            rightSpeed = (int) (speed - this.calculateGain(error));
           }
         }
         // set bounds on the speed during avoidance
@@ -98,15 +131,26 @@ public class ObstacleAvoider {
    * 
    * @return true if the orientation of the robot
    */
-  public boolean orientationCheck() {
+  public static boolean orientationCheck() {
     double currentX = odometer.getX();
     double currentY = odometer.getY();
     double goalX = navigationCoordinates.x * TILE_SIZE;
     double goalY = navigationCoordinates.y * TILE_SIZE;
     double dX = goalX - currentX;
     double dY = goalY - currentY;
-    double turnToAngle = Math.abs(Math.toDegrees(Math.atan2(dX, dY)));
-    if (turnToAngle <= ORIENTATION_CHECK_ERROR) {
+    double turnToAngle = Math.toDegrees(Math.atan2(dX, dY));
+    double rotation = turnToAngle - odometer.getTheta();
+    
+    // Adjust the rotation of the robot to make sure it turns the minimal angle possible
+    if (rotation > 180) {
+      rotation -= 360;
+    } else if (rotation < -180) {
+      rotation += 360;
+    } else if (Math.abs(rotation) == 180) {
+      rotation = 180;
+    }
+    
+    if(Math.abs(rotation) <=ORIENTATION_CHECK_ERROR) {
       return true;
     }
     return false;
