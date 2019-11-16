@@ -341,7 +341,7 @@ public class GameResources {
   /*
    * Restricted points on the island
    */
-  public static LinkedList<Point> restrictedLaunchPoints = new LinkedList<Point>();
+  public static LinkedList<Point> restrictedPoints = new LinkedList<Point>();
 
   // ENUMS
   public enum COLOR {

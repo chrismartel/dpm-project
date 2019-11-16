@@ -208,11 +208,18 @@ public class LightLocalizer {
   }
 
   /**
-   * Method used to light localize when the robot is already approximately on the localize point
+   * Method used for general light localization when the robot is placed already approximately on the localize point. The method
+   * checks if the localization point is near a wall. If not, the general procedure is performed: travels on the y axis
+   * until both its sensors detect a line, adjust the y value and the theta of its odometer, travels on the x axis until
+   * both its sensors detect a line and adjust the x value and the theta of its odometer. If the point is near a wall:
+   * special cases are applied
+   * 
+   * @param: point used to set the x and y values of the odometer during light localization
    */
   public static void lightLocalize(Point point) {
-    if ((point.x > (currentLeftLimit + 1)) && (point.x < (currentRightLimit - 1))
-        && (point.y > (currentBottomLimit + 1)) && (point.y < (currentTopLimit - 1))) {
+    // check if the point is near a wall
+    if ((point.x != 1) && (point.x != (FIELD_RIGHT - 1)) && (point.y != 1) && (point.y != (FIELD_TOP - 1))) {
+      // GENERAL PROCEDURE
       Navigation.turnTo(0, ROTATE_SPEED_FAST);
       LightLocalizer.twoLineDetection();
       Navigation.backUp(OFFSET_FROM_WHEELBASE, FORWARD_SPEED_FAST);
@@ -220,29 +227,22 @@ public class LightLocalizer {
       Navigation.turnTo(90, ROTATE_SPEED_FAST);
       LightLocalizer.twoLineDetection();
       odometer.setXYT((point.x * TILE_SIZE) + OFFSET_FROM_WHEELBASE, odometer.getY(), 90);
-    } else {
-      // close to top limit and right limit
-      if (point.x == (currentRightLimit - 1) && point.y == (currentTopLimit - 1)) {
+    }
+    // The point is near a wall --> SPECIAL CASES
+    else {
+      // close to top wall and right wall
+      if (point.x == (FIELD_RIGHT - 1) && point.y == (FIELD_RIGHT - 1)) {
         Navigation.turnTo(180, ROTATE_SPEED_FAST);
         LightLocalizer.twoLineDetection();
         Navigation.backUp(OFFSET_FROM_WHEELBASE, FORWARD_SPEED_FAST);
-        odometer.setXYT(odometer.getX(), point.y * TILE_SIZE, 0);
+        odometer.setXYT(odometer.getX(), point.y * TILE_SIZE, 180);
         Navigation.turnTo(270, ROTATE_SPEED_FAST);
         LightLocalizer.twoLineDetection();
-        odometer.setXYT((point.x * TILE_SIZE) - OFFSET_FROM_WHEELBASE, odometer.getY(), 90);
+        odometer.setXYT((point.x * TILE_SIZE) - OFFSET_FROM_WHEELBASE, odometer.getY(), 270);
       }
-      // either close to left limit or to bottom limit
-      else if (point.x == (currentLeftLimit + 1) || point.y == (currentBottomLimit + 1)) {
-        Navigation.turnTo(0, ROTATE_SPEED_FAST);
-        LightLocalizer.twoLineDetection();
-        Navigation.backUp(OFFSET_FROM_WHEELBASE, FORWARD_SPEED_FAST);
-        odometer.setXYT(odometer.getX(), point.y * TILE_SIZE, 0);
-        Navigation.turnTo(90, ROTATE_SPEED_FAST);
-        LightLocalizer.twoLineDetection();
-        odometer.setXYT((point.x * TILE_SIZE) + OFFSET_FROM_WHEELBASE, odometer.getY(), 90);
-      }
-      // close to right limit
-      else if (point.x == (currentRightLimit - 1)) {
+
+      // only close to right wall
+      else if (point.x == (FIELD_RIGHT - 1)) {
         Navigation.turnTo(0, ROTATE_SPEED_FAST);
         LightLocalizer.twoLineDetection();
         Navigation.backUp(OFFSET_FROM_WHEELBASE, FORWARD_SPEED_FAST);
@@ -252,7 +252,7 @@ public class LightLocalizer {
         odometer.setXYT((point.x * TILE_SIZE) - OFFSET_FROM_WHEELBASE, odometer.getY(), 270);
 
       }
-      // close to top limit
+      // only close to top wall
       else if (point.y == (currentTopLimit - 1)) {
         Navigation.turnTo(180, ROTATE_SPEED_FAST);
         LightLocalizer.twoLineDetection();
@@ -262,13 +262,28 @@ public class LightLocalizer {
         LightLocalizer.twoLineDetection();
         odometer.setXYT((point.x * TILE_SIZE) + OFFSET_FROM_WHEELBASE, odometer.getY(), 90);
       }
+      // either close to left wall or to bottom wall --> general procedure
+      else if (point.x == 1 || point.y == 1) {
+        Navigation.turnTo(0, ROTATE_SPEED_FAST);
+        LightLocalizer.twoLineDetection();
+        Navigation.backUp(OFFSET_FROM_WHEELBASE, FORWARD_SPEED_FAST);
+        odometer.setXYT(odometer.getX(), point.y * TILE_SIZE, 0);
+        Navigation.turnTo(90, ROTATE_SPEED_FAST);
+        LightLocalizer.twoLineDetection();
+        odometer.setXYT((point.x * TILE_SIZE) + OFFSET_FROM_WHEELBASE, odometer.getY(), 90);
+      }
+
     }
 
   }
 
   /**
-   * Method used to light localize after the us localization, different light localization depending on which corner we
-   * are localizing on
+   * Method used to perform the initial light localization in the starting corner. 4 different cases of initial
+   * localization are implemented depending on which corner number is inputted.
+   * 
+   * @param: point is the starting corner point used to set the odometer x and y values properly
+   * 
+   * @param: corner is the starting corner number
    */
   public static void initialLightLocalize(Point point, int corner) {
 
