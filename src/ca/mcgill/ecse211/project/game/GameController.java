@@ -26,7 +26,8 @@ public class GameController {
     while (gameState != GameState.Done) {
       switch (gameState) {
         case Test:
-
+          
+          /* orientation check test
           odometer.setXYT(4*TILE_SIZE, 4*TILE_SIZE, 0);
           navigationCoordinates = new Point(1,4);
           Navigation.turn(90, FORWARD_SPEED_FAST);
@@ -35,6 +36,16 @@ public class GameController {
           System.out.println("TEST DONE");
           Navigation.stopMotors();
           gameState = GameState.Done;
+          */
+          
+          // LAUNCHING COEFFICIENT TEST
+          for(int i = 50; i<=800; i+=50) {
+            ballisticLauncher.launchTest(i);
+            ballisticLauncher.reload();
+            Button.waitForAnyPress();
+          }
+          gameState = GameState.Done;
+
 
 
         case Initialization:

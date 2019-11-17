@@ -34,6 +34,32 @@ public class BallisticLauncher {
     } catch (InterruptedException e) {
     }
   }
+  
+  /**
+   * Method used to test the ballistic launcher at different motor speeds in order to determine the launch coefficient
+   * 
+   * @param : the motor speed to apply to the launching motors
+   */
+  public void launchTest(int motorSpeed) {
+    // sleeps 5 seconds before launch
+    try {
+      Thread.sleep(LAUNCH_SLEEP);
+    } catch (InterruptedException e) {
+    }
+    // set the speeds and accelerations of the launching motors
+    leftBallisticMotor.setSpeed(motorSpeed);
+    rightBallisticMotor.setSpeed(motorSpeed);
+    leftBallisticMotor.setAcceleration(LAUNCH_ACCELERATION);
+    rightBallisticMotor.setAcceleration(LAUNCH_ACCELERATION);
+    // launch the ball by rotating a particular amount of degrees
+    leftBallisticMotor.rotate(-LAUNCHING_ANGLE, true);
+    rightBallisticMotor.rotate(-LAUNCHING_ANGLE, false);
+    // sleeps after launch
+    try {
+      Thread.sleep(RELOAD_SLEEP);
+    } catch (InterruptedException e) {
+    }
+  }
 
   /**
    * Method implementing the behaviour of the ballistic motors during reload
