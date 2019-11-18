@@ -195,14 +195,15 @@ public class GameController {
         case Avoidance:
           // object avoidance procedure using wall follower with P-Controller
           
-          obstacleAvoider.wallFollower(FORWARD_SPEED_NORMAL);
+//          obstacleAvoider.wallFollower(FORWARD_SPEED_NORMAL);
+          Button.waitForAnyPress();
           // regenerate the launch points
           gameNavigation.generateLaunchPoints();
-
+/*
           // LIGHT LOCALIZATION
           closestPoint = gameNavigation.closestPoint();
           Navigation.travelTo(closestPoint.x, closestPoint.y, FORWARD_SPEED_NORMAL);
-          LightLocalizer.lightLocalize(closestPoint);
+          LightLocalizer.lightLocalize(closestPoint);*/
           gameState = GameState.Navigation;
 
           break;

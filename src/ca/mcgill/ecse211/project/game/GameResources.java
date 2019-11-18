@@ -170,6 +170,10 @@ public class GameResources {
    */
   public static final int NUMBER_OF_BALLS = 1;
 
+  /**
+   * The offset of the arm from the center of the robot in centimeters.
+   */
+  public static final double BALLISTIC_X_OFFSET_FROM_CENTER = 2;
 
 
 

@@ -85,6 +85,9 @@ public class GameNavigation {
     double dY = binY - currentY;
     // turn towards launch point
     Navigation.turnTo(Math.toDegrees(Math.atan2(dX, dY)), ROTATE_SPEED_SLOW);
+    double distance = this.distanceFromBin(launchPoint.x, launchPoint.y);
+    // additional turn so that the ballistic launcher points to the bin
+    Navigation.turn(-(Math.asin((BALLISTIC_X_OFFSET_FROM_CENTER)/distance)),ROTATE_SPEED_NORMAL);
   }
 
   /**
