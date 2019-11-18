@@ -27,17 +27,11 @@ public class GameController {
     while (gameState != GameState.Done) {
       switch (gameState) {
         case Test:
+          currentRegion = REGION.ISLAND;
+          gameState = GameState.Navigation;
+          odometer.setXYT(TILE_SIZE, TILE_SIZE, 0);
+          gameNavigation.squareNavigation(1, 4);
           
-          /* orientation check test
-          odometer.setXYT(4*TILE_SIZE, 4*TILE_SIZE, 0);
-          navigationCoordinates = new Point(1,4);
-          Navigation.turn(90, FORWARD_SPEED_FAST);
-          Navigation.rotate(Turn.COUNTER_CLOCK_WISE, ROTATE_SPEED_SLOW);
-          while(!ObstacleAvoider.orientationCheck());
-          System.out.println("TEST DONE");
-          Navigation.stopMotors();
-          gameState = GameState.Done;
-          */
           
           // LAUNCHING COEFFICIENT TEST
           // test speeds from 150 to 650 and record distances for each
@@ -75,7 +69,7 @@ public class GameController {
 
           // transit to ultrasonic localization state
           Button.waitForAnyPress();
-          gameState = GameState.UltrasonicLocalization;
+          gameState = GameState.Test;
 
           break;
 
@@ -213,6 +207,7 @@ public class GameController {
           
 //          obstacleAvoider.wallFollower(FORWARD_SPEED_NORMAL);
           Button.waitForAnyPress();
+          System.out.println("OBJECT DETECTED");
           // regenerate the launch points
           gameNavigation.generateLaunchPoints();
 /*

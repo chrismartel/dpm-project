@@ -5,9 +5,6 @@ import static ca.mcgill.ecse211.project.game.GameResources.*;
 import java.util.LinkedList;
 import ca.mcgill.ecse211.project.Resources.Point;
 import ca.mcgill.ecse211.project.Localization.LightLocalizer;
-import ca.mcgill.ecse211.project.game.GameResources.REGION;
-import lejos.hardware.Button;
-import lejos.hardware.Sound;
 
 
 /**

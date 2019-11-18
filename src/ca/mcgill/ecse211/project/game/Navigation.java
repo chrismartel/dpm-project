@@ -46,26 +46,26 @@ public class Navigation {
    * @param y : y coordinate of the current way point
    */
   public static void travelTo(double x, double y, int speed) {
-
     // Convert the coordinates to centimeters
-    x = x * TILE_SIZE;
-    y = y * TILE_SIZE;
-    leftMotor.setSpeed(speed);
-    rightMotor.setSpeed(speed);
-    // Poll the odometer for info about current the position
-    double currentX = odometer.getX();
-    double currentY = odometer.getY();
+    if(gameState!=GameState.Avoidance) {
+      x = x * TILE_SIZE;
+      y = y * TILE_SIZE;
+      leftMotor.setSpeed(speed);
+      rightMotor.setSpeed(speed);
+      // Poll the odometer for info about current the position
+      double currentX = odometer.getX();
+      double currentY = odometer.getY();
 
-    // compute the distances to travel in X and Y
-    double dX = x - currentX;
-    double dY = y - currentY;
+      // compute the distances to travel in X and Y
+      double dX = x - currentX;
+      double dY = y - currentY;
 
-    // the robot turns by the angle between its current orientation and the orientation towards the current way point
-    turnTo(Math.toDegrees(Math.atan2(dX, dY)), speed);
+      // the robot turns by the angle between its current orientation and the orientation towards the current way point
+      turnTo(Math.toDegrees(Math.atan2(dX, dY)), speed);
 
-    // the robot travels to the way point
-    travel(dX, dY, speed);
-
+      // the robot travels to the way point
+      travel(dX, dY, speed);
+    }
   }
 
 

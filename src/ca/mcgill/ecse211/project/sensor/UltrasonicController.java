@@ -4,6 +4,9 @@ import static ca.mcgill.ecse211.project.game.GameResources.*;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import ca.mcgill.ecse211.project.game.GameState;
 
 public class UltrasonicController {
@@ -23,6 +26,22 @@ public class UltrasonicController {
    */
   private int previousDistance;
 
+  
+  // Thread control tools
+  /**
+   * Fair lock for concurrent writing
+   */
+  private static Lock lock = new ReentrantLock(true);
+
+  /**
+   * Indicates if a thread is trying to reset any position parameters
+   */
+  private volatile boolean isResetting = false;
+
+  /**
+   * Lets other threads know that a reset operation is over.
+   */
+  private Condition doneResetting = lock.newCondition();
 
   /**
    * window to store the data polled from the UsSensor in a queue
@@ -51,31 +70,39 @@ public class UltrasonicController {
 
 
   public void processDistance(int distance) {
-    int temporaryDistance;
-    // distance initially not changed by the filter out method
-    this.previousDistance = this.currentDistance;
-    // use median filter only if distance changed in filter out method
-      // if the lists are full remove the oldest sample from the queue and from the sorted list
-      if (usDataQueue.size() == US_WINDOW) {
-        // removes the element at top of the queue from the sorted list
-        usDataSortedList.remove(usDataQueue.element());
-        // removes the element at head of the queue
-        usDataQueue.remove();
-      }
-      // add the new fetched sample to the end of the queue and to the sorted list
-      usDataQueue.add(distance);
-      usDataSortedList.add(distance);
-
-      // sort the data list
-      Collections.sort(usDataSortedList);
-
-      // set the temporary distance to be the median of the sorted list
-      if (usDataQueue.size() == US_WINDOW) {
-        temporaryDistance = (int) (usDataSortedList.get((int) (US_WINDOW / 2)));
-        filter(temporaryDistance);
-      }
-      // filter the temporary distance the get rid of aberrant values and update the current distance
     
+    lock.lock();
+    isResetting = true;
+    try {
+      int temporaryDistance;
+      // distance initially not changed by the filter out method
+      this.previousDistance = this.currentDistance;
+      // use median filter only if distance changed in filter out method
+        // if the lists are full remove the oldest sample from the queue and from the sorted list
+        if (usDataQueue.size() == US_WINDOW) {
+          // removes the element at top of the queue from the sorted list
+          usDataSortedList.remove(usDataQueue.element());
+          // removes the element at head of the queue
+          usDataQueue.remove();
+        }
+        // add the new fetched sample to the end of the queue and to the sorted list
+        usDataQueue.add(distance);
+        usDataSortedList.add(distance);
+
+        // sort the data list
+        Collections.sort(usDataSortedList);
+
+        // set the temporary distance to be the median of the sorted list
+        if (usDataQueue.size() == US_WINDOW) {
+          temporaryDistance = (int) (usDataSortedList.get((int) (US_WINDOW / 2)));
+          filter(temporaryDistance);
+        }
+        // filter the temporary distance the get rid of aberrant values and update the current distance
+      isResetting = false;
+      doneResetting.signalAll();
+    } finally {
+      lock.unlock();
+    }
   }
 
   /**
@@ -104,8 +131,19 @@ public class UltrasonicController {
    */
   public int[] getDistances() {
     int[] distances = new int[2];
-    distances[0] = this.currentDistance;
-    distances[1] = this.previousDistance;
+    lock.lock();
+    try {
+      while (isResetting) { // If a reset operation is being executed, wait until it is over.
+        doneResetting.await(); // Using await() is lighter on the CPU than simple busy wait.
+      }
+      distances[0] = this.currentDistance;
+      distances[1] = this.previousDistance;
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    } finally {
+      lock.unlock();
+    }
+
     return distances;
   }
 
@@ -115,22 +153,42 @@ public class UltrasonicController {
    * @return the current distance processed by the controller
    */
   public int getDistance() {
-    int distance = this.currentDistance;
+    int distance = 0;
+    lock.lock();
+    try {
+      while (isResetting) { // If a reset operation is being executed, wait until it is over.
+        doneResetting.await(); // Using await() is lighter on the CPU than simple busy wait.
+      }
+      distance= this.currentDistance;
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    } finally {
+      lock.unlock();
+    }
     return distance;
   }
 
   public void checkForObstacle() {
-    // obstacle ahead
-    if (currentDistance <= OBSTACLE_DETECTION_DISTANCE) {
-      // increment the counter, when 3 detections have been made --> obstacle detected
-      obstacleDetectionCounter++;
-      if(obstacleDetectionCounter==3) {
-        gameState = GameState.Avoidance;
+    lock.lock();
+    isResetting = true;
+    try {
+      // obstacle ahead
+      if (currentDistance <= OBSTACLE_DETECTION_DISTANCE) {
+        // increment the counter, when 3 detections have been made --> obstacle detected
+        obstacleDetectionCounter++;
+        if(obstacleDetectionCounter==3) {
+          gameState = GameState.Avoidance;
+        }
       }
+      else {
+        obstacleDetectionCounter=0;
+      }
+      isResetting = false;
+      doneResetting.signalAll(); // Let the other threads know we are done resetting
+    } finally {
+      lock.unlock();
     }
-    else {
-      obstacleDetectionCounter=0;
-    }
+
   }
 
 }

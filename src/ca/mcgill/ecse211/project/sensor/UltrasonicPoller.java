@@ -3,6 +3,7 @@ package ca.mcgill.ecse211.project.sensor;
 import static ca.mcgill.ecse211.project.game.GameResources.*;
 //import ca.mcgill.ecse211.project.game.GameController.NAVIGATION_DESTINATION;
 import ca.mcgill.ecse211.project.game.GameState;
+import ca.mcgill.ecse211.project.game.REGION;
 
 /**
  * Ultrasonic poller class implementing a median filter. Polls data from the ultrasonic sensor in an independent thread
@@ -84,7 +85,7 @@ public class UltrasonicPoller implements Runnable {
         frontUsController.processDistance(this.frontDistance);
         // when navigating on the island, check for obstacles
         if(gameState == GameState.Navigation && currentRegion == REGION.ISLAND) {
-          //frontUsController.checkForObstacle();
+          frontUsController.checkForObstacle();
         }
       }
 

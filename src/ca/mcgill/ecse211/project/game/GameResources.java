@@ -341,7 +341,7 @@ public class GameResources {
   /*
    * Distance of obstacle detection
    */
-  public static final double OBSTACLE_DETECTION_DISTANCE = 4;
+  public static final double OBSTACLE_DETECTION_DISTANCE = 10;
   
   /*
    * Average width of obstacles
@@ -368,10 +368,6 @@ public class GameResources {
     GREEN, RED
   }
 
-  public enum REGION {
-    RED, WATER, TUNNEL_RED, TUNNEL_GREEN, GREEN, ISLAND
-  }
-  
   public enum NAVIGATION_DESTINATION {
     TUNNEL1_ENTRANCE, TUNNEL2_ENTRANCE, LAUNCH_POINT, END_POINT
   }
