@@ -172,8 +172,8 @@ public class Navigation {
       if(enableCorrection) {
         if(!lightLocalizer.lightLocalize()) {
           OdometryCorrection.correctValues();
-          System.out.println("x: "+odometer.getX());
-          System.out.println("y: "+odometer.getY());
+     //     System.out.println("x: "+odometer.getX());
+     //     System.out.println("y: "+odometer.getY());
           Navigation.travelForward(speed);
         }
       }

@@ -12,6 +12,11 @@ public class UltrasonicController {
    * current distance processed by the ultrasonic controller
    */
   private int currentDistance;
+  
+  /**
+   * counter to determine if an obstacle is detected
+   */
+  private int obstacleDetectionCounter;
 
   /**
    * last distance processed by the ultrasonic controller
@@ -117,7 +122,14 @@ public class UltrasonicController {
   public void checkForObstacle() {
     // obstacle ahead
     if (currentDistance <= OBSTACLE_DETECTION_DISTANCE) {
-      gameState = GameState.Avoidance;
+      // increment the counter, when 3 detections have been made --> obstacle detected
+      obstacleDetectionCounter++;
+      if(obstacleDetectionCounter==3) {
+        gameState = GameState.Avoidance;
+      }
+    }
+    else {
+      obstacleDetectionCounter=0;
     }
   }
 

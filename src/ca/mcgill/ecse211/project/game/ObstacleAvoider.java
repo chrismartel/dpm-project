@@ -33,25 +33,11 @@ public class ObstacleAvoider {
         // convex corner is faced
         if (convexCornerCounter > 5) {
           convexCornerCounter = 0;
-          // convex corner procedure
-          Navigation.travel(CONVEX_CORNER_ADJUSTMENT_DISTANCE / 2, FORWARD_SPEED_FAST);
-          double currentTheta = odometer.getTheta();
-          double goalTheta = currentTheta - 90;
-          if (goalTheta < 0) {
-            goalTheta = goalTheta + 360;
-          }
-          // 90 degrees turn towards the left
-          Navigation.rotate(Turn.COUNTER_CLOCK_WISE, ROTATE_SPEED_SLOW);
-          while (!orientationCheck()) {
-            if (Math.abs(odometer.getTheta() - goalTheta) <= 1) {
-              break;
-            }
-          }
-          Navigation.travel(CONVEX_CORNER_ADJUSTMENT_DISTANCE, FORWARD_SPEED_FAST);
+          this.convexCornerProcedure();
           // after passing the convex corner, get new distance and restart time counter
           wallDistance = ultrasonicPoller.getLeftUsController().getDistance();
           wallDistance = this.calculateLateralDistance(wallDistance);
-          startTime = System.currentTimeMillis();
+
         }
       }
       // GENERAL WALL FOLLOWING PROCEDURE
@@ -64,7 +50,7 @@ public class ObstacleAvoider {
           rightMotor.forward();
           leftMotor.setSpeed(speed);
           rightMotor.setSpeed(speed);
-        } 
+        }
         // correction has to be made
         else {
           // robot is too far from wall
@@ -162,14 +148,27 @@ public class ObstacleAvoider {
     return false;
   }
 
-  // Method to calculate the gain of the motors proportionally with the error processed
+  /**
+   * Method used to calculate the gain to apply to the motor speed in function of the error between the wall distance
+   * and the band center
+   * 
+   * @param : the error between the wall distance and the band center
+   * @return : the gain to apply to the motor speeds
+   */
   private double calculateGain(double error) {
     double absError = Math.abs(error);
     double gain = absError * GAIN_CONSTANT;
     return gain;
   }
 
-  double calculateLateralDistance(double distance) {// method used to approximate the lateral distance of the robot from
+  
+  /**
+   * Method used to calculate the lateral distance between the robot and the wall during wall following
+   * 
+   * @param : the distance seen by the left ultrasonic sensor
+   * @return : the lateral distance between the robot and the wall
+   */
+ private double calculateLateralDistance(double distance) {// method used to approximate the lateral distance of the robot from
                                                     // the wall
     // lateral distance = distance *cos(45)
     // 4 centimeters between sensor and wheels
@@ -177,6 +176,29 @@ public class ObstacleAvoider {
     return lateralDistance;
   }
 
+ /**
+  * Method used to perform the convex corner procedure during wall following to avoid crashing into the walls
+  */
+ public void convexCornerProcedure() {
+   // convex corner procedure
+   Navigation.travel(CONVEX_CORNER_ADJUSTMENT_DISTANCE / 2, FORWARD_SPEED_FAST);
+   double currentTheta = odometer.getTheta();
+   double goalTheta = currentTheta - 90;
+   if (goalTheta < 0) {
+     goalTheta = goalTheta + 360;
+   }
+   // 90 degrees turn towards the left
+   Navigation.rotate(Turn.COUNTER_CLOCK_WISE, ROTATE_SPEED_SLOW);
+   while (!orientationCheck()) {
+     if (Math.abs(odometer.getTheta() - goalTheta) <= 1) {
+       Navigation.travel(CONVEX_CORNER_ADJUSTMENT_DISTANCE, FORWARD_SPEED_FAST);
+       break;
+     }
+   }
+   return;
+
+   
+ }
   public int getObstacleDistance() {
     return obstacleDistance;
   }

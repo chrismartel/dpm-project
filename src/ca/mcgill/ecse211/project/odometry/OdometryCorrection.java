@@ -115,7 +115,7 @@ public class OdometryCorrection {
     else {
      // System.out.println("gonig where??");
     }
-    System.out.println("ODOMETRY CORRECTION"+ odometer.getX()/TILE_SIZE+ ", "+ odometer.getY()/TILE_SIZE+ ", ");
+ //   System.out.println("ODOMETRY CORRECTION"+ odometer.getX()/TILE_SIZE+ ", "+ odometer.getY()/TILE_SIZE+ ", ");
   }
   
 

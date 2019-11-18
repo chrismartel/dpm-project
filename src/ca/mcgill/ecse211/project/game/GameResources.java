@@ -133,16 +133,17 @@ public class GameResources {
   /**
    * Coefficient of the launching process to adjust the speed of the motors in function of the distance
    */
-  public static final double LAUNCH_COEFFICIENT = 6.8; // HAS TO BE DETERMINED BY TESTING
+  public static final double LAUNCH_COEFFICIENT = 2; // HAS TO BE DETERMINED BY TESTING
   /**
    * Angle of rotation of the launching motors during launch
    */
-  public static final int LAUNCHING_ANGLE = 120;
+  public static final int LAUNCHING_ANGLE = 90;
   
   /**
    * Angle of rotation of the launching motors during reload
+   * Must be the same than the launching angle
    */
-  public static final int RELOAD_ANGLE = 130;
+  public static final int RELOAD_ANGLE = 90;
 
   /**
    * Distance to launch the ball
@@ -162,7 +163,7 @@ public class GameResources {
   /**
    * The launching motors acceleration.
    */
-  public static final int LAUNCH_ACCELERATION = 3000;
+  public static final int LAUNCH_ACCELERATION = 9999;
   public static final int RELOAD_ACCELERATION = 3000;
   
   /**
@@ -372,6 +373,6 @@ public class GameResources {
   }
   
   public enum NAVIGATION_DESTINATION {
-    TUNNEL1_ENTRANCE, TUNNEL2_ENTRANCE, LAUNCH_POINT, END_POINT, LOCALIZE
+    TUNNEL1_ENTRANCE, TUNNEL2_ENTRANCE, LAUNCH_POINT, END_POINT
   }
 }

@@ -21,6 +21,7 @@ public class GameNavigation {
    */
   private Point tunnelEntrance;
   private Point tunnelExit;
+  private int tunnel = 0;
 
   /**
    * coordinates of the launch point
@@ -35,9 +36,14 @@ public class GameNavigation {
 
 
   /**
-   * Orientation the robot needs to have to traverse the tunnel
+   * Orientation the robot needs to have to traverse the tunnel the first time
    */
-  private double tunnelTraversalOrientation;
+  private double tunnelEntranceTraversalOrientation;
+
+  /**
+   * Orientation the robot needs to have to traverse the tunnel when coming back
+   */
+  private double tunnelExitTraversalOrientation;
 
   public GameNavigation() {
     tunnelEntrance = new Point(0, 0);
@@ -56,7 +62,7 @@ public class GameNavigation {
    */
   public void squareNavigation(double x, double y) {
     enableCorrection = true;
-    navigationCoordinates = new Point(x,y);
+    navigationCoordinates = new Point(x, y);
     Navigation.travelTo(x, (odometer.getY() / TILE_SIZE), FORWARD_SPEED_NORMAL);
     Navigation.travelTo((odometer.getX() / TILE_SIZE), y, FORWARD_SPEED_NORMAL);
     enableCorrection = false;
@@ -66,9 +72,17 @@ public class GameNavigation {
   /**
    * Method implementing the navigation to the tunnel entrance and the turn towards the tunnel traversal orientation
    */
-  public void navigateToTunnel() {
+  public void navigateToTunnelEntrance() {
     this.squareNavigation(tunnelEntrance.x, tunnelEntrance.y);
-    Navigation.turnTo(tunnelTraversalOrientation, ROTATE_SPEED_SLOW);
+    Navigation.turnTo(tunnelEntranceTraversalOrientation, ROTATE_SPEED_SLOW);
+  }
+
+  /**
+   * Method implementing the navigation to the tunnel entrance and the turn towards the tunnel traversal orientation
+   */
+  public void navigateToTunnelExit() {
+    this.squareNavigation(tunnelExit.x, tunnelExit.y);
+    Navigation.turnTo(tunnelExitTraversalOrientation, ROTATE_SPEED_SLOW);
   }
 
   /**
@@ -77,6 +91,14 @@ public class GameNavigation {
   public void navigateToLaunchPoint() {
     // navigate to launch point
     this.squareNavigation(launchPoint.x, launchPoint.y);
+
+
+  }
+
+  /**
+   * Method implementing the turn towards the launch point
+   */
+  public void turnToTarget() {
     double currentX = odometer.getX();
     double currentY = odometer.getY();
     double binX = bin.x * TILE_SIZE;
@@ -87,7 +109,7 @@ public class GameNavigation {
     Navigation.turnTo(Math.toDegrees(Math.atan2(dX, dY)), ROTATE_SPEED_SLOW);
     double distance = this.distanceFromBin(launchPoint.x, launchPoint.y);
     // additional turn so that the ballistic launcher points to the bin
-    Navigation.turn(-(Math.asin((BALLISTIC_X_OFFSET_FROM_CENTER)/distance)),ROTATE_SPEED_NORMAL);
+    Navigation.turn(-(Math.asin((BALLISTIC_X_OFFSET_FROM_CENTER) / distance)), ROTATE_SPEED_NORMAL);
   }
 
   /**
@@ -96,7 +118,14 @@ public class GameNavigation {
    * parameters are updated.
    */
   public void navigateThroughTunnel() {
-    Navigation.travelTo(tunnelExit.x, tunnelExit.y, FORWARD_SPEED_FAST);
+    if(tunnel==1) {
+      Navigation.travelTo(tunnelEntrance.x, tunnelEntrance.y, FORWARD_SPEED_FAST);
+     
+    }
+    else if(tunnel==0){
+      Navigation.travelTo(tunnelExit.x, tunnelExit.y, FORWARD_SPEED_FAST);
+      tunnel++;
+    }
     LightLocalizer.twoLineDetection();
     Navigation.backUp(OFFSET_FROM_WHEELBASE, FORWARD_SPEED_FAST);
     this.updateParameters();
@@ -148,22 +177,22 @@ public class GameNavigation {
     int y1 = (int) (y / TILE_SIZE);
     int x2 = (int) x1 + 1;
     int y2 = (int) y1 + 1;
-    int x3 = (int) x1-1;
-    int y3 = (int) y1-1;
+    int x3 = (int) x1 - 1;
+    int y3 = (int) y1 - 1;
     // array of closest points
     LinkedList<Point> closestPoints = new LinkedList<Point>();
     Point p1 = new Point(x1, y1);
     Point p2 = new Point(x1, y2);
     Point p3 = new Point(x1, y3);
-    
+
     Point p4 = new Point(x2, y1);
     Point p5 = new Point(x2, y2);
     Point p6 = new Point(x2, y3);
-    
+
     Point p7 = new Point(x3, y1);
     Point p8 = new Point(x3, y2);
     Point p9 = new Point(x3, y3);
-    
+
 
 
     // check if the 4 points generated are localizable
@@ -251,36 +280,35 @@ public class GameNavigation {
       targetRegion = REGION.GREEN;
     } else {
       targetRegion = REGION.ISLAND;
+      System.out.println("TARGET REGION IS ISLAND");
     }
     // determine where is the tunnel entrance
     if (tunnelBottom == targetRegion) {
-      this.tunnelEntrance.x = (Tunnel.ll.x + 0.5);
-      this.tunnelEntrance.y = (Tunnel.ll.y - 1);
-      this.tunnelExit.x = (Tunnel.ur.x - 0.5);
-      this.tunnelExit.y = (Tunnel.ur.y + 1);
-      this.tunnelTraversalOrientation = 0;
-      // this.tunnelLength = (TUNNEL_UR.y - TUNNEL_LL.y) * TILE_SIZE;
+      this.setTunnelEntrance(new Point(Tunnel.ll.x + 0.5, Tunnel.ll.y - 1));
+      this.setTunnelExit(new Point(Tunnel.ur.x - 0.5, Tunnel.ur.y + 1));
+      this.setTunnelEntranceTraversalOrientation(0);
+      this.setTunnelExitTraversalOrientation(180);
     } else if (tunnelTop == targetRegion) {
-      this.tunnelEntrance.x = (Tunnel.ur.x - 0.5);
-      this.tunnelEntrance.y = (Tunnel.ur.y + 1);
-      this.tunnelExit.x = (Tunnel.ll.x + 0.5);
-      this.tunnelExit.y = (Tunnel.ll.y - 1);
-      this.tunnelTraversalOrientation = 180;
-      // this.tunnelLength = (TUNNEL_UR.y - TUNNEL_LL.y) * TILE_SIZE;
+      this.setTunnelEntrance(new Point(Tunnel.ur.x - 0.5, Tunnel.ur.y + 1));
+      this.setTunnelExit(new Point(Tunnel.ll.x + 0.5, Tunnel.ll.y - 1));
+      this.setTunnelEntranceTraversalOrientation(180);
+      this.setTunnelExitTraversalOrientation(0);
+
     } else if (tunnelLeft == targetRegion) {
-      this.tunnelEntrance.x = (Tunnel.ll.x - 1);
-      this.tunnelEntrance.y = (Tunnel.ll.y + 0.5);
-      this.tunnelExit.x = (Tunnel.ur.x + 1);
-      this.tunnelExit.y = (Tunnel.ur.y - 0.5);
-      this.tunnelTraversalOrientation = 90;
-      // this.tunnelLength = (TUNNEL_UR.x - TUNNEL_LL.x) * TILE_SIZE;
+      this.setTunnelEntrance(new Point(Tunnel.ll.x - 1, Tunnel.ll.y + 0.5));
+      this.setTunnelExit(new Point(Tunnel.ur.x + 1, Tunnel.ur.y - 0.5));
+      this.setTunnelEntranceTraversalOrientation(90);
+      this.setTunnelExitTraversalOrientation(270);
+
     } else if (tunnelRight == targetRegion) {
-      this.tunnelEntrance.x = (Tunnel.ur.x + 1);
-      this.tunnelEntrance.y = (Tunnel.ur.y - 0.5);
-      this.tunnelExit.x = (Tunnel.ll.x - 1);
-      this.tunnelExit.y = (Tunnel.ll.y + 0.5);
-      this.tunnelTraversalOrientation = 270;
-      // this.tunnelLength = (TUNNEL_UR.x - TUNNEL_LL.x) * TILE_SIZE;
+      System.out.println("ENTRANCE IS RIGHT");
+      this.setTunnelEntrance(new Point(Tunnel.ur.x + 1, Tunnel.ur.y - 0.5));
+      this.setTunnelExit(new Point(Tunnel.ll.x - 1, Tunnel.ll.y + 0.5));
+      this.setTunnelEntranceTraversalOrientation(270);
+      this.setTunnelExitTraversalOrientation(90);
+
+      System.out.println("TUNNEL ENTRANCE: " + tunnelEntrance.x + ", " + tunnelEntrance.y);
+
     }
   }
 
@@ -365,6 +393,7 @@ public class GameNavigation {
   public void updateRegion() {
     if (currentRegion == REGION.GREEN || currentRegion == REGION.RED) {
       currentRegion = REGION.ISLAND;
+      System.out.println("REGION SET TO ISLAND"+ currentRegion);
     } else if (currentRegion == REGION.ISLAND) {
       if (color == COLOR.GREEN) {
         currentRegion = REGION.GREEN;
@@ -474,8 +503,6 @@ public class GameNavigation {
   public void updateParameters() {
     // update the current region of the robot
     this.updateRegion();
-    // update the tunnel data
-    this.updateTunnelData();
     // set the new zone limits
     this.setLimits();
   }
@@ -587,43 +614,61 @@ public class GameNavigation {
 
 
 
-  /**
-   * Getter Method for the tunnel traversal orientation
-   * 
-   * @return: the orientation needed to traverse the tunnel
-   */
-  public double getTunnelTraversalOrientation() {
-    return tunnelTraversalOrientation;
+  public double getTunnelEntranceTraversalOrientation() {
+    return tunnelEntranceTraversalOrientation;
   }
 
-  
+  public double getTunnelExitTraversalOrientation() {
+    return tunnelExitTraversalOrientation;
+  }
+
+
   public void createRestrictedPoints() {
     double x = odometer.getX();
     double y = odometer.getY();
     double theta = odometer.getTheta();
-    
+
     // heading approximatly towards 0 degrees
-    if((theta>= 355 && theta <= 360)||(theta>=0 && theta <= 5)) {
-      y = y + OBSTACLE_DETECTION_DISTANCE+OBSTACLE_WIDTH;
+    if ((theta >= 355 && theta <= 360) || (theta >= 0 && theta <= 5)) {
+      y = y + OBSTACLE_DETECTION_DISTANCE + OBSTACLE_WIDTH;
     }
     // heading approximatly towards 90 degrees
-    else if(theta >= 85 && theta<=95) {
-      x = x + OBSTACLE_DETECTION_DISTANCE+OBSTACLE_WIDTH;
+    else if (theta >= 85 && theta <= 95) {
+      x = x + OBSTACLE_DETECTION_DISTANCE + OBSTACLE_WIDTH;
     }
     // heading approximately towards 180 degrees
-    else if(theta >= 175 && theta <= 185) {
-      y = y - OBSTACLE_DETECTION_DISTANCE-OBSTACLE_WIDTH;
+    else if (theta >= 175 && theta <= 185) {
+      y = y - OBSTACLE_DETECTION_DISTANCE - OBSTACLE_WIDTH;
     }
     // heading approximately towards 270 degrees
-    else if(theta >= 265 && theta <= 275) {
-      y = x - OBSTACLE_DETECTION_DISTANCE-OBSTACLE_WIDTH;
+    else if (theta >= 265 && theta <= 275) {
+      y = x - OBSTACLE_DETECTION_DISTANCE - OBSTACLE_WIDTH;
     }
     // x and y represent approximatly the coordinates of the center of the obstacle
-    int x1 = (int) (x/TILE_SIZE);
-    int y1 = (int) (y/TILE_SIZE);
-    int x2 = x1+1;
-    int y2 = y1+1;
+    int x1 = (int) (x / TILE_SIZE);
+    int y1 = (int) (y / TILE_SIZE);
+    int x2 = x1 + 1;
+    int y2 = y1 + 1;
   }
 
+  public Point getLaunchPoint() {
+    return launchPoint;
+  }
+
+  public void setTunnelEntrance(Point tunnelEntrance) {
+    this.tunnelEntrance = tunnelEntrance;
+  }
+
+  public void setTunnelExit(Point tunnelExit) {
+    this.tunnelExit = tunnelExit;
+  }
+
+  public void setTunnelEntranceTraversalOrientation(double tunnelEntranceTraversalOrientation) {
+    this.tunnelEntranceTraversalOrientation = tunnelEntranceTraversalOrientation;
+  }
+
+  public void setTunnelExitTraversalOrientation(double tunnelExitTraversalOrientation) {
+    this.tunnelExitTraversalOrientation = tunnelExitTraversalOrientation;
+  }
 
 }
