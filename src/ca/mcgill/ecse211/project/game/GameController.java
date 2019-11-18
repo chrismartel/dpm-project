@@ -5,6 +5,7 @@ import ca.mcgill.ecse211.project.Resources;
 import static ca.mcgill.ecse211.project.Resources.*;
 import ca.mcgill.ecse211.project.Localization.LightLocalizer;
 import ca.mcgill.ecse211.project.Localization.UltrasonicLocalizer;
+import ca.mcgill.ecse211.project.game.Navigation.Turn;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 
@@ -25,21 +26,26 @@ public class GameController {
     while (gameState != GameState.Done) {
       switch (gameState) {
         case Test:
+          
+          /* orientation check test
+          odometer.setXYT(4*TILE_SIZE, 4*TILE_SIZE, 0);
+          navigationCoordinates = new Point(1,4);
+          Navigation.turn(90, FORWARD_SPEED_FAST);
+          Navigation.rotate(Turn.COUNTER_CLOCK_WISE, ROTATE_SPEED_SLOW);
+          while(!ObstacleAvoider.orientationCheck());
+          System.out.println("TEST DONE");
+          Navigation.stopMotors();
+          gameState = GameState.Done;
+          */
+          
+          // LAUNCHING COEFFICIENT TEST
+          for(int i = 50; i<=800; i+=50) {
+            ballisticLauncher.launchTest(i);
+            ballisticLauncher.reload();
+            Button.waitForAnyPress();
+          }
+          gameState = GameState.Done;
 
-          /*
-           * // on a point odometer.setXYT(1*TILE_SIZE, 1*TILE_SIZE, 0); Point point = gameNavigation.closestPoint();
-           * System.out.println("cloest point1: "+ point.x+ ", " + point.y); // expected 1,1
-           * 
-           * // close to a border odometer.setXYT(1*TILE_SIZE, 2.7*TILE_SIZE, 0); point = gameNavigation.closestPoint();
-           * System.out.println("cloest point2: "+ point.x+ ", " + point.y); // expected 1,2
-           * 
-           * // middle odometer.setXYT(3.5*TILE_SIZE, 2.5*TILE_SIZE, 0); point = gameNavigation.closestPoint();
-           * System.out.println("cloest point3: "+ point.x+ ", " + point.y); //expected 3,2 or 4,2
-           * 
-           * // on a border --> does not work odometer.setXYT(1*TILE_SIZE, 3*TILE_SIZE, 0); point =
-           * gameNavigation.closestPoint(); System.out.println("cloest point4: "+ point.x+ ", " + point.y); // expected
-           * 1,2 or 2,3 gameState = GameState.Done;
-           */
 
 
         case Initialization:
@@ -65,7 +71,7 @@ public class GameController {
 
           // transit to ultrasonic localization state
           Button.waitForAnyPress();
-          gameState = GameState.UltrasonicLocalization;
+          gameState = GameState.Test;
 
           break;
 
@@ -188,14 +194,16 @@ public class GameController {
 
         case Avoidance:
           // object avoidance procedure using wall follower with P-Controller
-          obstacleAvoider.wallFollower();
+          
+//          obstacleAvoider.wallFollower(FORWARD_SPEED_NORMAL);
+          Button.waitForAnyPress();
           // regenerate the launch points
           gameNavigation.generateLaunchPoints();
-
+/*
           // LIGHT LOCALIZATION
           closestPoint = gameNavigation.closestPoint();
           Navigation.travelTo(closestPoint.x, closestPoint.y, FORWARD_SPEED_NORMAL);
-          LightLocalizer.lightLocalize(closestPoint);
+          LightLocalizer.lightLocalize(closestPoint);*/
           gameState = GameState.Navigation;
 
           break;

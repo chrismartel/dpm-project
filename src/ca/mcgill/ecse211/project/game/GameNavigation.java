@@ -10,7 +10,11 @@ import lejos.hardware.Button;
 import lejos.hardware.Sound;
 
 
-
+/**
+ * This class implements all the methods related to map generation, navigation to different locations on the field,
+ * tunnel computations or distance computations
+ * 
+ */
 public class GameNavigation {
   /**
    * coordinates of the tunnel entrance and exit
@@ -47,10 +51,12 @@ public class GameNavigation {
    * Method used to travel on the field by following the black lines directions, it enables the correction it the
    * travel() method in the Navigation class. It allows heading correction to be peform each time 2 lines are detected.
    * 
-   * @param : x is the goal coordinate on the x axis, y is the goal coordinate on the y axis
+   * @param : x is the goal coordinate on the x axis
+   * @param : y is the goal coordinate on the y axis
    */
   public void squareNavigation(double x, double y) {
     enableCorrection = true;
+    navigationCoordinates = new Point(x,y);
     Navigation.travelTo(x, (odometer.getY() / TILE_SIZE), FORWARD_SPEED_NORMAL);
     Navigation.travelTo((odometer.getX() / TILE_SIZE), y, FORWARD_SPEED_NORMAL);
     enableCorrection = false;
@@ -58,7 +64,7 @@ public class GameNavigation {
 
 
   /**
-   * Method used to navigate to the tunnel entrance
+   * Method implementing the navigation to the tunnel entrance and the turn towards the tunnel traversal orientation
    */
   public void navigateToTunnel() {
     this.squareNavigation(tunnelEntrance.x, tunnelEntrance.y);
@@ -66,7 +72,7 @@ public class GameNavigation {
   }
 
   /**
-   * Method used to navigate to the launch and to turn towards the bin
+   * Method implementing the navigation to the launch and the turn towards the bin
    */
   public void navigateToLaunchPoint() {
     // navigate to launch point
@@ -79,11 +85,15 @@ public class GameNavigation {
     double dY = binY - currentY;
     // turn towards launch point
     Navigation.turnTo(Math.toDegrees(Math.atan2(dX, dY)), ROTATE_SPEED_SLOW);
+    double distance = this.distanceFromBin(launchPoint.x, launchPoint.y);
+    // additional turn so that the ballistic launcher points to the bin
+    Navigation.turn(-(Math.asin((BALLISTIC_X_OFFSET_FROM_CENTER)/distance)),ROTATE_SPEED_NORMAL);
   }
 
   /**
-   * Method used to navigate through the tunnel entrance, localize on the black line of the tunnel exit back up and
-   * update the map parameters
+   * Method implementing the navigation through a tunnel. At first, the robot travels to the exit of the tunnel, then it
+   * adjust its heading according to the next black line and backs up. Also, after the tunnel traversal, the map
+   * parameters are updated.
    */
   public void navigateThroughTunnel() {
     Navigation.travelTo(tunnelExit.x, tunnelExit.y, FORWARD_SPEED_FAST);
@@ -125,9 +135,11 @@ public class GameNavigation {
   }
 
   /**
-   * Method used to find the closest coordinate point from the actual position of the odometer
+   * Method used to find the closest coordinate point from the actual position of the odometer. The method return the
+   * closest point from the current position of the robot which is not on a border of the current region the robot is
+   * on.
    * 
-   * @return an array representing the closest coordinate point from the current odometer position
+   * @return the closest coordinate point from the current odometer position which is not on a region border
    */
   public Point closestPoint() {
     double x = odometer.getX();
@@ -136,23 +148,53 @@ public class GameNavigation {
     int y1 = (int) (y / TILE_SIZE);
     int x2 = (int) x1 + 1;
     int y2 = (int) y1 + 1;
+    int x3 = (int) x1-1;
+    int y3 = (int) y1-1;
     // array of closest points
     LinkedList<Point> closestPoints = new LinkedList<Point>();
     Point p1 = new Point(x1, y1);
     Point p2 = new Point(x1, y2);
-    Point p3 = new Point(x2, y1);
-    Point p4 = new Point(x2, y2);
+    Point p3 = new Point(x1, y3);
+    
+    Point p4 = new Point(x2, y1);
+    Point p5 = new Point(x2, y2);
+    Point p6 = new Point(x2, y3);
+    
+    Point p7 = new Point(x3, y1);
+    Point p8 = new Point(x3, y2);
+    Point p9 = new Point(x3, y3);
+    
+
 
     // check if the 4 points generated are localizable
     // if they are, add them to the array
-    if (GameNavigation.localizablePoint(p1))
+    if (GameNavigation.localizablePoint(p1)) {
       closestPoints.add(p1);
-    if (GameNavigation.localizablePoint(p2))
+    }
+    if (GameNavigation.localizablePoint(p2)) {
       closestPoints.add(p2);
-    if (GameNavigation.localizablePoint(p3))
+    }
+    if (GameNavigation.localizablePoint(p3)) {
       closestPoints.add(p3);
-    if (GameNavigation.localizablePoint(p4))
+    }
+    if (GameNavigation.localizablePoint(p4)) {
       closestPoints.add(p4);
+    }
+    if (GameNavigation.localizablePoint(p5)) {
+      closestPoints.add(p5);
+    }
+    if (GameNavigation.localizablePoint(p6)) {
+      closestPoints.add(p6);
+    }
+    if (GameNavigation.localizablePoint(p7)) {
+      closestPoints.add(p7);
+    }
+    if (GameNavigation.localizablePoint(p8)) {
+      closestPoints.add(p8);
+    }
+    if (GameNavigation.localizablePoint(p9)) {
+      closestPoints.add(p9);
+    }
 
     // compute distances of 4 points from actual position
     x = odometer.getX() / TILE_SIZE;
@@ -178,9 +220,14 @@ public class GameNavigation {
    * @param y1: y coordinate of the first point
    * @param x2: x coordinate of the second point
    * @param y2: y coordinate of the second point
-   * @return the distance between 2 points
+   * @return the distance between 2 points in centimeters
    */
   public double calculateDistance(double x1, double y1, double x2, double y2) {
+    // convert into centimeters
+    x1 = x1 * TILE_SIZE;
+    y1 = y1 * TILE_SIZE;
+    x2 = x2 * TILE_SIZE;
+    y2 = y2 * TILE_SIZE;
     double distance = Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
     return distance;
   }
@@ -313,7 +360,7 @@ public class GameNavigation {
   }
 
   /**
-   * Method used to update the region after a tunnel traversal
+   * Method used to update the region after a tunnel traversal depending on the current region
    */
   public void updateRegion() {
     if (currentRegion == REGION.GREEN || currentRegion == REGION.RED) {
@@ -329,7 +376,8 @@ public class GameNavigation {
   }
 
   /**
-   * Method setting the coordinates of the starting corner depending on the corner of the team color
+   * Method setting the coordinates of the starting corner depending on the team color and on the corner of the team
+   * color
    */
   public void setCorner() {
     if (color == COLOR.GREEN) {
@@ -397,10 +445,10 @@ public class GameNavigation {
   /**
    * Method used to compute the distance of the robot from the bin
    * 
-   * @param x: x position in centimeters
-   * @param y: y position in centimeters
+   * @param x: x coordinate of the point
+   * @param y: y coordinate of the point
    * 
-   * @return: the distance between the robot and the bin
+   * @return: the distance between the robot and the bin in centimeters
    */
   public double distanceFromBin(double x, double y) {
     double distance = this.calculateDistance(x, y, bin.x, bin.y);
@@ -434,14 +482,16 @@ public class GameNavigation {
 
 
   /**
-   * Method used to calculate the closest possible launch point from the robot
+   * Method used to calculate the closest possible launch point from the robot and to set the current launch point of
+   * the game navigation instance
+   * 
+   * @return: The closest possible launch point from the robot positon
    */
-  public void calculateClosestLaunchPoint() {
-    double x = odometer.getX();
-    double y = odometer.getY();
+  public Point calculateClosestLaunchPoint() {
+    double x = odometer.getX() / TILE_SIZE;
+    double y = odometer.getY() / TILE_SIZE;
     Point minimal_point = launchPoints.get(0);
-    double minimal_distance =
-        this.calculateDistance(x, y, minimal_point.x, minimal_point.y);
+    double minimal_distance = this.calculateDistance(x, y, minimal_point.x, minimal_point.y);
     for (Point point : launchPoints) {
       double distance = this.calculateDistance(x, y, point.x, point.y);
       if (distance <= minimal_distance) {
@@ -449,34 +499,38 @@ public class GameNavigation {
         minimal_point = point;
       }
     }
+    // set the launch point of the class instance and return it
     this.launchPoint = minimal_point;
+    return minimal_point;
   }
 
 
   /**
-   * Method used to populate the array list of possible launch points depending on the island coordinates
+   * Method used to populate the linked list of possible launch points on the island of the game navigation instance. A
+   * possible launch point is a point that is not on the borders of the current region, that is within the maximal
+   * distance from the bin and that is not in the restricted linked list of points.
    */
   public void generateLaunchPoints() {
-    double left = island.ll.x;
-    double right = island.ur.x;
-    double bottom = island.ll.y;
-    double top = island.ur.y;
+    // set limits of launching zone
+    int left = (int) island.ll.x + 1;
+    int right = (int) island.ur.x - 1;
+    int bottom = (int) island.ll.y + 1;
+    int top = (int) island.ur.y - 1;
     // initialize or clear the list
     launchPoints = new LinkedList<Point>();
     // for all inside x values of the island
-    for (int i = (int) (left + 1); i < right; i++) {
+    for (int i = left; i <= right; i++) {
       // for all inside y values of the island
-      for (int j = (int) (bottom + 1); j < top; j++) {
+      for (int j = bottom; j <= top; j++) {
         Point point = new Point(i, j);
         double distance = this.distanceFromBin(i, j);
-        // if the distance is smaller than the maximal launching distance, add the point into the array of launching
-        // points
+        // check if the distance from the bin is within the maximal distance
         if (distance <= MAXIMAL_LAUNCH_DISTANCE) {
           boolean restricted = false;
           // check if the point is restricted
-          for (Point restrictedLaunchPoint : restrictedLaunchPoints) {
+          for (Point restrictedPoint : restrictedPoints) {
             // if the point is restricted
-            if ((restrictedLaunchPoint.x == point.x) && (restrictedLaunchPoint.y == point.y)) {
+            if ((restrictedPoint.x == point.x) && (restrictedPoint.y == point.y)) {
               restricted = true;
             }
           }
@@ -490,8 +544,8 @@ public class GameNavigation {
   }
 
   /**
-   * Method that checks if a point is on the border of the current zone. This is used to filter out the localization
-   * points
+   * Method that checks if a point is on the border of the current zone. This method is used to filter out the
+   * localization points. A localizable point can't be on a zone limit and can't be in the restricted points array.
    * 
    * @return: true if the point is not on any border and is localizable, false if the point is on a border and is not
    *          localizable
@@ -500,6 +554,13 @@ public class GameNavigation {
     // check if the point is on one of the current zone limits
     if ((point.x != currentLeftLimit) && (point.x != currentRightLimit) && (point.y != currentBottomLimit)
         && (point.y != currentTopLimit)) {
+      for (Point restrictedPoint : restrictedPoints) {
+        // verification that the input point is not in the restricted point array
+        if ((point.x == restrictedPoint.x) && (point.y == restrictedPoint.y)) {
+          return false;
+        }
+      }
+      // point is not in restricted array and not on a border--> localizable point
       return true;
     }
     return false;
@@ -508,6 +569,8 @@ public class GameNavigation {
 
   /**
    * Getter Method for the tunnel entrance
+   * 
+   * @return: the point corresponding to the tunnel entrance
    */
   public Point getTunnelEntrance() {
     return tunnelEntrance;
@@ -515,6 +578,8 @@ public class GameNavigation {
 
   /**
    * Getter Method for the tunnel exit
+   * 
+   * @return: the point corresponding to the tunnel exit
    */
   public Point getTunnelExit() {
     return tunnelExit;
@@ -524,11 +589,41 @@ public class GameNavigation {
 
   /**
    * Getter Method for the tunnel traversal orientation
+   * 
+   * @return: the orientation needed to traverse the tunnel
    */
   public double getTunnelTraversalOrientation() {
     return tunnelTraversalOrientation;
   }
 
+  
+  public void createRestrictedPoints() {
+    double x = odometer.getX();
+    double y = odometer.getY();
+    double theta = odometer.getTheta();
+    
+    // heading approximatly towards 0 degrees
+    if((theta>= 355 && theta <= 360)||(theta>=0 && theta <= 5)) {
+      y = y + OBSTACLE_DETECTION_DISTANCE+OBSTACLE_WIDTH;
+    }
+    // heading approximatly towards 90 degrees
+    else if(theta >= 85 && theta<=95) {
+      x = x + OBSTACLE_DETECTION_DISTANCE+OBSTACLE_WIDTH;
+    }
+    // heading approximately towards 180 degrees
+    else if(theta >= 175 && theta <= 185) {
+      y = y - OBSTACLE_DETECTION_DISTANCE-OBSTACLE_WIDTH;
+    }
+    // heading approximately towards 270 degrees
+    else if(theta >= 265 && theta <= 275) {
+      y = x - OBSTACLE_DETECTION_DISTANCE-OBSTACLE_WIDTH;
+    }
+    // x and y represent approximatly the coordinates of the center of the obstacle
+    int x1 = (int) (x/TILE_SIZE);
+    int y1 = (int) (y/TILE_SIZE);
+    int x2 = x1+1;
+    int y2 = y1+1;
+  }
 
 
 }
