@@ -1,9 +1,9 @@
 package ca.mcgill.ecse211.project.sensor;
 
 import ca.mcgill.ecse211.project.game.GameResources;
-//import ca.mcgill.ecse211.project.game.GameController.NAVIGATION_DESTINATION;
+import ca.mcgill.ecse211.project.game.GameResources.REGION;
+// import ca.mcgill.ecse211.project.game.GameController.NAVIGATION_DESTINATION;
 import ca.mcgill.ecse211.project.game.GameState;
-import ca.mcgill.ecse211.project.game.REGION;
 
 /**
  * Ultrasonic poller class implementing a median filter. Polls data from the ultrasonic sensor in an independent thread
@@ -40,7 +40,7 @@ public class UltrasonicPoller implements Runnable {
   private UltrasonicController leftUsController;
   private UltrasonicController frontUsController;
 
-  
+
 
   /**
    * constructor of the ultrasonic poller
@@ -75,16 +75,16 @@ public class UltrasonicPoller implements Runnable {
       updateStart = System.currentTimeMillis();
       this.pollSensors();
       // robot is avoiding so only process distance in the left controller
-      if(GameResources.getGameState() == GameState.Avoidance) {
+      if (GameResources.getGameState() == GameState.Avoidance) {
         // Process the fetched distance in the left controller
         leftUsController.processDistance(this.leftDistance);
       }
       // process distance of front sensor only in navigation and us localization states
-      else if(GameResources.getGameState() == GameState.Navigation || GameResources.getGameState() == GameState.UltrasonicLocalization){
+      else {
         // Process the fetched distance in the front controller
         frontUsController.processDistance(this.frontDistance);
         // when navigating on the island, check for obstacles
-        if(GameResources.getGameState() == GameState.Navigation && GameResources.getCurrentRegion() == REGION.ISLAND) {
+        if (GameResources.getGameState() == GameState.Navigation && GameResources.getCurrentRegion() == REGION.ISLAND) {
           frontUsController.checkForObstacle();
         }
       }
@@ -106,14 +106,15 @@ public class UltrasonicPoller implements Runnable {
    */
   private void pollSensors() {
     // robot is avoiding an object --> only poll left sensor
-    if(GameResources.gameState== GameState.Avoidance) {
+    if (GameResources.gameState == GameState.Avoidance) {
       // acquire distance data in meters
       GameResources.leftUsSensor.getDistanceMode().fetchSample(leftUsData, 0);
       // set the initial distance seen by the sensor
       this.leftDistance = (int) (leftUsData[0] * 100);
     }
     // robot is navigating --> only poll front sensor
-    else if ((GameResources.gameState== GameState.Navigation || GameResources.gameState== GameState.UltrasonicLocalization)){
+    else if ((GameResources.gameState == GameState.Navigation
+        || GameResources.gameState == GameState.UltrasonicLocalization)) {
       // acquire distance data in meters
       GameResources.frontUsSensor.getDistanceMode().fetchSample(frontUsData, 0);
       // set the distance seen by the sensor

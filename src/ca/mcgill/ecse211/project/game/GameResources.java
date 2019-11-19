@@ -270,10 +270,6 @@ public class GameResources {
    */
   public static boolean enableCorrection = false;
   
-  /**
-   * Indicates if the obstacle avoidance is enabled or not
-   */
-  public static boolean enableAvoidance = false;
 
   /**
    * Limits of the current zone
@@ -307,15 +303,15 @@ public class GameResources {
   /*
    * Error acceptable for the orientation check during the wall folowing
    */
-  public static final double ORIENTATION_CHECK_ERROR = 3;
+  public static final double ORIENTATION_CHECK_ERROR = 1;
   /*
    * band center for the wall following
    */
-  public static final double BAND_CENTER = 20;
+  public static final double BAND_CENTER = 15;
   /*
    * band width for the wall following
    */
-  public static final double BAND_WIDTH = 3;
+  public static final double BAND_WIDTH = 4;
   /*
    * gain constant used for the P-controller
    */
@@ -331,20 +327,20 @@ public class GameResources {
   /*
    * Maximal bound on the error
    */
-  public static final double MAXIMAL_ERROR = 10;
+  public static final double MAXIMAL_ERROR = 15;
   /*
    * Minimal bound on the error
    */
-  public static final double MINIMAL_ERROR = -5;
+  public static final double MINIMAL_ERROR = -15;
   /*
    * Period of the check for distance in the wall following process
    */
-  public static final int OBSTACLE_AVOIDANCE_PERIOD = 50; // in ms
+  public static final int OBSTACLE_AVOIDANCE_PERIOD = 100; // in ms
 
   /*
    * Distance of obstacle detection
    */
-  public static final double OBSTACLE_DETECTION_DISTANCE = 10;
+  public static final double OBSTACLE_DETECTION_DISTANCE = 15;
 
   /*
    * Average width of obstacles
@@ -435,12 +431,7 @@ public class GameResources {
     return navigationCompleted;
   }
   
-  public static void setEnableAvoidance(boolean enableAvoidance) {
-    GameResources.enableAvoidance = enableAvoidance;
-  }
-  public static boolean isEnableAvoidance() {
-    return enableAvoidance;
-  }
+
   
   
   

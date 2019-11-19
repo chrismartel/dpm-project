@@ -24,10 +24,15 @@ public class ObstacleAvoider {
       startTime = System.currentTimeMillis();
       // get distance from obstacle
       wallDistance = GameResources.ultrasonicPoller.getLeftUsController().getDistance();
-      wallDistance = this.calculateLateralDistance(wallDistance);
+      System.out.println("DISTANCE WALL FOLOWER1:" + wallDistance);
 
-      // CONVEX CORNER HANDLING
+      wallDistance = this.calculateLateralDistance(wallDistance);
+      System.out.println("DISTANCE WALL FOLOWER2:" + wallDistance);
+
+ /*     // CONVEX CORNER HANDLING
       if (wallDistance >= GameResources.CONVEX_CORNER_CONSTANT) {
+        System.out.println("CONVEX CORNER");
+
         convexCornerCounter++;
         // convex corner is faced
         if (convexCornerCounter > 5) {
@@ -38,11 +43,13 @@ public class ObstacleAvoider {
           wallDistance = this.calculateLateralDistance(wallDistance);
 
         }
-      }
+      }*/
+      
       // GENERAL WALL FOLLOWING PROCEDURE
       // The distance seen is small
-      else {
+   //   else {
         double error = wallDistance - GameResources.BAND_CENTER;
+        System.out.println("ERROR: "+error);
         // both motors go forward, robot is at correct distance from obstacle
         if (Math.abs(error) <= GameResources.BAND_WIDTH) {
           GameResources.leftMotor.forward();
@@ -98,14 +105,15 @@ public class ObstacleAvoider {
           }
           GameResources.leftMotor.setSpeed((int) leftSpeed);
           GameResources.rightMotor.setSpeed((int) rightSpeed);
-          endTime = System.currentTimeMillis();
-          if (endTime - startTime < GameResources.OBSTACLE_AVOIDANCE_PERIOD) {
-            try {
-              Thread.sleep((long) (GameResources.OBSTACLE_AVOIDANCE_PERIOD - (endTime - startTime)));
-            } catch (InterruptedException e) {
-              // there is nothing to be done
-            }
-          }
+
+        }
+      //}
+      endTime = System.currentTimeMillis();
+      if (endTime - startTime < GameResources.OBSTACLE_AVOIDANCE_PERIOD) {
+        try {
+          Thread.sleep((long) (GameResources.OBSTACLE_AVOIDANCE_PERIOD - (endTime - startTime)));
+        } catch (InterruptedException e) {
+          // there is nothing to be done
         }
       }
     }
@@ -130,7 +138,7 @@ public class ObstacleAvoider {
     double dX = goalX - currentX;
     double dY = goalY - currentY;
     double turnToAngle = Math.toDegrees(Math.atan2(dX, dY));
-    double rotation = turnToAngle -GameResources.odometer.getTheta();
+    double rotation = turnToAngle - GameResources.odometer.getTheta();
 
     // Adjust the rotation of the robot to make sure it turns the minimal angle possible
     if (rotation > 180) {
@@ -160,44 +168,47 @@ public class ObstacleAvoider {
     return gain;
   }
 
-  
+
   /**
    * Method used to calculate the lateral distance between the robot and the wall during wall following
    * 
    * @param : the distance seen by the left ultrasonic sensor
    * @return : the lateral distance between the robot and the wall
    */
- private double calculateLateralDistance(double distance) {// method used to approximate the lateral distance of the robot from
-                                                    // the wall
+  private double calculateLateralDistance(double distance) {// method used to approximate the lateral distance of the
+                                                            // robot from
+    // the wall
     // lateral distance = distance *cos(45)
     // 4 centimeters between sensor and wheels
-    double lateralDistance = distance * Math.acos(Math.PI / 4);
+    double lateralDistance = distance * Math.cos(Math.PI / 4);
+    System.out.println("LATERAL DISTANCE: " + lateralDistance);
     return lateralDistance;
   }
 
- /**
-  * Method used to perform the convex corner procedure during wall following to avoid crashing into the walls
-  */
- public void convexCornerProcedure() {
-   // convex corner procedure
-   Navigation.travel(GameResources.CONVEX_CORNER_ADJUSTMENT_DISTANCE / 2, GameResources.FORWARD_SPEED_FAST);
-   double currentTheta = GameResources.odometer.getTheta();
-   double goalTheta = currentTheta - 90;
-   if (goalTheta < 0) {
-     goalTheta = goalTheta + 360;
-   }
-   // 90 degrees turn towards the left
-   Navigation.rotate(Turn.COUNTER_CLOCK_WISE, GameResources.ROTATE_SPEED_SLOW);
-   while (!orientationCheck()) {
-     if (Math.abs(GameResources.odometer.getTheta() - goalTheta) <= 1) {
-       Navigation.travel(GameResources.CONVEX_CORNER_ADJUSTMENT_DISTANCE, GameResources.FORWARD_SPEED_FAST);
-       break;
-     }
-   }
-   return;
+  /**
+   * Method used to perform the convex corner procedure during wall following to avoid crashing into the walls
+   */
+  public void convexCornerProcedure() {
+    // convex corner procedure
+    Navigation.travel(GameResources.CONVEX_CORNER_ADJUSTMENT_DISTANCE / 2, GameResources.FORWARD_SPEED_FAST);
+    double currentTheta = GameResources.odometer.getTheta();
+    double goalTheta = currentTheta - 90;
+    if (goalTheta < 0) {
+      goalTheta = goalTheta + 360;
+    }
+    // 90 degrees turn towards the left
+    Navigation.rotate(Turn.COUNTER_CLOCK_WISE, GameResources.ROTATE_SPEED_SLOW);
+    while (!orientationCheck()) {
+      if (Math.abs(GameResources.odometer.getTheta() - goalTheta) <= 1) {
+        Navigation.travel(GameResources.CONVEX_CORNER_ADJUSTMENT_DISTANCE, GameResources.FORWARD_SPEED_FAST);
+        break;
+      }
+    }
+    return;
 
-   
- }
+
+  }
+
   public int getObstacleDistance() {
     return obstacleDistance;
   }
