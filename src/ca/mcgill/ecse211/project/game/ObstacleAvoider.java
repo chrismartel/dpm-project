@@ -26,7 +26,7 @@ public class ObstacleAvoider {
       wallDistance = GameResources.ultrasonicPoller.getLeftUsController().getDistance();
       System.out.println("DISTANCE WALL FOLOWER1:" + wallDistance);
 
-      wallDistance = this.calculateLateralDistance(wallDistance);
+      //wallDistance = this.calculateLateralDistance(wallDistance);
       System.out.println("DISTANCE WALL FOLOWER2:" + wallDistance);
 
  /*     // CONVEX CORNER HANDLING

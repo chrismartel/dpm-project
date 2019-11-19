@@ -25,24 +25,29 @@ public class GameController {
     while (GameResources.getGameState() != GameState.Done) {
       switch (GameResources.getGameState()) {
         case Test:
-   /*       Button.waitForAnyPress();
+         
+         Button.waitForAnyPress();
+     
           GameResources.setCurrentRegion(REGION.ISLAND);
           GameResources.setGameState(GameState.Navigation);
           GameResources.odometer.setXYT(GameResources.TILE_SIZE, GameResources.TILE_SIZE, 0);
           System.out.println(GameResources.getGameState());
-          gameNavigation.squareNavigation(1, 4);*/
-
-
+          gameNavigation.squareNavigation(1, 4);
+          
+          /*GameResources.odometer.setXYT(3*GameResources.TILE_SIZE, 5*GameResources.TILE_SIZE, 0);
+          gameNavigation.turnToTarget();
+          ballisticLauncher.multipleLaunch(gameNavigation.distanceFromBin(GameResources.odometer.getX()/GameResources.TILE_SIZE, GameResources.odometer.getY()/GameResources.TILE_SIZE));
+          */
           // LAUNCHING COEFFICIENT TEST
           // test speeds from 150 to 650 and record distances for each
           
-           for(int i = 150; i<=650; i+=25) { 
+           /*for(int i = 150; i<=650; i+=25) { 
              
            System.out.println("speed: "+i); ballisticLauncher.launchTest(i);
            ballisticLauncher.reload(); Button.waitForAnyPress(); }
            
            GameResources.setGameState(GameState.Done); 
-           
+           */
 
           break;
 
@@ -70,8 +75,8 @@ public class GameController {
 
 
           // transit to ultrasonic localization state
-           Button.waitForAnyPress();
-          GameResources.setGameState(GameState.UltrasonicLocalization);
+          //Button.waitForAnyPress();
+          GameResources.setGameState(GameState.Test);
 
 
           break;
@@ -79,7 +84,7 @@ public class GameController {
 
         case UltrasonicLocalization:
           // ultrasonic localization using falling edge routine
-          ultrasonicLocalizer.fallingEdge(GameResources.ROTATE_SPEED_NORMAL);
+          ultrasonicLocalizer.fallingEdge(GameResources.ROTATE_SPEED_FAST);
           // transition to light localization state
           GameResources.setGameState(GameState.LightLocalization);
           break;
@@ -223,7 +228,7 @@ public class GameController {
 
           // regenerate the launch points
           gameNavigation.generateLaunchPoints();
-          obstacleAvoider.wallFollower(GameResources.FORWARD_SPEED_SLOW);
+          obstacleAvoider.wallFollower(GameResources.FORWARD_SPEED_NORMAL);
           /*
            * // LIGHT LOCALIZATION closestPoint = gameNavigation.closestPoint(); Navigation.travelTo(closestPoint.x,
            * closestPoint.y, FORWARD_SPEED_NORMAL); LightLocalizer.lightLocalize(closestPoint);
@@ -236,8 +241,7 @@ public class GameController {
 
         case Launch:
           // perform the launches
-          ballisticLauncher.multipleLaunch(
-              gameNavigation.distanceFromBin(GameResources.odometer.getX(), GameResources.odometer.getY()));
+          ballisticLauncher.multipleLaunch(gameNavigation.distanceFromBin(GameResources.odometer.getX()/GameResources.TILE_SIZE, GameResources.odometer.getY()/GameResources.TILE_SIZE));
           // transition back to navigation
           GameResources.setGameState(GameState.Navigation);
           break;

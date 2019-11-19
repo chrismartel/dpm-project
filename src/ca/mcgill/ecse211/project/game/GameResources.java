@@ -66,7 +66,7 @@ public class GameResources {
    */
   public static final int ROTATE_SPEED_SLOW = 80;
   public static final int ROTATE_SPEED_NORMAL = 100;
-  public static final int ROTATE_SPEED_FAST = 200;
+  public static final int ROTATE_SPEED_FAST = 150;
 
 
 
@@ -87,6 +87,11 @@ public class GameResources {
    * Filter out constant to filter the distance seen by the us sensor
    */
   public static final int FILTER_OUT = 5;
+  
+  /**
+   * Angle to turn in falling edge between the 2 detections
+   */
+  public static final int FALLING_EDGE_ADJUSTMENT_ANGLE =-50;
 
 
 
@@ -109,7 +114,7 @@ public class GameResources {
   /**
    * Differential value to determine if a black line is detected or not
    */
-  public static final int DIFFERENTIAL_LINE_THRESHOLD = 15; // HAS TO BE DETERMINE BY TESTING
+  public static final int DIFFERENTIAL_LINE_THRESHOLD = 5; // HAS TO BE DETERMINE BY TESTING
 
   /**
    * Window size for the ultrasonic sensor data polling
@@ -138,7 +143,7 @@ public class GameResources {
   /**
    * Initial value used to compute the motor speed to apply in functio of the distance
    */
-  public static final double LAUNCH_IV = 91.336; // HAS TO BE DETERMINED BY TESTING
+  public static final double LAUNCH_IV = 80; // HAS TO BE DETERMINED BY TESTING
   
   /**
    * Angle of rotation of the launching motors during launch
@@ -175,12 +180,12 @@ public class GameResources {
   /**
    * The number of balls that the robot holds
    */
-  public static final int NUMBER_OF_BALLS = 1;
+  public static final int NUMBER_OF_BALLS = 5;
 
   /**
    * The offset of the arm from the center of the robot in centimeters.
    */
-  public static final double BALLISTIC_X_OFFSET_FROM_CENTER = 2;
+  public static final double BALLISTIC_X_OFFSET_FROM_CENTER = 3.5;
 
   /**
    * The offset of the arm from the center of the robot in centimeters.
@@ -325,7 +330,7 @@ public class GameResources {
   /*
    * gain constant used for the P-controller
    */
-  public static final double GAIN_CONSTANT = 10;
+  public static final double GAIN_CONSTANT = 2;
   /*
    * minimum speed used during wall following
    */

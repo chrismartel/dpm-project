@@ -47,7 +47,7 @@ public class UltrasonicLocalizer {
     }
 
     // anti-clockwise rotation to record beta value
-    Navigation.turn(-50, GameResources.ROTATE_SPEED_SLOW);
+    Navigation.turn(GameResources.FALLING_EDGE_ADJUSTMENT_ANGLE, GameResources.ROTATE_SPEED_FAST);
     Navigation.rotate(Turn.COUNTER_CLOCK_WISE, rotateSpeed);
     while (true) {
       distances = GameResources.ultrasonicPoller.getFrontUsController().getDistances();

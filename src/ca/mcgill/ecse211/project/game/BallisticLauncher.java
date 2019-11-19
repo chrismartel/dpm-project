@@ -14,6 +14,7 @@ public class BallisticLauncher {
    */
   public void launch(double distance) {
     // sleeps 5 seconds before launch
+    System.out.println("DISTANCE FROM BIN: "+distance);
     try {
       Thread.sleep(GameResources.LAUNCH_SLEEP);
     } catch (InterruptedException e) {
@@ -81,7 +82,11 @@ public class BallisticLauncher {
    */
   public void multipleLaunch(double distance) {
     for(int i = 0 ; i< GameResources.NUMBER_OF_BALLS; i++) {
+      if(i==4) {
+        Navigation.turn(-5,GameResources.ROTATE_SPEED_SLOW);
+      }
       this.launch(distance);
+
       this.reload();
     }
   }
