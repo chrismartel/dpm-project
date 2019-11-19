@@ -1,7 +1,6 @@
 package ca.mcgill.ecse211.project.Localization;
 
-import static ca.mcgill.ecse211.project.game.GameResources.*;
-import ca.mcgill.ecse211.project.Resources.Point;
+import ca.mcgill.ecse211.project.game.GameResources;
 import ca.mcgill.ecse211.project.game.Navigation;
 import ca.mcgill.ecse211.project.game.Navigation.Turn;
 
@@ -35,28 +34,28 @@ public class UltrasonicLocalizer {
     // clockwise rotation to record value for alpha
     Navigation.rotate(Turn.CLOCK_WISE, rotateSpeed);
     while (true) {
-      distances = ultrasonicPoller.getFrontUsController().getDistances();
+      distances = GameResources.ultrasonicPoller.getFrontUsController().getDistances();
       currentDistance = distances[0];
       lastDistance = distances[1];
       
-      if (lastDistance > (FALLINGEDGE_D + FALLINGEDGE_K) && currentDistance < (FALLINGEDGE_D - FALLINGEDGE_K)) {
+      if (lastDistance > (GameResources.FALLINGEDGE_D + GameResources.FALLINGEDGE_K) && currentDistance < (GameResources.FALLINGEDGE_D - GameResources.FALLINGEDGE_K)) {
         System.out.println("differential: "+(lastDistance-currentDistance));
-        this.alpha = odometer.getTheta();
+        this.alpha = GameResources.odometer.getTheta();
         Navigation.stopMotors();
         break;
       }
     }
 
     // anti-clockwise rotation to record beta value
-    Navigation.turn(-50, ROTATE_SPEED_SLOW);
+    Navigation.turn(-50, GameResources.ROTATE_SPEED_SLOW);
     Navigation.rotate(Turn.COUNTER_CLOCK_WISE, rotateSpeed);
     while (true) {
-      distances = ultrasonicPoller.getFrontUsController().getDistances();
+      distances = GameResources.ultrasonicPoller.getFrontUsController().getDistances();
       currentDistance = distances[0];
       lastDistance = distances[1];
       // if (ultrasonicPoller.getDistance() < COMMON_D - FALLINGEDGE_K) {
-      if (lastDistance >= (FALLINGEDGE_D + FALLINGEDGE_K) && currentDistance <= (FALLINGEDGE_D - FALLINGEDGE_K)) {
-        this.beta = odometer.getTheta();
+      if (lastDistance >= (GameResources.FALLINGEDGE_D + GameResources.FALLINGEDGE_K) && currentDistance <= (GameResources.FALLINGEDGE_D - GameResources.FALLINGEDGE_K)) {
+        this.beta = GameResources.odometer.getTheta();
         Navigation.stopMotors();
         break;
       }
@@ -64,25 +63,25 @@ public class UltrasonicLocalizer {
     // compute the angle heading considering the 2 angles obtained
     angleAdjustment = this.angleHeadingAdjustment();
     // Adjust the current theta of the odometer by adding the computed heading
-    odometer.update(0, 0, angleAdjustment);
+    GameResources.odometer.update(0, 0, angleAdjustment);
     Navigation.turnTo(0, rotateSpeed);
     // set theta depending on the starting corner
-    switch(CORNER_NUMBER) {
+    switch(GameResources.CORNER_NUMBER) {
       // lower left corner
       case 0:
-        odometer.setTheta(0);
+        GameResources.odometer.setTheta(0);
         break;
         // lower right corner
       case 1:
-        odometer.setTheta(270);
+        GameResources.odometer.setTheta(270);
         break;
       case 2:
         // top right corner
-        odometer.setTheta(180);
+        GameResources.odometer.setTheta(180);
         break;
       case 3:
         // top left corner
-        odometer.setTheta(90);
+        GameResources.odometer.setTheta(90);
         break;
     }
     

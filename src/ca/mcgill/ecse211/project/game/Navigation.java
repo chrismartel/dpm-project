@@ -2,8 +2,6 @@ package ca.mcgill.ecse211.project.game;
 
 
 
-import static ca.mcgill.ecse211.project.game.GameResources.*;
-import ca.mcgill.ecse211.project.Localization.LightLocalizer;
 import ca.mcgill.ecse211.project.odometry.OdometryCorrection;
 
 /**
@@ -47,14 +45,14 @@ public class Navigation {
    */
   public static void travelTo(double x, double y, int speed) {
     // Convert the coordinates to centimeters
-    if(gameState!=GameState.Avoidance) {
-      x = x * TILE_SIZE;
-      y = y * TILE_SIZE;
-      leftMotor.setSpeed(speed);
-      rightMotor.setSpeed(speed);
+    if (GameResources.getGameState() != GameState.Avoidance) {
+      x = x * GameResources.TILE_SIZE;
+      y = y * GameResources.TILE_SIZE;
+      GameResources.leftMotor.setSpeed(speed);
+      GameResources.rightMotor.setSpeed(speed);
       // Poll the odometer for info about current the position
-      double currentX = odometer.getX();
-      double currentY = odometer.getY();
+      double currentX = GameResources.odometer.getX();
+      double currentY = GameResources.odometer.getY();
 
       // compute the distances to travel in X and Y
       double dX = x - currentX;
@@ -71,12 +69,12 @@ public class Navigation {
 
   public static void turnTo(double x, double y, int speed) {
     // Convert the coordinates to centimeters
-    x = x * TILE_SIZE;
-    y = y * TILE_SIZE;
+    x = x * GameResources.TILE_SIZE;
+    y = y * GameResources.TILE_SIZE;
 
     // Poll the odometer for info about current the position
-    double currentX = odometer.getX();
-    double currentY = odometer.getY();
+    double currentX = GameResources.odometer.getX();
+    double currentY = GameResources.odometer.getY();
 
     // compute the distances to travel in X and Y
     double dX = x - currentX;
@@ -91,7 +89,7 @@ public class Navigation {
    * @param theta :
    */
   public static void turnTo(double theta, int speed) {
-    double currentTheta = odometer.getTheta();
+    double currentTheta = GameResources.odometer.getTheta();
     // compute the difference between the current orientation and the desired orientation
     double rotation = theta - currentTheta;
 
@@ -116,7 +114,7 @@ public class Navigation {
    * @return the degrees of rotation to cover the distance
    */
   public static int convertDistance(double distance) {
-    return (int) ((180.0 * distance) / (Math.PI * WHEEL_RADIUS));
+    return (int) ((180.0 * distance) / (Math.PI * GameResources.WHEEL_RADIUS));
   }
 
   /**
@@ -126,7 +124,7 @@ public class Navigation {
    * @return the degrees of rotation to reach this angle
    */
   public static int convertAngle(double angle) {
-    return convertDistance(Math.PI * TRACK * angle / 360.0);
+    return convertDistance(Math.PI * GameResources.TRACK * angle / 360.0);
   }
 
 
@@ -149,31 +147,31 @@ public class Navigation {
     double dX, dY;
 
     // poll the odometer to get the current X and Y coordinates
-    lastX = odometer.getX();
-    lastY = odometer.getY();
+    lastX = GameResources.odometer.getX();
+    lastY = GameResources.odometer.getY();
 
     // robot travels forward
     travelForward(speed);
-    
+
     // navigates as long as the state is not in avoidance
-    while (gameState != GameState.Avoidance) {
-      dX = Math.abs(odometer.getX() - lastX);
-      dY = Math.abs(odometer.getY() - lastY);
+    while (GameResources.getGameState() != GameState.Avoidance) {
+      dX = Math.abs(GameResources.odometer.getX() - lastX);
+      dY = Math.abs(GameResources.odometer.getY() - lastY);
       // TODO: if game state is in tunnel--> check if the wall is too close and adjust
       // Reached goal coordinates condition
       if (Math.pow(dX, 2) + Math.pow(dY, 2) >= Math.pow(travelDistance, 2)) {
         // navigation is considered completed when the distance is reached while being in navigation state
-        if(gameState == GameState.Navigation) {
-          navigationCompleted = true;
+        if (GameResources.getGameState() == GameState.Navigation) {
+          GameResources.setNavigationCompleted(true);
         }
         // exit the travel method if the destination is reached
         break;
       }
-      if(enableCorrection) {
-        if(!lightLocalizer.lightLocalize()) {
+      if (GameResources.isEnableCorrection()) {
+        if (!GameResources.lightLocalizer.lightLocalize()) {
           OdometryCorrection.correctValues();
-     //     System.out.println("x: "+odometer.getX());
-     //     System.out.println("y: "+odometer.getY());
+          // System.out.println("x: "+odometer.getX());
+          // System.out.println("y: "+odometer.getY());
           Navigation.travelForward(speed);
         }
       }
@@ -188,22 +186,22 @@ public class Navigation {
    * 
    * @param travelDistance : the magnitude of the distance to travel
    */
-  public  static void backUp(double travelDistance, int speed) {
+  public static void backUp(double travelDistance, int speed) {
     double dX, dY;
 
     // poll the odometer to get the current X and Y coordinates
-    lastX = odometer.getX();
-    lastY = odometer.getY();
+    lastX = GameResources.odometer.getX();
+    lastY = GameResources.odometer.getY();
 
     // robot travels forward
     travelBackward(speed);
 
     while (true) {
-      dX = Math.abs(odometer.getX() - lastX);
-      dY = Math.abs(odometer.getY() - lastY);
+      dX = Math.abs(GameResources.odometer.getX() - lastX);
+      dY = Math.abs(GameResources.odometer.getY() - lastY);
       // Reached goal coordinates condition
       if (Math.pow(dX, 2) + Math.pow(dY, 2) >= Math.pow(travelDistance, 2)) {
-        
+
         // robot stops if its destination is reached
         stopMotors();
 
@@ -221,10 +219,10 @@ public class Navigation {
    */
   public static void travelForward(int speed) {
 
-    leftMotor.setSpeed(speed);
-    rightMotor.setSpeed(speed);
-    rightMotor.forward();
-    leftMotor.forward();
+    GameResources.leftMotor.setSpeed(speed);
+    GameResources.rightMotor.setSpeed(speed);
+    GameResources.rightMotor.forward();
+    GameResources.leftMotor.forward();
 
   }
 
@@ -232,10 +230,10 @@ public class Navigation {
    * Set both motors backward
    */
   public static void travelBackward(int speed) {
-    leftMotor.setSpeed(speed);
-    rightMotor.setSpeed(speed);
-    rightMotor.backward();
-    leftMotor.backward();
+    GameResources.leftMotor.setSpeed(speed);
+    GameResources.rightMotor.setSpeed(speed);
+    GameResources.rightMotor.backward();
+    GameResources.leftMotor.backward();
   }
 
   /**
@@ -244,10 +242,10 @@ public class Navigation {
    * @param : angle to turn to. If theta < 0, the robot turns counter clock wise if theta >0, the robot turns clock wise
    */
   public static void turn(double theta, int speed) {
-    leftMotor.setSpeed(speed);
-    rightMotor.setSpeed(speed);
-    leftMotor.rotate(+convertAngle(theta), true);// doesn't wait for the motor to complete the rotation
-    rightMotor.rotate(-convertAngle(theta), false);
+    GameResources.leftMotor.setSpeed(speed);
+    GameResources.rightMotor.setSpeed(speed);
+    GameResources.leftMotor.rotate(+convertAngle(theta), true);// doesn't wait for the motor to complete the rotation
+    GameResources.rightMotor.rotate(-convertAngle(theta), false);
   }
 
 
@@ -258,16 +256,16 @@ public class Navigation {
    * 
    */
   public static void rotate(Turn direction, int speed) {
-    leftMotor.setSpeed(speed);
-    rightMotor.setSpeed(speed);
+    GameResources.leftMotor.setSpeed(speed);
+    GameResources.rightMotor.setSpeed(speed);
     switch (direction) {
       case CLOCK_WISE:
-        rightMotor.backward();
-        leftMotor.forward();
+        GameResources.rightMotor.backward();
+        GameResources.leftMotor.forward();
         break;
       case COUNTER_CLOCK_WISE:
-        rightMotor.forward();
-        leftMotor.backward();
+        GameResources.rightMotor.forward();
+        GameResources.leftMotor.backward();
         break;
     }
   }
@@ -278,8 +276,8 @@ public class Navigation {
    * stop both motors at once
    */
   public static void stopMotors() {
-    rightMotor.setSpeed(0);// does not wait for the motor to actually stop
-    leftMotor.setSpeed(0);
+    GameResources.rightMotor.setSpeed(0);// does not wait for the motor to actually stop
+    GameResources.leftMotor.setSpeed(0);
   }
 
 

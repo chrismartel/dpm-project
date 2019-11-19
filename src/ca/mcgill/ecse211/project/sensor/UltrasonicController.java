@@ -1,13 +1,14 @@
 package ca.mcgill.ecse211.project.sensor;
 
-import static ca.mcgill.ecse211.project.game.GameResources.*;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import ca.mcgill.ecse211.project.game.GameResources;
 import ca.mcgill.ecse211.project.game.GameState;
+import lejos.hardware.Sound;
 
 public class UltrasonicController {
 
@@ -15,7 +16,7 @@ public class UltrasonicController {
    * current distance processed by the ultrasonic controller
    */
   private int currentDistance;
-  
+
   /**
    * counter to determine if an obstacle is detected
    */
@@ -26,7 +27,7 @@ public class UltrasonicController {
    */
   private int previousDistance;
 
-  
+
   // Thread control tools
   /**
    * Fair lock for concurrent writing
@@ -70,7 +71,7 @@ public class UltrasonicController {
 
 
   public void processDistance(int distance) {
-    
+
     lock.lock();
     isResetting = true;
     try {
@@ -78,26 +79,26 @@ public class UltrasonicController {
       // distance initially not changed by the filter out method
       this.previousDistance = this.currentDistance;
       // use median filter only if distance changed in filter out method
-        // if the lists are full remove the oldest sample from the queue and from the sorted list
-        if (usDataQueue.size() == US_WINDOW) {
-          // removes the element at top of the queue from the sorted list
-          usDataSortedList.remove(usDataQueue.element());
-          // removes the element at head of the queue
-          usDataQueue.remove();
-        }
-        // add the new fetched sample to the end of the queue and to the sorted list
-        usDataQueue.add(distance);
-        usDataSortedList.add(distance);
+      // if the lists are full remove the oldest sample from the queue and from the sorted list
+      if (usDataQueue.size() == GameResources.US_WINDOW) {
+        // removes the element at top of the queue from the sorted list
+        usDataSortedList.remove(usDataQueue.element());
+        // removes the element at head of the queue
+        usDataQueue.remove();
+      }
+      // add the new fetched sample to the end of the queue and to the sorted list
+      usDataQueue.add(distance);
+      usDataSortedList.add(distance);
 
-        // sort the data list
-        Collections.sort(usDataSortedList);
+      // sort the data list
+      Collections.sort(usDataSortedList);
 
-        // set the temporary distance to be the median of the sorted list
-        if (usDataQueue.size() == US_WINDOW) {
-          temporaryDistance = (int) (usDataSortedList.get((int) (US_WINDOW / 2)));
-          filter(temporaryDistance);
-        }
-        // filter the temporary distance the get rid of aberrant values and update the current distance
+      // set the temporary distance to be the median of the sorted list
+      if (usDataQueue.size() == GameResources.US_WINDOW) {
+        temporaryDistance = (int) (usDataSortedList.get((int) (GameResources.US_WINDOW / 2)));
+        filter(temporaryDistance);
+      }
+      // filter the temporary distance the get rid of aberrant values and update the current distance
       isResetting = false;
       doneResetting.signalAll();
     } finally {
@@ -111,7 +112,7 @@ public class UltrasonicController {
    * @param the distance in cm to filter
    */
   public void filter(int distance) {
-    if (distance >= 255 && filterControl < FILTER_OUT) {
+    if (distance >= 255 && filterControl < GameResources.FILTER_OUT) {
       // bad value, do not set the distance var, however do increment the filter value
       filterControl++;
     } else if (distance >= 255) {
@@ -159,7 +160,7 @@ public class UltrasonicController {
       while (isResetting) { // If a reset operation is being executed, wait until it is over.
         doneResetting.await(); // Using await() is lighter on the CPU than simple busy wait.
       }
-      distance= this.currentDistance;
+      distance = this.currentDistance;
     } catch (InterruptedException e) {
       e.printStackTrace();
     } finally {
@@ -173,15 +174,15 @@ public class UltrasonicController {
     isResetting = true;
     try {
       // obstacle ahead
-      if (currentDistance <= OBSTACLE_DETECTION_DISTANCE) {
+      if (currentDistance <= GameResources.OBSTACLE_DETECTION_DISTANCE) {
         // increment the counter, when 3 detections have been made --> obstacle detected
         obstacleDetectionCounter++;
-        if(obstacleDetectionCounter==3) {
-          gameState = GameState.Avoidance;
+        if (obstacleDetectionCounter == 3) {
+          GameResources.setGameState(GameState.Avoidance);
+          Sound.beep();
         }
-      }
-      else {
-        obstacleDetectionCounter=0;
+      } else {
+        obstacleDetectionCounter = 0;
       }
       isResetting = false;
       doneResetting.signalAll(); // Let the other threads know we are done resetting

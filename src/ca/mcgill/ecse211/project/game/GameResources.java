@@ -138,10 +138,9 @@ public class GameResources {
    * Angle of rotation of the launching motors during launch
    */
   public static final int LAUNCHING_ANGLE = 90;
-  
+
   /**
-   * Angle of rotation of the launching motors during reload
-   * Must be the same than the launching angle
+   * Angle of rotation of the launching motors during reload Must be the same than the launching angle
    */
   public static final int RELOAD_ANGLE = 90;
 
@@ -165,7 +164,7 @@ public class GameResources {
    */
   public static final int LAUNCH_ACCELERATION = 9999;
   public static final int RELOAD_ACCELERATION = 3000;
-  
+
   /**
    * The number of balls that the robot holds
    */
@@ -239,38 +238,38 @@ public class GameResources {
    */
   public static UltrasonicPoller ultrasonicPoller = UltrasonicPoller.getUltrasonicPoller();
 
-  
+
   /**
    * Light localizer
    */
   public static LightLocalizer lightLocalizer = LightLocalizer.getLightLocalizer();
-  
-  
+
+
 
   // MAP CONSTANTS
   public static Region Tunnel = new Region(tng.ll, tng.ur); // default to green tunnel
   public static Point STARTING_POINT; // default to 0,0
   public static int CORNER_NUMBER = 1;
-  
-  public static int FIELD_RIGHT=8;
-  public static int FIELD_TOP=8;
+
+  public static int FIELD_RIGHT = 8;
+  public static int FIELD_TOP = 8;
 
   // GAME CONSTANTS
   /**
    * Current state of the game state machine
    */
   public static GameState gameState;
-  
+
   /**
    * Indicates if the navigation was completed or not
    */
   public static boolean navigationCompleted = false;
-  
+
   /**
    * Indicates if the odometry correction enable dor not
    */
   public static boolean enableCorrection = false;
-  
+
   /**
    * Limits of the current zone
    */
@@ -282,7 +281,7 @@ public class GameResources {
    * Current navigation destination
    */
   public static NAVIGATION_DESTINATION navigationDestination;
-  
+
   /**
    * Current navigation coordinates point
    */
@@ -296,7 +295,6 @@ public class GameResources {
    * Current region the robot is on
    */
   public static REGION currentRegion;
-
 
 
 
@@ -342,17 +340,17 @@ public class GameResources {
    * Distance of obstacle detection
    */
   public static final double OBSTACLE_DETECTION_DISTANCE = 10;
-  
+
   /*
    * Average width of obstacles
    */
   public static final double OBSTACLE_WIDTH = TILE_SIZE;
-  
+
   /*
    * Distance seen when facing a convex corner
    */
   public static final double CONVEX_CORNER_CONSTANT = 30;
-  
+
   /*
    * Distance seen when facing a convex corner
    */
@@ -371,4 +369,65 @@ public class GameResources {
   public enum NAVIGATION_DESTINATION {
     TUNNEL1_ENTRANCE, TUNNEL2_ENTRANCE, LAUNCH_POINT, END_POINT
   }
+
+
+  /*
+   * Getters and setters that variables that are changed throughout the game
+   */
+  public static GameState getGameState() {
+    return gameState;
+  }
+
+  public static void setGameState(GameState gameState) {
+    GameResources.gameState = gameState;
+  }
+
+  public static REGION getCurrentRegion() {
+    return currentRegion;
+  }
+
+  public static void setCurrentRegion(REGION currentRegion) {
+    GameResources.currentRegion = currentRegion;
+  }
+
+  public static void setColor(COLOR color) {
+    GameResources.color = color;
+  }
+
+  public static COLOR getColor() {
+    return color;
+  }
+
+  public static Point getNavigationCoordinates() {
+    return navigationCoordinates;
+  }
+
+  public static void setNavigationCoordinates(Point navigationCoordinates) {
+    GameResources.navigationCoordinates = navigationCoordinates;
+  }
+
+  public static void setNavigationDestination(NAVIGATION_DESTINATION navigationDestination) {
+    GameResources.navigationDestination = navigationDestination;
+  }
+
+  public static NAVIGATION_DESTINATION getNavigationDestination() {
+    return navigationDestination;
+  }
+  
+  public static void setEnableCorrection(boolean enableCorrection) {
+    GameResources.enableCorrection = enableCorrection;
+  }
+  public static boolean isEnableCorrection() {
+    return enableCorrection;
+  }
+  
+  public static void setNavigationCompleted(boolean navigationCompleted) {
+    GameResources.navigationCompleted = navigationCompleted;
+  }
+  public static boolean isNavigationCompleted() {
+    return navigationCompleted;
+  }
+  
+  
+  
 }

@@ -1,6 +1,6 @@
 package ca.mcgill.ecse211.project.game;
 
-import static ca.mcgill.ecse211.project.game.GameResources.*;
+import ca.mcgill.ecse211.project.game.GameResources.*;
 
 /**
  * This class implements the behaviour of the ballistic launcher of the robot
@@ -15,22 +15,22 @@ public class BallisticLauncher {
   public void launch(double distance) {
     // sleeps 5 seconds before launch
     try {
-      Thread.sleep(LAUNCH_SLEEP);
+      Thread.sleep(GameResources.LAUNCH_SLEEP);
     } catch (InterruptedException e) {
     }
     // set the launching speed to a constant (only for lab 5)
-    int  motorLaunchingSpeed = (int)(distance * LAUNCH_COEFFICIENT);
+    int  motorLaunchingSpeed = (int)(distance * GameResources.LAUNCH_COEFFICIENT);
     // set the speeds and accelerations of the launching motors
-    leftBallisticMotor.setSpeed(motorLaunchingSpeed);
-    rightBallisticMotor.setSpeed(motorLaunchingSpeed);
-    leftBallisticMotor.setAcceleration(LAUNCH_ACCELERATION);
-    rightBallisticMotor.setAcceleration(LAUNCH_ACCELERATION);
+    GameResources.leftBallisticMotor.setSpeed(motorLaunchingSpeed);
+    GameResources.rightBallisticMotor.setSpeed(motorLaunchingSpeed);
+    GameResources.leftBallisticMotor.setAcceleration(GameResources.LAUNCH_ACCELERATION);
+    GameResources.rightBallisticMotor.setAcceleration(GameResources.LAUNCH_ACCELERATION);
     // launch the ball by rotating a particular amount of degrees
-    leftBallisticMotor.rotate(-LAUNCHING_ANGLE, true);
-    rightBallisticMotor.rotate(-LAUNCHING_ANGLE, false);
+    GameResources.leftBallisticMotor.rotate(-GameResources.LAUNCHING_ANGLE, true);
+    GameResources.rightBallisticMotor.rotate(-GameResources.LAUNCHING_ANGLE, false);
     // sleeps after launch
     try {
-      Thread.sleep(RELOAD_SLEEP);
+      Thread.sleep(GameResources.RELOAD_SLEEP);
     } catch (InterruptedException e) {
     }
   }
@@ -43,20 +43,20 @@ public class BallisticLauncher {
   public void launchTest(int motorSpeed) {
     // sleeps 5 seconds before launch
     try {
-      Thread.sleep(LAUNCH_SLEEP);
+      Thread.sleep(GameResources.LAUNCH_SLEEP);
     } catch (InterruptedException e) {
     }
     // set the speeds and accelerations of the launching motors
-    leftBallisticMotor.setSpeed(motorSpeed);
-    rightBallisticMotor.setSpeed(motorSpeed);
-    leftBallisticMotor.setAcceleration(LAUNCH_ACCELERATION);
-    rightBallisticMotor.setAcceleration(LAUNCH_ACCELERATION);
+    GameResources.leftBallisticMotor.setSpeed(motorSpeed);
+    GameResources.rightBallisticMotor.setSpeed(motorSpeed);
+    GameResources.leftBallisticMotor.setAcceleration(GameResources.LAUNCH_ACCELERATION);
+    GameResources.rightBallisticMotor.setAcceleration(GameResources.LAUNCH_ACCELERATION);
     // launch the ball by rotating a particular amount of degrees
-    leftBallisticMotor.rotate(-LAUNCHING_ANGLE, true);
-    rightBallisticMotor.rotate(-LAUNCHING_ANGLE, false);
+    GameResources.leftBallisticMotor.rotate(-GameResources.LAUNCHING_ANGLE, true);
+    GameResources.rightBallisticMotor.rotate(-GameResources.LAUNCHING_ANGLE, false);
     // sleeps after launch
     try {
-      Thread.sleep(RELOAD_SLEEP);
+      Thread.sleep(GameResources.RELOAD_SLEEP);
     } catch (InterruptedException e) {
     }
   }
@@ -66,13 +66,13 @@ public class BallisticLauncher {
    */
   public void reload() {
     // set the speed and acceleration of the motors for reload
-    leftBallisticMotor.setSpeed(ROTATE_SPEED_SLOW);
-    rightBallisticMotor.setSpeed(ROTATE_SPEED_SLOW);
-    leftBallisticMotor.setAcceleration(RELOAD_ACCELERATION);
-    rightBallisticMotor.setAcceleration(RELOAD_ACCELERATION);
+    GameResources.leftBallisticMotor.setSpeed(GameResources.ROTATE_SPEED_SLOW);
+    GameResources.rightBallisticMotor.setSpeed(GameResources.ROTATE_SPEED_SLOW);
+    GameResources.leftBallisticMotor.setAcceleration(GameResources.RELOAD_ACCELERATION);
+    GameResources.rightBallisticMotor.setAcceleration(GameResources.RELOAD_ACCELERATION);
     // reload the launcher by rotating back the motors
-    leftBallisticMotor.rotate(RELOAD_ANGLE, true);
-    rightBallisticMotor.rotate(RELOAD_ANGLE, false);
+    GameResources.leftBallisticMotor.rotate(GameResources.RELOAD_ANGLE, true);
+    GameResources.rightBallisticMotor.rotate(GameResources.RELOAD_ANGLE, false);
 
   }
   
@@ -80,7 +80,7 @@ public class BallisticLauncher {
    * Method implementing multiple launches and reload depending on how many balls the robot is carrying
    */
   public void multipleLaunch(double distance) {
-    for(int i = 0 ; i< NUMBER_OF_BALLS; i++) {
+    for(int i = 0 ; i< GameResources.NUMBER_OF_BALLS; i++) {
       this.launch(distance);
       this.reload();
     }
