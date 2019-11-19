@@ -154,7 +154,7 @@ public class Navigation {
     travelForward(speed);
 
     // navigates as long as the state is not in avoidance
-    while (GameResources.getGameState() != GameState.Avoidance) {
+    while (!GameResources.isEnableAvoidance()) {
       dX = Math.abs(GameResources.odometer.getX() - lastX);
       dY = Math.abs(GameResources.odometer.getY() - lastY);
       // TODO: if game state is in tunnel--> check if the wall is too close and adjust

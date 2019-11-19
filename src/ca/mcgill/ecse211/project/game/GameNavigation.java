@@ -60,8 +60,10 @@ public class GameNavigation {
   public void squareNavigation(double x, double y) {
     GameResources.setEnableCorrection(true);
     GameResources.setNavigationCoordinates(new Point(x, y));
-    Navigation.travelTo(x, (GameResources.odometer.getY() / GameResources.TILE_SIZE), GameResources.FORWARD_SPEED_NORMAL);
-    Navigation.travelTo((GameResources.odometer.getX() / GameResources.TILE_SIZE), y, GameResources.FORWARD_SPEED_NORMAL);
+    Navigation.travelTo(x, (GameResources.odometer.getY() / GameResources.TILE_SIZE),
+        GameResources.FORWARD_SPEED_NORMAL);
+    Navigation.travelTo((GameResources.odometer.getX() / GameResources.TILE_SIZE), y,
+        GameResources.FORWARD_SPEED_NORMAL);
     GameResources.setEnableCorrection(false);
   }
 
@@ -106,7 +108,8 @@ public class GameNavigation {
     Navigation.turnTo(Math.toDegrees(Math.atan2(dX, dY)), GameResources.ROTATE_SPEED_SLOW);
     double distance = this.distanceFromBin(launchPoint.x, launchPoint.y);
     // additional turn so that the ballistic launcher points to the bin
-    Navigation.turn(-(Math.asin((GameResources.BALLISTIC_X_OFFSET_FROM_CENTER) / distance)), GameResources.ROTATE_SPEED_NORMAL);
+    Navigation.turn(-(Math.asin((GameResources.BALLISTIC_X_OFFSET_FROM_CENTER) / distance)),
+        GameResources.ROTATE_SPEED_NORMAL);
   }
 
   /**
@@ -115,13 +118,14 @@ public class GameNavigation {
    * parameters are updated.
    */
   public void navigateThroughTunnel() {
-    if(tunnel==1) {
-      Navigation.travelTo(tunnelEntrance.x, tunnelEntrance.y, GameResources.FORWARD_SPEED_FAST);
-     
-    }
-    else if(tunnel==0){
+    // first tunnel traversal
+    if (tunnel == 0) {
       Navigation.travelTo(tunnelExit.x, tunnelExit.y, GameResources.FORWARD_SPEED_FAST);
       tunnel++;
+    }
+    // second tunnel traversal
+    else if (tunnel == 1) {
+      Navigation.travelTo(tunnelEntrance.x, tunnelEntrance.y, GameResources.FORWARD_SPEED_FAST);
     }
     LightLocalizer.twoLineDetection();
     Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
@@ -141,11 +145,13 @@ public class GameNavigation {
       return REGION.RED;
     }
 
-    else if (x <= Resources.green.ur.x && x >= Resources.green.ll.x && y <= Resources.green.ur.y && y >= Resources.green.ll.y) {
+    else if (x <= Resources.green.ur.x && x >= Resources.green.ll.x && y <= Resources.green.ur.y
+        && y >= Resources.green.ll.y) {
       return REGION.GREEN;
     }
 
-    else if (x <= Resources.island.ur.x && x >= Resources.island.ll.x && y <= Resources.island.ur.y && y >= Resources.island.ll.y) {
+    else if (x <= Resources.island.ur.x && x >= Resources.island.ll.x && y <= Resources.island.ur.y
+        && y >= Resources.island.ll.y) {
       return REGION.ISLAND;
     }
 
@@ -390,7 +396,7 @@ public class GameNavigation {
   public void updateRegion() {
     if (GameResources.getCurrentRegion() == REGION.GREEN || GameResources.getCurrentRegion() == REGION.RED) {
       GameResources.setCurrentRegion(REGION.ISLAND);
-      System.out.println("REGION SET TO ISLAND"+ GameResources.currentRegion);
+      System.out.println("REGION SET TO ISLAND" + GameResources.currentRegion);
     } else if (GameResources.getCurrentRegion() == REGION.ISLAND) {
       if (GameResources.getColor() == COLOR.GREEN) {
         GameResources.setCurrentRegion(REGION.GREEN);
@@ -419,7 +425,8 @@ public class GameNavigation {
 
           GameResources.CORNER_NUMBER = 1;
           GameResources.STARTING_POINT = new Point(GameResources.FIELD_RIGHT - 1, 1);
-          System.out.println("STARTING POINT: " + GameResources.STARTING_POINT.x + ", " + GameResources.STARTING_POINT.y);
+          System.out
+              .println("STARTING POINT: " + GameResources.STARTING_POINT.x + ", " + GameResources.STARTING_POINT.y);
 
           break;
         // top right corner
@@ -428,7 +435,8 @@ public class GameNavigation {
 
           GameResources.CORNER_NUMBER = 2;
           GameResources.STARTING_POINT = new Point(GameResources.FIELD_RIGHT - 1, GameResources.FIELD_TOP - 1);
-          System.out.println("STARTING POINT: " + GameResources.STARTING_POINT.x + ", " + GameResources.STARTING_POINT.y);
+          System.out
+              .println("STARTING POINT: " + GameResources.STARTING_POINT.x + ", " + GameResources.STARTING_POINT.y);
 
           break;
         // top left corner
@@ -437,7 +445,8 @@ public class GameNavigation {
 
           GameResources.CORNER_NUMBER = 3;
           GameResources.STARTING_POINT = new Point(1, GameResources.FIELD_TOP - 1);
-          System.out.println("STARTING POINT: " + GameResources.STARTING_POINT.x + ", " + GameResources.STARTING_POINT.y);
+          System.out
+              .println("STARTING POINT: " + GameResources.STARTING_POINT.x + ", " + GameResources.STARTING_POINT.y);
 
           break;
       }
@@ -576,8 +585,8 @@ public class GameNavigation {
    */
   public static boolean localizablePoint(Point point) {
     // check if the point is on one of the current zone limits
-    if ((point.x != GameResources.currentLeftLimit) && (point.x != GameResources.currentRightLimit) && (point.y != GameResources.currentBottomLimit)
-        && (point.y != GameResources.currentTopLimit)) {
+    if ((point.x != GameResources.currentLeftLimit) && (point.x != GameResources.currentRightLimit)
+        && (point.y != GameResources.currentBottomLimit) && (point.y != GameResources.currentTopLimit)) {
       for (Point restrictedPoint : GameResources.restrictedPoints) {
         // verification that the input point is not in the restricted point array
         if ((point.x == restrictedPoint.x) && (point.y == restrictedPoint.y)) {
@@ -589,36 +598,6 @@ public class GameNavigation {
     }
     return false;
   }
-
-
-  /**
-   * Getter Method for the tunnel entrance
-   * 
-   * @return: the point corresponding to the tunnel entrance
-   */
-  public Point getTunnelEntrance() {
-    return tunnelEntrance;
-  }
-
-  /**
-   * Getter Method for the tunnel exit
-   * 
-   * @return: the point corresponding to the tunnel exit
-   */
-  public Point getTunnelExit() {
-    return tunnelExit;
-  }
-
-
-
-  public double getTunnelEntranceTraversalOrientation() {
-    return tunnelEntranceTraversalOrientation;
-  }
-
-  public double getTunnelExitTraversalOrientation() {
-    return tunnelExitTraversalOrientation;
-  }
-
 
   public void createRestrictedPoints() {
     double x = GameResources.odometer.getX();
@@ -648,22 +627,84 @@ public class GameNavigation {
     int y2 = y1 + 1;
   }
 
+  /**
+   * Getter Method for the tunnel entrance
+   * 
+   * @return: the point corresponding to the tunnel entrance
+   */
+  public Point getTunnelEntrance() {
+    return tunnelEntrance;
+  }
+
+  /**
+   * Getter Method for the tunnel exit
+   * 
+   * @return: the point corresponding to the tunnel exit
+   */
+  public Point getTunnelExit() {
+    return tunnelExit;
+  }
+
+
+  /**
+   * Getter Method for the tunnel entrance traversal orientation
+   * 
+   * @return: the orientation needed to traverse the tunnel from the entrance
+   */
+  public double getTunnelEntranceTraversalOrientation() {
+    return tunnelEntranceTraversalOrientation;
+  }
+
+  /**
+   * Getter Method for the tunnel exit traversal orientation
+   * 
+   * @return: the orientation needed to traverse the tunnel from the exit
+   */
+  public double getTunnelExitTraversalOrientation() {
+    return tunnelExitTraversalOrientation;
+  }
+
+  /**
+   * Getter Method for the launch point
+   * 
+   * @return: the launching coordinate point
+   */
   public Point getLaunchPoint() {
     return launchPoint;
   }
 
+  /**
+   * Setter Method of the tunnel entrance
+   * 
+   * @param: the coordinate point of the tunnel entrance
+   */
   public void setTunnelEntrance(Point tunnelEntrance) {
     this.tunnelEntrance = tunnelEntrance;
   }
 
+  /**
+   * Setter Method of the tunnel exit
+   * 
+   * @param: the coordinate point of the tunnel exit
+   */
   public void setTunnelExit(Point tunnelExit) {
     this.tunnelExit = tunnelExit;
   }
 
+  /**
+   * Setter Method for the tunnel entrance traversal orientation
+   * 
+   * @param: the orientation needed to traverse the tunnel from the exit
+   */
   public void setTunnelEntranceTraversalOrientation(double tunnelEntranceTraversalOrientation) {
     this.tunnelEntranceTraversalOrientation = tunnelEntranceTraversalOrientation;
   }
 
+  /**
+   * Setter Method for the tunnel exit traversal orientation
+   * 
+   * @param: the orientation needed to traverse the tunnel from the exit
+   */
   public void setTunnelExitTraversalOrientation(double tunnelExitTraversalOrientation) {
     this.tunnelExitTraversalOrientation = tunnelExitTraversalOrientation;
   }

@@ -103,20 +103,21 @@ public class GameController {
               // navigate to tunnel entrance and turn to traversal orientation
               gameNavigation.navigateToTunnelEntrance();
               
-              if (GameResources.navigationCompleted == true) {
+              if (GameResources.isNavigationCompleted()) {
                 // transition to tunnel state
                 GameResources.setGameState(GameState.Tunnel);
                 // update new checkpoint
                 GameResources.setNavigationDestination(NAVIGATION_DESTINATION.LAUNCH_POINT);
 
               }
+
               break;
             case TUNNEL2_ENTRANCE:
               // travel to the second tunnel entrance
               System.out.println("navigation to tunnel entrance 2");
               gameNavigation.navigateToTunnelExit();
               
-              if (GameResources.navigationCompleted == true) {    
+              if (GameResources.isNavigationCompleted()) {    
                 /*
                 // LIGHT LOCALIZATION
                 closestPoint = gameNavigation.closestPoint();
@@ -131,6 +132,9 @@ public class GameController {
                 // transition to tunnel state
                 GameResources.setGameState(GameState.Tunnel);
               }
+              else if(GameResources.isEnableAvoidance()) {
+                GameResources.setGameState(GameState.Avoidance);
+              }
               break;
             case LAUNCH_POINT:
               // compute the closest launch point
@@ -138,7 +142,7 @@ public class GameController {
               // navigate to the closest launch point
               gameNavigation.navigateToLaunchPoint();
 
-              if (GameResources.navigationCompleted == true) {
+              if (GameResources.isNavigationCompleted()) {
 /*
                 // LIGHT LOCALIZATION
                 LightLocalizer.lightLocalize(gameNavigation.getLaunchPoint());
@@ -154,12 +158,15 @@ public class GameController {
                 // Transit to launch state
                 GameResources.setGameState(GameState.Launch);
               }
+              else if(GameResources.isEnableAvoidance()) {
+                GameResources.setGameState(GameState.Avoidance);
+              }
               break;
             case END_POINT:
               System.out.println("x: "+GameResources.odometer.getX()/GameResources.TILE_SIZE+", y:"+ GameResources.odometer.getY()/GameResources.TILE_SIZE+", theta: "+ GameResources.odometer.getTheta());
               System.out.println("STARTING POINT: "+GameResources.STARTING_POINT.x+", "+GameResources.STARTING_POINT.y);
               gameNavigation.squareNavigation(GameResources.STARTING_POINT.x, GameResources.STARTING_POINT.y);
-              if (GameResources.navigationCompleted == true) {
+              if (GameResources.isNavigationCompleted()) {
                 GameResources.setGameState(GameState.Done);
               }
               break;
@@ -179,9 +186,11 @@ public class GameController {
           System.out.println("current region before tunnel traversal: "+ GameResources.currentRegion);
 
           // correct odometer according to tunnel entrance data
+          // first tunnel traversal
           if(tunnel==0) {
             GameResources.odometer.setXYT(gameNavigation.getTunnelEntrance().x * GameResources.TILE_SIZE, gameNavigation.getTunnelEntrance().y * GameResources.TILE_SIZE, gameNavigation.getTunnelEntranceTraversalOrientation());
           }
+          // second tunnel traversal
           else if(tunnel==1){
             System.out.println("ODOMETER SET ACCORDING TO TUNNEL EXIT");
             GameResources.odometer.setXYT(gameNavigation.getTunnelExit().x * GameResources.TILE_SIZE, gameNavigation.getTunnelExit().y * GameResources.TILE_SIZE, gameNavigation.getTunnelExitTraversalOrientation());

@@ -178,7 +178,7 @@ public class UltrasonicController {
         // increment the counter, when 3 detections have been made --> obstacle detected
         obstacleDetectionCounter++;
         if (obstacleDetectionCounter == 3) {
-          GameResources.setGameState(GameState.Avoidance);
+          GameResources.setEnableAvoidance(true);
           Sound.beep();
         }
       } else {

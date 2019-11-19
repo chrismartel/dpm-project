@@ -248,7 +248,7 @@ public class GameResources {
 
   // MAP CONSTANTS
   public static Region Tunnel = new Region(tng.ll, tng.ur); // default to green tunnel
-  public static Point STARTING_POINT; // default to 0,0
+  public static Point STARTING_POINT; 
   public static int CORNER_NUMBER = 1;
 
   public static int FIELD_RIGHT = 8;
@@ -266,9 +266,14 @@ public class GameResources {
   public static boolean navigationCompleted = false;
 
   /**
-   * Indicates if the odometry correction enable dor not
+   * Indicates if the odometry correction enabled or not
    */
   public static boolean enableCorrection = false;
+  
+  /**
+   * Indicates if the obstacle avoidance is enabled or not
+   */
+  public static boolean enableAvoidance = false;
 
   /**
    * Limits of the current zone
@@ -369,7 +374,9 @@ public class GameResources {
   public enum NAVIGATION_DESTINATION {
     TUNNEL1_ENTRANCE, TUNNEL2_ENTRANCE, LAUNCH_POINT, END_POINT
   }
-
+  public enum REGION {
+    RED, WATER, TUNNEL_RED, TUNNEL_GREEN, GREEN, ISLAND
+  }
 
   /*
    * Getters and setters that variables that are changed throughout the game
@@ -426,6 +433,13 @@ public class GameResources {
   }
   public static boolean isNavigationCompleted() {
     return navigationCompleted;
+  }
+  
+  public static void setEnableAvoidance(boolean enableAvoidance) {
+    GameResources.enableAvoidance = enableAvoidance;
+  }
+  public static boolean isEnableAvoidance() {
+    return enableAvoidance;
   }
   
   

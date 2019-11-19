@@ -125,8 +125,8 @@ public class ObstacleAvoider {
   public static boolean orientationCheck() {
     double currentX = GameResources.odometer.getX();
     double currentY = GameResources.odometer.getY();
-    double goalX = GameResources.navigationCoordinates.x * GameResources.TILE_SIZE;
-    double goalY = GameResources.navigationCoordinates.y * GameResources.TILE_SIZE;
+    double goalX = GameResources.getNavigationCoordinates().x * GameResources.TILE_SIZE;
+    double goalY = GameResources.getNavigationCoordinates().y * GameResources.TILE_SIZE;
     double dX = goalX - currentX;
     double dY = goalY - currentY;
     double turnToAngle = Math.toDegrees(Math.atan2(dX, dY));
