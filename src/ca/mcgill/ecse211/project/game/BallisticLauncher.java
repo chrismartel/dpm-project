@@ -19,7 +19,7 @@ public class BallisticLauncher {
     } catch (InterruptedException e) {
     }
     // set the launching speed to a constant (only for lab 5)
-    int  motorLaunchingSpeed = (int)(distance * GameResources.LAUNCH_COEFFICIENT);
+    int  motorLaunchingSpeed = (int) this.computeMotorSpeed(distance);
     // set the speeds and accelerations of the launching motors
     GameResources.leftBallisticMotor.setSpeed(motorLaunchingSpeed);
     GameResources.rightBallisticMotor.setSpeed(motorLaunchingSpeed);
@@ -66,8 +66,8 @@ public class BallisticLauncher {
    */
   public void reload() {
     // set the speed and acceleration of the motors for reload
-    GameResources.leftBallisticMotor.setSpeed(GameResources.ROTATE_SPEED_SLOW);
-    GameResources.rightBallisticMotor.setSpeed(GameResources.ROTATE_SPEED_SLOW);
+    GameResources.leftBallisticMotor.setSpeed(GameResources.RELOAD_SPEED);
+    GameResources.rightBallisticMotor.setSpeed(GameResources.RELOAD_SPEED);
     GameResources.leftBallisticMotor.setAcceleration(GameResources.RELOAD_ACCELERATION);
     GameResources.rightBallisticMotor.setAcceleration(GameResources.RELOAD_ACCELERATION);
     // reload the launcher by rotating back the motors
@@ -84,6 +84,11 @@ public class BallisticLauncher {
       this.launch(distance);
       this.reload();
     }
+  }
+  
+  public double computeMotorSpeed(double distance) {
+    double motorSpeed = GameResources.LAUNCH_COEFFICIENT*distance+ GameResources.LAUNCH_IV;
+    return motorSpeed;
   }
 
 

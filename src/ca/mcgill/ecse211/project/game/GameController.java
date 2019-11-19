@@ -25,20 +25,24 @@ public class GameController {
     while (GameResources.getGameState() != GameState.Done) {
       switch (GameResources.getGameState()) {
         case Test:
-          Button.waitForAnyPress();
+   /*       Button.waitForAnyPress();
           GameResources.setCurrentRegion(REGION.ISLAND);
           GameResources.setGameState(GameState.Navigation);
           GameResources.odometer.setXYT(GameResources.TILE_SIZE, GameResources.TILE_SIZE, 0);
           System.out.println(GameResources.getGameState());
-          gameNavigation.squareNavigation(1, 4);
+          gameNavigation.squareNavigation(1, 4);*/
 
 
           // LAUNCHING COEFFICIENT TEST
           // test speeds from 150 to 650 and record distances for each
-          /*
-           * for(int i = 150; i<=650; i+=25) { System.out.println("speed: "+i); ballisticLauncher.launchTest(i);
-           * ballisticLauncher.reload(); Button.waitForAnyPress(); } gameState = GameState.Done;
-           */
+          
+           for(int i = 150; i<=650; i+=25) { 
+             
+           System.out.println("speed: "+i); ballisticLauncher.launchTest(i);
+           ballisticLauncher.reload(); Button.waitForAnyPress(); }
+           
+           GameResources.setGameState(GameState.Done); 
+           
 
           break;
 
@@ -66,9 +70,8 @@ public class GameController {
 
 
           // transit to ultrasonic localization state
-          // Button.waitForAnyPress();
-          // GameResources.setGameState(GameState.UltrasonicLocalization);
-          GameResources.setGameState(GameState.Test);
+           Button.waitForAnyPress();
+          GameResources.setGameState(GameState.UltrasonicLocalization);
 
 
           break;

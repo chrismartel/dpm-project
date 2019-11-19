@@ -133,16 +133,23 @@ public class GameResources {
   /**
    * Coefficient of the launching process to adjust the speed of the motors in function of the distance
    */
-  public static final double LAUNCH_COEFFICIENT = 2; // HAS TO BE DETERMINED BY TESTING
+  public static final double LAUNCH_COEFFICIENT = 0.9166; // HAS TO BE DETERMINED BY TESTING
+  
+  /**
+   * Initial value used to compute the motor speed to apply in functio of the distance
+   */
+  public static final double LAUNCH_IV = 91.336; // HAS TO BE DETERMINED BY TESTING
+  
   /**
    * Angle of rotation of the launching motors during launch
    */
-  public static final int LAUNCHING_ANGLE = 90;
+  public static final int LAUNCHING_ANGLE = 100;
+  
 
   /**
    * Angle of rotation of the launching motors during reload Must be the same than the launching angle
    */
-  public static final int RELOAD_ANGLE = 90;
+  public static final int RELOAD_ANGLE = 100;
 
   /**
    * Distance to launch the ball
@@ -175,7 +182,10 @@ public class GameResources {
    */
   public static final double BALLISTIC_X_OFFSET_FROM_CENTER = 2;
 
-
+  /**
+   * The offset of the arm from the center of the robot in centimeters.
+   */
+  public static final int RELOAD_SPEED = 275;
 
   // MOTORS AND SENSORS
 
