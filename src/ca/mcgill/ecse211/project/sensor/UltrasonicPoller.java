@@ -76,10 +76,12 @@ public class UltrasonicPoller implements Runnable {
       this.pollSensors();
       // robot is avoiding so only process distance in the left controller
       if (GameResources.getGameState() == GameState.Avoidance) {
-        // Process the fetched distance in the left controller
+        // Process the fetched distance in the left and front controllers
         leftUsController.processDistance(this.leftDistance);
+        frontUsController.processDistance(this.frontDistance);
+
       }
-      // process distance of front sensor only in navigation and us localization states
+      // process distance of front sensor only if not in avoidance state
       else {
         // Process the fetched distance in the front controller
         frontUsController.processDistance(this.frontDistance);

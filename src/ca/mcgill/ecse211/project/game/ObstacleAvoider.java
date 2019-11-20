@@ -26,7 +26,6 @@ public class ObstacleAvoider {
       wallDistance = GameResources.ultrasonicPoller.getLeftUsController().getDistance();
       System.out.println("DISTANCE WALL FOLOWER1:" + wallDistance);
 
-      //wallDistance = this.calculateLateralDistance(wallDistance);
       System.out.println("DISTANCE WALL FOLOWER2:" + wallDistance);
 
  /*     // CONVEX CORNER HANDLING
@@ -128,7 +127,8 @@ public class ObstacleAvoider {
   /**
    * Method indicating if the orientation of the robot is correct or not during the wall following process
    * 
-   * @return true if the orientation of the robot
+   * @return true if the orientation of the robot is facing its navigation goal coordinates and if there no object in front of the robot, false if the orientation is not 
+   * facing the goal coordinates or if there is an object in front of the robot
    */
   public static boolean orientationCheck() {
     double currentX = GameResources.odometer.getX();
@@ -148,8 +148,8 @@ public class ObstacleAvoider {
     } else if (Math.abs(rotation) == 180) {
       rotation = 180;
     }
-
-    if (Math.abs(rotation) <= GameResources.ORIENTATION_CHECK_ERROR) {
+    // if the orientation is with 1 degree from the expected navigation orientation and that there are no objects in front of the robot --> return true
+    if (Math.abs(rotation) <= GameResources.ORIENTATION_CHECK_ERROR && GameResources.ultrasonicPoller.getFrontUsController().getDistance()>1.5*GameResources.OBSTACLE_DETECTION_DISTANCE) {
       return true;
     }
     return false;
@@ -169,21 +169,7 @@ public class ObstacleAvoider {
   }
 
 
-  /**
-   * Method used to calculate the lateral distance between the robot and the wall during wall following
-   * 
-   * @param : the distance seen by the left ultrasonic sensor
-   * @return : the lateral distance between the robot and the wall
-   */
-  private double calculateLateralDistance(double distance) {// method used to approximate the lateral distance of the
-                                                            // robot from
-    // the wall
-    // lateral distance = distance *cos(45)
-    // 4 centimeters between sensor and wheels
-    double lateralDistance = distance * Math.cos(Math.PI / 4);
-    System.out.println("LATERAL DISTANCE: " + lateralDistance);
-    return lateralDistance;
-  }
+
 
   /**
    * Method used to perform the convex corner procedure during wall following to avoid crashing into the walls
