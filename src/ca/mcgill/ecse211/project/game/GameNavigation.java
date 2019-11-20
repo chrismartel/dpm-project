@@ -91,8 +91,6 @@ public class GameNavigation {
   public void navigateToLaunchPoint() {
     // navigate to launch point
     this.squareNavigation(launchPoint.x, launchPoint.y);
-
-
   }
 
   /**
@@ -109,10 +107,11 @@ public class GameNavigation {
     Navigation.turnTo(Math.toDegrees(Math.atan2(dX, dY)), GameResources.ROTATE_SPEED_SLOW);
     double distance = this.distanceFromBin(launchPoint.x, launchPoint.y);
     // additional turn so that the ballistic launcher points to the bin
-    double adjustmentAngle = -Math.toDegrees((Math.asin((GameResources.BALLISTIC_X_OFFSET_FROM_CENTER) / distance)));
-    System.out.println("adjustment: "+ adjustmentAngle);
-    Navigation.turn(3*adjustmentAngle, GameResources.ROTATE_SPEED_SLOW);
-        
+    double adjustmentAngle = Math.toDegrees((Math.asin((GameResources.BALLISTIC_X_OFFSET_FROM_CENTER/distance))));
+       
+    System.out.println("adjustment: " + adjustmentAngle);
+    Navigation.turn(-9*adjustmentAngle, GameResources.ROTATE_SPEED_SLOW);
+
   }
 
   /**
@@ -392,7 +391,7 @@ public class GameNavigation {
       GameResources.setCurrentRegion(REGION.RED);
     }
   }
-  
+
   /**
    * Method used to set the bin depending on the team color
    */

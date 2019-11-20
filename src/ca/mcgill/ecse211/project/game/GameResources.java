@@ -143,7 +143,7 @@ public class GameResources {
   /**
    * Initial value used to compute the motor speed to apply in functio of the distance
    */
-  public static final double LAUNCH_IV = 70; // HAS TO BE DETERMINED BY TESTING
+  public static final double LAUNCH_IV = 80; // HAS TO BE DETERMINED BY TESTING
   
   /**
    * Angle of rotation of the launching motors during launch
@@ -159,7 +159,7 @@ public class GameResources {
   /**
    * Distance to launch the ball
    */
-  public static final int MAXIMAL_LAUNCH_DISTANCE = 300;
+  public static final int MAXIMAL_LAUNCH_DISTANCE = 250;
 
   /**
    * period of sleeping before launch
