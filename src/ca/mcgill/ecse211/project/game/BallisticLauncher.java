@@ -82,9 +82,7 @@ public class BallisticLauncher {
    */
   public void multipleLaunch(double distance) {
     for(int i = 0 ; i< GameResources.NUMBER_OF_BALLS; i++) {
-      if(i==4) {
-        Navigation.turn(-5,GameResources.ROTATE_SPEED_SLOW);
-      }
+            
       this.launch(distance);
 
       this.reload();

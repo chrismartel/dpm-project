@@ -143,7 +143,7 @@ public class GameResources {
   /**
    * Initial value used to compute the motor speed to apply in functio of the distance
    */
-  public static final double LAUNCH_IV = 80; // HAS TO BE DETERMINED BY TESTING
+  public static final double LAUNCH_IV = 70; // HAS TO BE DETERMINED BY TESTING
   
   /**
    * Angle of rotation of the launching motors during launch
@@ -191,6 +191,11 @@ public class GameResources {
    * The offset of the arm from the center of the robot in centimeters.
    */
   public static final int RELOAD_SPEED = 275;
+  
+  /**
+   * Adjustment angle during the 5 launches
+   */
+  public static final double BALLISTIC_ADJUSTMENT_ANGLE = -2;
 
   // MOTORS AND SENSORS
 
@@ -265,6 +270,7 @@ public class GameResources {
   public static Region Tunnel = new Region(tng.ll, tng.ur); // default to green tunnel
   public static Point STARTING_POINT; 
   public static int CORNER_NUMBER = 1;
+  public static Point bin = new Point(0,0);
 
   public static int FIELD_RIGHT = 8;
   public static int FIELD_TOP = 8;
@@ -285,6 +291,10 @@ public class GameResources {
    */
   public static boolean enableCorrection = false;
   
+  /**
+   * Indicates if the robot localized after its navigation or not
+   */
+  public static boolean localized = false;
 
   /**
    * Limits of the current zone
@@ -378,13 +388,22 @@ public class GameResources {
   public static LinkedList<Point> restrictedPoints = new LinkedList<Point>();
 
   // ENUMS
+  /*
+   * Enumeration of all team colors
+   */
   public enum COLOR {
     GREEN, RED
   }
 
+  /*
+   * Enumeration of all the possible navigation destinations
+   */
   public enum NAVIGATION_DESTINATION {
     TUNNEL1_ENTRANCE, TUNNEL2_ENTRANCE, LAUNCH_POINT, END_POINT
   }
+  /*
+   * Enumeration of all the possible region types
+   */
   public enum REGION {
     RED, WATER, TUNNEL_RED, TUNNEL_GREEN, GREEN, ISLAND
   }
@@ -445,9 +464,19 @@ public class GameResources {
   public static boolean isNavigationCompleted() {
     return navigationCompleted;
   }
-  
+  public static Point getBin() {
+    return bin;
+  }
+  public static void setBin(Point bin) {
+    GameResources.bin = bin;
+  }
 
-  
+  public static boolean isLocalized() {
+    return localized;
+  }
+  public static void setLocalized(boolean localized) {
+    GameResources.localized = localized;
+  }
   
   
 }

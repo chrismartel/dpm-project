@@ -58,6 +58,7 @@ public class GameNavigation {
    * @param : y is the goal coordinate on the y axis
    */
   public void squareNavigation(double x, double y) {
+    GameResources.setLocalized(false);
     GameResources.setEnableCorrection(true);
     GameResources.setNavigationCoordinates(new Point(x, y));
     Navigation.travelTo(x, (GameResources.odometer.getY() / GameResources.TILE_SIZE),
@@ -100,16 +101,17 @@ public class GameNavigation {
   public void turnToTarget() {
     double currentX = GameResources.odometer.getX();
     double currentY = GameResources.odometer.getY();
-    double binX = Resources.bin.x * GameResources.TILE_SIZE;
-    double binY = Resources.bin.y * GameResources.TILE_SIZE;
+    double binX = GameResources.bin.x * GameResources.TILE_SIZE;
+    double binY = GameResources.bin.y * GameResources.TILE_SIZE;
     double dX = binX - currentX;
     double dY = binY - currentY;
     // turn towards launch point
     Navigation.turnTo(Math.toDegrees(Math.atan2(dX, dY)), GameResources.ROTATE_SPEED_SLOW);
     double distance = this.distanceFromBin(launchPoint.x, launchPoint.y);
     // additional turn so that the ballistic launcher points to the bin
-    double adjustmentAngle = -(Math.asin((GameResources.BALLISTIC_X_OFFSET_FROM_CENTER) / distance));
-    Navigation.turn(adjustmentAngle, GameResources.ROTATE_SPEED_SLOW);
+    double adjustmentAngle = -Math.toDegrees((Math.asin((GameResources.BALLISTIC_X_OFFSET_FROM_CENTER) / distance)));
+    System.out.println("adjustment: "+ adjustmentAngle);
+    Navigation.turn(3*adjustmentAngle, GameResources.ROTATE_SPEED_SLOW);
         
   }
 
@@ -390,6 +392,21 @@ public class GameNavigation {
       GameResources.setCurrentRegion(REGION.RED);
     }
   }
+  
+  /**
+   * Method used to set the bin depending on the team color
+   */
+  public void setBin() {
+    if (GameResources.getColor() == COLOR.GREEN) {
+      GameResources.setBin(Resources.greenBin);
+      System.out.println("STARTING REGION SET TO GREEN");
+
+    } else {
+      GameResources.setCurrentRegion(REGION.RED);
+      GameResources.setBin(Resources.redBin);
+
+    }
+  }
 
   /**
    * Method used to update the region after a tunnel traversal depending on the current region
@@ -487,7 +504,7 @@ public class GameNavigation {
    * @return: the distance between the robot and the bin in centimeters
    */
   public double distanceFromBin(double x, double y) {
-    double distance = this.calculateDistance(x, y, Resources.bin.x, Resources.bin.y);
+    double distance = this.calculateDistance(x, y, GameResources.bin.x, GameResources.bin.y);
     return distance;
   }
 
@@ -498,6 +515,7 @@ public class GameNavigation {
     this.setColor();
     this.setStartingRegion();
     this.setCorner();
+    this.setBin();
     this.setLimits();
     this.setTunnel();
     this.updateTunnelData();

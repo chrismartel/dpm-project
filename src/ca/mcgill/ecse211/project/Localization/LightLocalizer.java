@@ -215,8 +215,9 @@ public class LightLocalizer {
    * near a wall: special cases are applied
    * 
    * @param: point used to set the x and y values of the odometer during light localization
+   * @param: boolean position indicates if the robot has to position its center to the localized point or not
    */
-  public static void lightLocalize(Point point) {
+  public static void lightLocalize(Point point, boolean position) {
     // check if the point is near a wall
     if ((point.x != 1) && (point.x != (GameResources.FIELD_RIGHT - 1)) && (point.y != 1)
         && (point.y != (GameResources.FIELD_TOP - 1))) {
@@ -280,7 +281,9 @@ public class LightLocalizer {
       }
 
     }
-
+    if(position) {
+      Navigation.travelTo(point.x, point.y, GameResources.FORWARD_SPEED_NORMAL);
+    }
   }
 
   /**
