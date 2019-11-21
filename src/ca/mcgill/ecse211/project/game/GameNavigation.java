@@ -107,10 +107,10 @@ public class GameNavigation {
     Navigation.turnTo(Math.toDegrees(Math.atan2(dX, dY)), GameResources.ROTATE_SPEED_SLOW);
     double distance = this.distanceFromBin(launchPoint.x, launchPoint.y);
     // additional turn so that the ballistic launcher points to the bin
-    double adjustmentAngle = Math.toDegrees((Math.asin((GameResources.BALLISTIC_X_OFFSET_FROM_CENTER/distance))));
-       
+    double adjustmentAngle = Math.toDegrees((Math.asin((GameResources.BALLISTIC_X_OFFSET_FROM_CENTER / distance))));
+
     System.out.println("adjustment: " + adjustmentAngle);
-    Navigation.turn(-9*adjustmentAngle, GameResources.ROTATE_SPEED_SLOW);
+    Navigation.turn(-9 * adjustmentAngle, GameResources.ROTATE_SPEED_SLOW);
 
   }
 
@@ -552,6 +552,8 @@ public class GameNavigation {
     }
     // set the launch point of the class instance and return it
     this.launchPoint = minimal_point;
+    // set new navigation coordinates
+    GameResources.setNavigationCoordinates(minimal_point);
     return minimal_point;
   }
 
@@ -617,7 +619,7 @@ public class GameNavigation {
     return false;
   }
 
-  public void createRestrictedPoints() {
+  public boolean createRestrictedPoints() {
     double x = GameResources.odometer.getX();
     double y = GameResources.odometer.getY();
     double theta = GameResources.odometer.getTheta();
@@ -643,6 +645,38 @@ public class GameNavigation {
     int y1 = (int) (y / GameResources.TILE_SIZE);
     int x2 = x1 + 1;
     int y2 = y1 + 1;
+    int x3 = x1 - 1;
+    int y3 = y1 - 1;
+    LinkedList<Point> obstaclePoints = new LinkedList<Point>();
+    Point p1 = new Point(x1,y1);
+    obstaclePoints.add(p1);
+    Point p2 = new Point(x1,y2);
+    obstaclePoints.add(p2);
+    Point p3= new Point(x1,y3);
+    obstaclePoints.add(p3);
+    Point p4= new Point(x2,y1);
+    obstaclePoints.add(p4);
+    Point p5 = new Point(x2,y2);
+    obstaclePoints.add(p5);
+    Point p6 = new Point(x2,y3);
+    obstaclePoints.add(p6);
+    Point p7 = new Point(x3,y1);
+    obstaclePoints.add(p7);
+    Point p8 = new Point(x3,y2);
+    obstaclePoints.add(p8);
+    Point p9 = new Point(x3,y3);
+    obstaclePoints.add(p9);
+    boolean newLaunchPoint = false;
+
+    // add the 9 points surrounding the obstacle in the restricted points array
+    for(Point point: obstaclePoints) {
+      GameResources.restrictedPoints.add(point);
+      // if one of the new restricted point was the current launch point, we need a new launch point
+      if(this.getLaunchPoint().x==point.x && this.getLaunchPoint().y == point.y) {
+        newLaunchPoint = true;
+      }
+    }
+    return newLaunchPoint;
   }
 
   /**

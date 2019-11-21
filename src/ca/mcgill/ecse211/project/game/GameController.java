@@ -226,16 +226,28 @@ public class GameController {
           // object avoidance procedure using wall follower with P-Controller
           Sound.beep();
           System.out.println("OBJECT DETECTED");
+          // create restricted points and check if launch point was changed
+          boolean newLaunchPoint = gameNavigation.createRestrictedPoints();
+          if(newLaunchPoint) {
+            // generate new launch points considering some points were added in the restricted array
+            gameNavigation.generateLaunchPoints();
+            // new launch point and new navigation coordinates
+            gameNavigation.calculateClosestLaunchPoint();
+          }
+          else {
+            // generate new launch points considering some points were added in the restricted array
+            gameNavigation.generateLaunchPoints();
+            obstacleAvoider.wallFollower(GameResources.FORWARD_SPEED_NORMAL);
+            
+            // must light localize after a wall follower
+            // LIGHT LOCALIZATION
+            closestPoint = gameNavigation.closestPoint();
+            Navigation.travelTo(closestPoint.x, closestPoint.y, GameResources.FORWARD_SPEED_NORMAL);
+            LightLocalizer.lightLocalize(closestPoint,false);
+            GameResources.setLocalized(true);
 
-          obstacleAvoider.wallFollower(GameResources.FORWARD_SPEED_NORMAL);
-          
-          // LIGHT LOCALIZATION
-          closestPoint = gameNavigation.closestPoint();
-          Navigation.travelTo(closestPoint.x, closestPoint.y, GameResources.FORWARD_SPEED_NORMAL);
-          LightLocalizer.lightLocalize(closestPoint,false);
-          GameResources.setLocalized(true);
+          }
 
-           
           Button.waitForAnyPress();
           GameResources.setGameState(GameState.Navigation);
 
