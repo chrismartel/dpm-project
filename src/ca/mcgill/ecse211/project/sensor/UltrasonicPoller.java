@@ -1,7 +1,8 @@
 package ca.mcgill.ecse211.project.sensor;
 
-import static ca.mcgill.ecse211.project.game.GameResources.*;
-//import ca.mcgill.ecse211.project.game.GameController.NAVIGATION_DESTINATION;
+import ca.mcgill.ecse211.project.game.GameResources;
+import ca.mcgill.ecse211.project.game.GameResources.REGION;
+// import ca.mcgill.ecse211.project.game.GameController.NAVIGATION_DESTINATION;
 import ca.mcgill.ecse211.project.game.GameState;
 
 /**
@@ -39,14 +40,14 @@ public class UltrasonicPoller implements Runnable {
   private UltrasonicController leftUsController;
   private UltrasonicController frontUsController;
 
-  
+
 
   /**
    * constructor of the ultrasonic poller
    */
   private UltrasonicPoller() {
-    leftUsData = new float[leftUsSensor.sampleSize()];
-    frontUsData = new float[leftUsSensor.sampleSize()];
+    leftUsData = new float[GameResources.leftUsSensor.sampleSize()];
+    frontUsData = new float[GameResources.leftUsSensor.sampleSize()];
     leftUsController = new UltrasonicController(this.leftDistance);
     frontUsController = new UltrasonicController(this.frontDistance);
   }
@@ -74,25 +75,27 @@ public class UltrasonicPoller implements Runnable {
       updateStart = System.currentTimeMillis();
       this.pollSensors();
       // robot is avoiding so only process distance in the left controller
-      if(gameState == GameState.Avoidance) {
-        // Process the fetched distance in the left controller
+      if (GameResources.getGameState() == GameState.Avoidance) {
+        // Process the fetched distance in the left and front controllers
         leftUsController.processDistance(this.leftDistance);
+        frontUsController.processDistance(this.frontDistance);
+
       }
-      // process distance of front sensor only in navigation and us localization states
-      else if(gameState == GameState.Navigation || gameState == GameState.UltrasonicLocalization){
+      // process distance of front sensor only if not in avoidance state
+      else {
         // Process the fetched distance in the front controller
         frontUsController.processDistance(this.frontDistance);
-        // when navigating, check for obstacles
-        if(gameState == GameState.Navigation) {
-          //frontUsController.checkForObstacle();
+        // when navigating on the island, check for obstacles
+        if (GameResources.getGameState() == GameState.Navigation && GameResources.getCurrentRegion() == REGION.ISLAND) {
+          frontUsController.checkForObstacle();
         }
       }
 
       // record the ending time of the loop and make the thread sleep so the period is respected
       updateEnd = System.currentTimeMillis();
-      if (updateEnd - updateStart < US_PERIOD) {
+      if (updateEnd - updateStart < GameResources.US_PERIOD) {
         try {
-          Thread.sleep(US_PERIOD - (updateEnd - updateStart));
+          Thread.sleep(GameResources.US_PERIOD - (updateEnd - updateStart));
         } catch (InterruptedException e) {
           // there is nothing to be done
         }
@@ -105,16 +108,17 @@ public class UltrasonicPoller implements Runnable {
    */
   private void pollSensors() {
     // robot is avoiding an object --> only poll left sensor
-    if(gameState== GameState.Avoidance) {
+    if (GameResources.gameState == GameState.Avoidance) {
       // acquire distance data in meters
-      leftUsSensor.getDistanceMode().fetchSample(leftUsData, 0);
+      GameResources.leftUsSensor.getDistanceMode().fetchSample(leftUsData, 0);
       // set the initial distance seen by the sensor
       this.leftDistance = (int) (leftUsData[0] * 100);
     }
     // robot is navigating --> only poll front sensor
-    else if ((gameState== GameState.Navigation || gameState== GameState.UltrasonicLocalization)){
+    else if ((GameResources.gameState == GameState.Navigation
+        || GameResources.gameState == GameState.UltrasonicLocalization)) {
       // acquire distance data in meters
-      frontUsSensor.getDistanceMode().fetchSample(frontUsData, 0);
+      GameResources.frontUsSensor.getDistanceMode().fetchSample(frontUsData, 0);
       // set the distance seen by the sensor
       this.frontDistance = (int) (frontUsData[0] * 100);
     }

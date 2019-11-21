@@ -1,11 +1,9 @@
 package ca.mcgill.ecse211.project.game;
 
-import static ca.mcgill.ecse211.project.game.GameResources.*;
-import ca.mcgill.ecse211.project.Resources;
-import static ca.mcgill.ecse211.project.Resources.*;
+import ca.mcgill.ecse211.project.game.GameResources.*;
+import ca.mcgill.ecse211.project.Resources.*;
 import ca.mcgill.ecse211.project.Localization.LightLocalizer;
 import ca.mcgill.ecse211.project.Localization.UltrasonicLocalizer;
-import ca.mcgill.ecse211.project.game.Navigation.Turn;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 
@@ -13,45 +11,59 @@ public class GameController {
 
   public static void main(String[] args) {
     // initialize class instances needed
+    
     GameNavigation gameNavigation = new GameNavigation();
     UltrasonicLocalizer ultrasonicLocalizer = new UltrasonicLocalizer();
     BallisticLauncher ballisticLauncher = new BallisticLauncher();
     ObstacleAvoider obstacleAvoider = new ObstacleAvoider();
     Point closestPoint;
+    int tunnel = 0;
+    double startTime =0;
+    double currentTime=0;
 
     // set initial state
-    gameState = GameState.Initialization;
+    GameResources.setGameState(GameState.Initialization);
 
     // Execute until the game reaches the Done state
-    while (gameState != GameState.Done) {
-      switch (gameState) {
+    while (GameResources.getGameState() != GameState.Done) {
+      switch (GameResources.getGameState()) {
         case Test:
+         
+         Button.waitForAnyPress();
+           // obstacle avoidance test
+//          GameResources.setCurrentRegion(REGION.ISLAND);
+//          GameResources.setGameState(GameState.Navigation);
+//          GameResources.odometer.setXYT(GameResources.TILE_SIZE, GameResources.TILE_SIZE, 0);
+//          System.out.println(GameResources.getGameState());
+//          gameNavigation.squareNavigation(1, 4);
           
-          /* orientation check test
-          odometer.setXYT(4*TILE_SIZE, 4*TILE_SIZE, 0);
-          navigationCoordinates = new Point(1,4);
-          Navigation.turn(90, FORWARD_SPEED_FAST);
-          Navigation.rotate(Turn.COUNTER_CLOCK_WISE, ROTATE_SPEED_SLOW);
-          while(!ObstacleAvoider.orientationCheck());
-          System.out.println("TEST DONE");
-          Navigation.stopMotors();
-          gameState = GameState.Done;
-          */
+          GameResources.odometer.setXYT(5*GameResources.TILE_SIZE, 2*GameResources.TILE_SIZE, 0);
+          gameNavigation.generateLaunchPoints();
+          gameNavigation.calculateClosestLaunchPoint();
+          gameNavigation.navigateToLaunchPoint();
+          LightLocalizer.lightLocalize(gameNavigation.getLaunchPoint(),true);
+          gameNavigation.turnToTarget();
+          ballisticLauncher.multipleLaunch(gameNavigation.distanceFromBin(GameResources.odometer.getX()/GameResources.TILE_SIZE, GameResources.odometer.getY()/GameResources.TILE_SIZE));
           
           // LAUNCHING COEFFICIENT TEST
-          for(int i = 50; i<=800; i+=50) {
-            ballisticLauncher.launchTest(i);
-            ballisticLauncher.reload();
-            Button.waitForAnyPress();
-          }
-          gameState = GameState.Done;
+          // test speeds from 150 to 650 and record distances for each
+          
+//           for(int i = 150; i<=650; i+=25) { 
+//             
+//           System.out.println("speed: "+i); ballisticLauncher.launchTest(i);
+//           ballisticLauncher.reload(); Button.waitForAnyPress(); }
+//           
+//           GameResources.setGameState(GameState.Done); 
+           
 
+          break;
 
 
         case Initialization:
           // start threads
-          Thread odometerThread = new Thread(odometer);
-          Thread usPollerTread = new Thread(ultrasonicPoller);
+          Thread odometerThread = new Thread(GameResources.odometer);
+          Thread usPollerTread = new Thread(GameResources.ultrasonicPoller);
+          startTime = System.currentTimeMillis();
           odometerThread.start();
           usPollerTread.start();
 
@@ -59,104 +71,107 @@ public class GameController {
           gameNavigation.setGameParameters();
 
           // set first checkpoint
-          navigationDestination = NAVIGATION_DESTINATION.TUNNEL1_ENTRANCE;
+          GameResources.setNavigationDestination(NAVIGATION_DESTINATION.TUNNEL1_ENTRANCE);
 
           // Warm up motors
-          Navigation.travel(2, FORWARD_SPEED_NORMAL);
-          Navigation.backUp(2, FORWARD_SPEED_NORMAL);
-          leftBallisticMotor.rotate(-5, true);
-          rightBallisticMotor.rotate(-5, false);
-          leftBallisticMotor.rotate(+5, true);
-          rightBallisticMotor.rotate(+5, false);
+          Navigation.travel(2, GameResources.FORWARD_SPEED_NORMAL);
+          Navigation.backUp(2, GameResources.FORWARD_SPEED_NORMAL);
+          GameResources.leftBallisticMotor.rotate(-5, true);
+          GameResources.rightBallisticMotor.rotate(-5, false);
+          GameResources.leftBallisticMotor.rotate(+5, true);
+          GameResources.rightBallisticMotor.rotate(+5, false);
+
 
           // transit to ultrasonic localization state
-          Button.waitForAnyPress();
-          gameState = GameState.Test;
+          //Button.waitForAnyPress();
+          GameResources.setGameState(GameState.Test);
+
 
           break;
 
 
         case UltrasonicLocalization:
           // ultrasonic localization using falling edge routine
-          ultrasonicLocalizer.fallingEdge(ROTATE_SPEED_NORMAL);
+          ultrasonicLocalizer.fallingEdge(GameResources.ROTATE_SPEED_FAST);
           // transition to light localization state
-          gameState = GameState.LightLocalization;
+          GameResources.setGameState(GameState.LightLocalization);
           break;
 
 
         case LightLocalization:
           // initial localization depending on the starting point and starting corner
-          LightLocalizer.initialLightLocalize(STARTING_POINT, CORNER_NUMBER);
+          LightLocalizer.initialLightLocalize(GameResources.STARTING_POINT, GameResources.CORNER_NUMBER);
           // transit to navigation state
-          gameState = GameState.Navigation;
+          GameResources.gameState = GameState.Navigation;
+          GameResources.setLocalized(true);
           break;
 
 
         case Navigation:
           // navigation is considered uncompleted initially
-          navigationCompleted = false;
-          
+          GameResources.navigationCompleted = false;
+
           // check the current navigation destination
-          switch (navigationDestination) {
-            
+          switch (GameResources.navigationDestination) {
+
             // navigation to first tunnel entrance
             case TUNNEL1_ENTRANCE:
               // navigate to tunnel entrance and turn to traversal orientation
-              gameNavigation.navigateToTunnel();
-              
-              if (navigationCompleted == true) {
+              gameNavigation.navigateToTunnelEntrance();
+
+              if (GameResources.isNavigationCompleted()) {
                 // transition to tunnel state
-                gameState = GameState.Tunnel;
+                GameResources.setGameState(GameState.Tunnel);
                 // update new checkpoint
-                navigationDestination = NAVIGATION_DESTINATION.LAUNCH_POINT;
+                GameResources.setNavigationDestination(NAVIGATION_DESTINATION.LAUNCH_POINT);
+
               }
+
               break;
             case TUNNEL2_ENTRANCE:
               // travel to the second tunnel entrance
-              gameNavigation.navigateToTunnel();
-              
-              if (navigationCompleted == true) {    
-                /*
-                // LIGHT LOCALIZATION
-                closestPoint = gameNavigation.closestPoint();
-                Navigation.travelTo(closestPoint.x, closestPoint.y, FORWARD_SPEED_NORMAL);
-                LightLocalizer.lightLocalize(closestPoint);
-                gameState = GameState.Navigation;
-                // go to tunnel entrance
-                gameNavigation.navigateToTunnel();
-                */
+              System.out.println("navigation to tunnel entrance 2");
+              gameNavigation.navigateToTunnelExit();
+
+              if (GameResources.isNavigationCompleted()) {
                 // update new checkpoint
-                navigationDestination = NAVIGATION_DESTINATION.END_POINT;
+                GameResources.setNavigationDestination(NAVIGATION_DESTINATION.END_POINT);
                 // transition to tunnel state
-                gameState = GameState.Tunnel;
+                GameResources.setGameState(GameState.Tunnel);
               }
+
               break;
             case LAUNCH_POINT:
               // compute the closest launch point
+              gameNavigation.generateLaunchPoints();
               gameNavigation.calculateClosestLaunchPoint();
               // navigate to the closest launch point
               gameNavigation.navigateToLaunchPoint();
 
-              if (navigationCompleted == true) {
-
-                // LIGHT LOCALIZATION
-                closestPoint = gameNavigation.closestPoint();
-                Navigation.travelTo(closestPoint.x, closestPoint.y, FORWARD_SPEED_NORMAL);
-                LightLocalizer.lightLocalize(closestPoint);
-
-                // navigate to launch point after localizing
-                gameNavigation.navigateToLaunchPoint();
+              if (GameResources.isNavigationCompleted()) {
+                
+                // localize before launch if the robot is not localized anymore
+                if(!GameResources.isLocalized()) {
+                  // LIGHT LOCALIZATION
+                  LightLocalizer.lightLocalize(gameNavigation.getLaunchPoint(),true);
+                  GameResources.setLocalized(true);
+                }
+                // turn towards the bin
+                gameNavigation.turnToTarget();
 
                 // update new checkpoint
-                navigationDestination = NAVIGATION_DESTINATION.TUNNEL2_ENTRANCE;
+                GameResources.setNavigationDestination(NAVIGATION_DESTINATION.TUNNEL2_ENTRANCE);
+
                 // Transit to launch state
-                gameState = GameState.Launch;
+                GameResources.setGameState(GameState.Launch);
               }
+
               break;
             case END_POINT:
-              gameNavigation.squareNavigation(STARTING_POINT.x, STARTING_POINT.y);
-              if (navigationCompleted == true) {
-                gameState = GameState.Done;
+              // navigate back to starting point
+              gameNavigation.squareNavigation(GameResources.STARTING_POINT.x, GameResources.STARTING_POINT.y);
+              if (GameResources.isNavigationCompleted()) {
+                GameResources.setGameState(GameState.Done);
               }
               break;
             default:
@@ -166,75 +181,81 @@ public class GameController {
 
 
         case Tunnel:
-          
+
           // adjust heading
           LightLocalizer.twoLineDetection();
           // position center of rotation at tunnel entrance
-          Navigation.backUp(OFFSET_FROM_WHEELBASE, FORWARD_SPEED_NORMAL);
+          Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_NORMAL);
+
           // correct odometer according to tunnel entrance data
-          odometer.setXYT(gameNavigation.getTunnelEntrance().x * TILE_SIZE, gameNavigation.getTunnelEntrance().y * TILE_SIZE, gameNavigation.getTunnelTraversalOrientation());
+          // first tunnel traversal
+          if (tunnel == 0) {
+            GameResources.odometer.setXYT(gameNavigation.getTunnelEntrance().x * GameResources.TILE_SIZE,
+                gameNavigation.getTunnelEntrance().y * GameResources.TILE_SIZE,
+                gameNavigation.getTunnelEntranceTraversalOrientation());
+          }
+          // second tunnel traversal
+          else if (tunnel == 1) {
+            GameResources.odometer.setXYT(gameNavigation.getTunnelExit().x * GameResources.TILE_SIZE,
+                gameNavigation.getTunnelExit().y * GameResources.TILE_SIZE,
+                gameNavigation.getTunnelExitTraversalOrientation());
+          }
           // navigate through tunnel
           gameNavigation.navigateThroughTunnel();
+          tunnel++;
           // update new zone parameters
           gameNavigation.updateParameters();
-
           
-          // LIGHT LOCALIZATION
-          closestPoint = gameNavigation.closestPoint();
-          Navigation.travelTo(closestPoint.x, closestPoint.y, FORWARD_SPEED_NORMAL);
-          LightLocalizer.lightLocalize(closestPoint);
+          // if more than 4 minutes and a half have passed, don't localize at the end of the second tunnel
+          currentTime = System.currentTimeMillis();
+          if((currentTime-startTime)<=270000) {
+            // LIGHT LOCALIZATION
+            closestPoint = gameNavigation.closestPoint();
+            Navigation.travelTo(closestPoint.x, closestPoint.y, GameResources.FORWARD_SPEED_NORMAL);
+            LightLocalizer.lightLocalize(closestPoint,false);
+            GameResources.setLocalized(true);
+          }
+
 
           // transition back to navigation
-          gameState = GameState.Navigation;
-
-          // ***** FOR DEMO
-          // gameState = GameState.Demo;
+          GameResources.setGameState(GameState.Navigation);
           break;
 
 
         case Avoidance:
           // object avoidance procedure using wall follower with P-Controller
+          Sound.beep();
+          System.out.println("OBJECT DETECTED");
+
+          obstacleAvoider.wallFollower(GameResources.FORWARD_SPEED_NORMAL);
           
-//          obstacleAvoider.wallFollower(FORWARD_SPEED_NORMAL);
-          Button.waitForAnyPress();
-          // regenerate the launch points
-          gameNavigation.generateLaunchPoints();
-/*
           // LIGHT LOCALIZATION
           closestPoint = gameNavigation.closestPoint();
-          Navigation.travelTo(closestPoint.x, closestPoint.y, FORWARD_SPEED_NORMAL);
-          LightLocalizer.lightLocalize(closestPoint);*/
-          gameState = GameState.Navigation;
+          Navigation.travelTo(closestPoint.x, closestPoint.y, GameResources.FORWARD_SPEED_NORMAL);
+          LightLocalizer.lightLocalize(closestPoint,false);
+          GameResources.setLocalized(true);
+
+           
+          Button.waitForAnyPress();
+          GameResources.setGameState(GameState.Navigation);
 
           break;
 
 
         case Launch:
           // perform the launches
-          ballisticLauncher.multipleLaunch(gameNavigation.distanceFromBin(odometer.getX(), odometer.getY()));
+          ballisticLauncher.multipleLaunch(gameNavigation.distanceFromBin(GameResources.odometer.getX()/GameResources.TILE_SIZE, GameResources.odometer.getY()/GameResources.TILE_SIZE));
           // transition back to navigation
-          gameState = GameState.Navigation;
+          GameResources.setGameState(GameState.Navigation);
           break;
-        case Demo:
-          gameNavigation.squareNavigation(bin.x, bin.y);
-          LightLocalizer.lightLocalize(bin);
-          Navigation.backUp(OFFSET_FROM_WHEELBASE, FORWARD_SPEED_NORMAL);
-          Navigation.turnTo(tnr.ur.x, ROTATE_SPEED_NORMAL);
-          Sound.beep();
-          Sound.beep();
-          Sound.beep();
-          ballisticLauncher.multipleLaunch(MAXIMAL_LAUNCH_DISTANCE);
-          Sound.beep();
-          gameState = GameState.Done;
 
-          break;
         default:
           break;
 
       }
     }
-    LCD.clear();
-    LCD.drawString("DONE", 1, 1);
+    GameResources.LCD.clear();
+    GameResources.LCD.drawString("DONE", 1, 1);
   }
 
 

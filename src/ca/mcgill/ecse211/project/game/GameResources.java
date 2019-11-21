@@ -66,7 +66,7 @@ public class GameResources {
    */
   public static final int ROTATE_SPEED_SLOW = 80;
   public static final int ROTATE_SPEED_NORMAL = 100;
-  public static final int ROTATE_SPEED_FAST = 200;
+  public static final int ROTATE_SPEED_FAST = 150;
 
 
 
@@ -87,6 +87,11 @@ public class GameResources {
    * Filter out constant to filter the distance seen by the us sensor
    */
   public static final int FILTER_OUT = 5;
+  
+  /**
+   * Angle to turn in falling edge between the 2 detections
+   */
+  public static final int FALLING_EDGE_ADJUSTMENT_ANGLE =-50;
 
 
 
@@ -109,7 +114,7 @@ public class GameResources {
   /**
    * Differential value to determine if a black line is detected or not
    */
-  public static final int DIFFERENTIAL_LINE_THRESHOLD = 15; // HAS TO BE DETERMINE BY TESTING
+  public static final int DIFFERENTIAL_LINE_THRESHOLD = 5; // HAS TO BE DETERMINE BY TESTING
 
   /**
    * Window size for the ultrasonic sensor data polling
@@ -133,21 +138,28 @@ public class GameResources {
   /**
    * Coefficient of the launching process to adjust the speed of the motors in function of the distance
    */
-  public static final double LAUNCH_COEFFICIENT = 6.8; // HAS TO BE DETERMINED BY TESTING
+  public static final double LAUNCH_COEFFICIENT = 0.9166; // HAS TO BE DETERMINED BY TESTING
+  
+  /**
+   * Initial value used to compute the motor speed to apply in functio of the distance
+   */
+  public static final double LAUNCH_IV = 80; // HAS TO BE DETERMINED BY TESTING
+  
   /**
    * Angle of rotation of the launching motors during launch
    */
-  public static final int LAUNCHING_ANGLE = 120;
+  public static final int LAUNCHING_ANGLE = 100;
   
+
   /**
-   * Angle of rotation of the launching motors during reload
+   * Angle of rotation of the launching motors during reload Must be the same than the launching angle
    */
-  public static final int RELOAD_ANGLE = 130;
+  public static final int RELOAD_ANGLE = 100;
 
   /**
    * Distance to launch the ball
    */
-  public static final int MAXIMAL_LAUNCH_DISTANCE = 300;
+  public static final int MAXIMAL_LAUNCH_DISTANCE = 250;
 
   /**
    * period of sleeping before launch
@@ -162,20 +174,28 @@ public class GameResources {
   /**
    * The launching motors acceleration.
    */
-  public static final int LAUNCH_ACCELERATION = 3000;
+  public static final int LAUNCH_ACCELERATION = 9999;
   public static final int RELOAD_ACCELERATION = 3000;
-  
+
   /**
    * The number of balls that the robot holds
    */
-  public static final int NUMBER_OF_BALLS = 1;
+  public static final int NUMBER_OF_BALLS = 5;
 
   /**
    * The offset of the arm from the center of the robot in centimeters.
    */
-  public static final double BALLISTIC_X_OFFSET_FROM_CENTER = 2;
+  public static final double BALLISTIC_X_OFFSET_FROM_CENTER = 3.5;
 
-
+  /**
+   * The offset of the arm from the center of the robot in centimeters.
+   */
+  public static final int RELOAD_SPEED = 275;
+  
+  /**
+   * Adjustment angle during the 5 launches
+   */
+  public static final double BALLISTIC_ADJUSTMENT_ANGLE = -2;
 
   // MOTORS AND SENSORS
 
@@ -238,38 +258,44 @@ public class GameResources {
    */
   public static UltrasonicPoller ultrasonicPoller = UltrasonicPoller.getUltrasonicPoller();
 
-  
+
   /**
    * Light localizer
    */
   public static LightLocalizer lightLocalizer = LightLocalizer.getLightLocalizer();
-  
-  
+
+
 
   // MAP CONSTANTS
   public static Region Tunnel = new Region(tng.ll, tng.ur); // default to green tunnel
-  public static Point STARTING_POINT; // default to 0,0
+  public static Point STARTING_POINT; 
   public static int CORNER_NUMBER = 1;
-  
-  public static int FIELD_RIGHT=8;
-  public static int FIELD_TOP=8;
+  public static Point bin = new Point(0,0);
+
+  public static int FIELD_RIGHT = 8;
+  public static int FIELD_TOP = 8;
 
   // GAME CONSTANTS
   /**
    * Current state of the game state machine
    */
   public static GameState gameState;
-  
+
   /**
    * Indicates if the navigation was completed or not
    */
   public static boolean navigationCompleted = false;
-  
+
   /**
-   * Indicates if the odometry correction enable dor not
+   * Indicates if the odometry correction enabled or not
    */
   public static boolean enableCorrection = false;
   
+  /**
+   * Indicates if the robot localized after its navigation or not
+   */
+  public static boolean localized = false;
+
   /**
    * Limits of the current zone
    */
@@ -281,7 +307,7 @@ public class GameResources {
    * Current navigation destination
    */
   public static NAVIGATION_DESTINATION navigationDestination;
-  
+
   /**
    * Current navigation coordinates point
    */
@@ -298,24 +324,23 @@ public class GameResources {
 
 
 
-
   // OBSTACLE AVOIDANCE
   /*
    * Error acceptable for the orientation check during the wall folowing
    */
-  public static final double ORIENTATION_CHECK_ERROR = 3;
+  public static final double ORIENTATION_CHECK_ERROR = 1;
   /*
    * band center for the wall following
    */
-  public static final double BAND_CENTER = 20;
+  public static final double BAND_CENTER = 15;
   /*
    * band width for the wall following
    */
-  public static final double BAND_WIDTH = 3;
+  public static final double BAND_WIDTH = 4;
   /*
    * gain constant used for the P-controller
    */
-  public static final double GAIN_CONSTANT = 10;
+  public static final double GAIN_CONSTANT = 2;
   /*
    * minimum speed used during wall following
    */
@@ -327,31 +352,31 @@ public class GameResources {
   /*
    * Maximal bound on the error
    */
-  public static final double MAXIMAL_ERROR = 10;
+  public static final double MAXIMAL_ERROR = 15;
   /*
    * Minimal bound on the error
    */
-  public static final double MINIMAL_ERROR = -5;
+  public static final double MINIMAL_ERROR = -15;
   /*
    * Period of the check for distance in the wall following process
    */
-  public static final int OBSTACLE_AVOIDANCE_PERIOD = 50; // in ms
+  public static final int OBSTACLE_AVOIDANCE_PERIOD = 100; // in ms
 
   /*
    * Distance of obstacle detection
    */
-  public static final double OBSTACLE_DETECTION_DISTANCE = 4;
-  
+  public static final double OBSTACLE_DETECTION_DISTANCE = 15;
+
   /*
    * Average width of obstacles
    */
   public static final double OBSTACLE_WIDTH = TILE_SIZE;
-  
+
   /*
    * Distance seen when facing a convex corner
    */
   public static final double CONVEX_CORNER_CONSTANT = 30;
-  
+
   /*
    * Distance seen when facing a convex corner
    */
@@ -363,15 +388,95 @@ public class GameResources {
   public static LinkedList<Point> restrictedPoints = new LinkedList<Point>();
 
   // ENUMS
+  /*
+   * Enumeration of all team colors
+   */
   public enum COLOR {
     GREEN, RED
   }
 
+  /*
+   * Enumeration of all the possible navigation destinations
+   */
+  public enum NAVIGATION_DESTINATION {
+    TUNNEL1_ENTRANCE, TUNNEL2_ENTRANCE, LAUNCH_POINT, END_POINT
+  }
+  /*
+   * Enumeration of all the possible region types
+   */
   public enum REGION {
     RED, WATER, TUNNEL_RED, TUNNEL_GREEN, GREEN, ISLAND
   }
-  
-  public enum NAVIGATION_DESTINATION {
-    TUNNEL1_ENTRANCE, TUNNEL2_ENTRANCE, LAUNCH_POINT, END_POINT, LOCALIZE
+
+  /*
+   * Getters and setters that variables that are changed throughout the game
+   */
+  public static GameState getGameState() {
+    return gameState;
   }
+
+  public static void setGameState(GameState gameState) {
+    GameResources.gameState = gameState;
+  }
+
+  public static REGION getCurrentRegion() {
+    return currentRegion;
+  }
+
+  public static void setCurrentRegion(REGION currentRegion) {
+    GameResources.currentRegion = currentRegion;
+  }
+
+  public static void setColor(COLOR color) {
+    GameResources.color = color;
+  }
+
+  public static COLOR getColor() {
+    return color;
+  }
+
+  public static Point getNavigationCoordinates() {
+    return navigationCoordinates;
+  }
+
+  public static void setNavigationCoordinates(Point navigationCoordinates) {
+    GameResources.navigationCoordinates = navigationCoordinates;
+  }
+
+  public static void setNavigationDestination(NAVIGATION_DESTINATION navigationDestination) {
+    GameResources.navigationDestination = navigationDestination;
+  }
+
+  public static NAVIGATION_DESTINATION getNavigationDestination() {
+    return navigationDestination;
+  }
+  
+  public static void setEnableCorrection(boolean enableCorrection) {
+    GameResources.enableCorrection = enableCorrection;
+  }
+  public static boolean isEnableCorrection() {
+    return enableCorrection;
+  }
+  
+  public static void setNavigationCompleted(boolean navigationCompleted) {
+    GameResources.navigationCompleted = navigationCompleted;
+  }
+  public static boolean isNavigationCompleted() {
+    return navigationCompleted;
+  }
+  public static Point getBin() {
+    return bin;
+  }
+  public static void setBin(Point bin) {
+    GameResources.bin = bin;
+  }
+
+  public static boolean isLocalized() {
+    return localized;
+  }
+  public static void setLocalized(boolean localized) {
+    GameResources.localized = localized;
+  }
+  
+  
 }

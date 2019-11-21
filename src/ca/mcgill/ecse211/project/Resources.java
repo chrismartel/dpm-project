@@ -24,7 +24,7 @@ public class Resources {
    * The IP address of the server that transmits data to the robot. Set this to the default for the
    * beta demo and competition.
    */
-  public static final String SERVER_IP = "192.168.2.16";
+  public static final String SERVER_IP = "192.168.2.24";
   
   /**
    * Your team number.
@@ -39,10 +39,11 @@ public class Resources {
   /**
    * Enable this to attempt to receive Wi-Fi parameters at the start of the program.
    */
-  public static final boolean RECEIVE_WIFI_PARAMS = true; // set true to enable wifi server
+  public static final boolean RECEIVE_WIFI_PARAMS = true;
   
   // DECLARE YOUR CURRENT RESOURCES HERE
-
+  // eg, motors, sensors, constants, etc
+  //////////////////////////////////////
   
   /**
    * Container for the Wi-Fi parameters.
@@ -94,6 +95,8 @@ public class Resources {
    * The red tunnel footprint.
    */
   public static Region tnr = new Region("TNR_LL_x", "TNR_LL_y", "TNR_UR_x", "TNR_UR_y");
+  
+  //public static double targetTheta = Math.max(get("TNR_LL_x"), get("TNR_UR_x")); // only for beta
 
   /**
    * The green tunnel footprint.
@@ -101,9 +104,14 @@ public class Resources {
   public static Region tng = new Region("TNG_LL_x", "TNG_LL_y", "TNG_UR_x", "TNG_UR_y");
 
   /**
-   * The location of the target bin.
+   * The location of the red target bin.
    */
-  public static Point bin = new Point(get("BIN_x"), get("BIN_y"));
+  public static Point redBin = new Point(get("Red_BIN_x"), get("Red_BIN_y"));
+
+  /**
+   * The location of the green target bin.
+   */
+  public static Point greenBin = new Point(get("Green_BIN_x"), get("Green_BIN_y"));
   
   /**
    * Receives Wi-Fi parameters from the server program.
