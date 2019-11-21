@@ -20,6 +20,7 @@ public class GameController {
     int tunnel = 0;
     double startTime =0;
     double currentTime=0;
+    boolean xFirst = true;
 
     // set initial state
     GameResources.setGameState(GameState.Initialization);
@@ -40,7 +41,7 @@ public class GameController {
           GameResources.odometer.setXYT(5*GameResources.TILE_SIZE, 2*GameResources.TILE_SIZE, 0);
           gameNavigation.generateLaunchPoints();
           gameNavigation.calculateClosestLaunchPoint();
-          gameNavigation.navigateToLaunchPoint();
+          gameNavigation.navigateToLaunchPoint(xFirst);
           LightLocalizer.lightLocalize(gameNavigation.getLaunchPoint(),true);
           gameNavigation.turnToTarget();
           ballisticLauncher.multipleLaunch(gameNavigation.distanceFromBin(GameResources.odometer.getX()/GameResources.TILE_SIZE, GameResources.odometer.getY()/GameResources.TILE_SIZE));
@@ -117,7 +118,7 @@ public class GameController {
             // navigation to first tunnel entrance
             case TUNNEL1_ENTRANCE:
               // navigate to tunnel entrance and turn to traversal orientation
-              gameNavigation.navigateToTunnelEntrance();
+              gameNavigation.navigateToTunnelEntrance(xFirst);
 
               if (GameResources.isNavigationCompleted()) {
                 // transition to tunnel state
@@ -131,7 +132,7 @@ public class GameController {
             case TUNNEL2_ENTRANCE:
               // travel to the second tunnel entrance
               System.out.println("navigation to tunnel entrance 2");
-              gameNavigation.navigateToTunnelExit();
+              gameNavigation.navigateToTunnelExit(xFirst);
 
               if (GameResources.isNavigationCompleted()) {
                 // update new checkpoint
@@ -146,7 +147,7 @@ public class GameController {
               gameNavigation.generateLaunchPoints();
               gameNavigation.calculateClosestLaunchPoint();
               // navigate to the closest launch point
-              gameNavigation.navigateToLaunchPoint();
+              gameNavigation.navigateToLaunchPoint(xFirst);
 
               if (GameResources.isNavigationCompleted()) {
                 
@@ -169,7 +170,7 @@ public class GameController {
               break;
             case END_POINT:
               // navigate back to starting point
-              gameNavigation.squareNavigation(GameResources.STARTING_POINT.x, GameResources.STARTING_POINT.y);
+              gameNavigation.squareNavigation(GameResources.STARTING_POINT.x, GameResources.STARTING_POINT.y, xFirst);
               if (GameResources.isNavigationCompleted()) {
                 GameResources.setGameState(GameState.Done);
               }
