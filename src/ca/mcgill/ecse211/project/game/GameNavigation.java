@@ -149,7 +149,7 @@ public class GameNavigation {
     }
     LightLocalizer.twoLineDetection();
     Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
-    this.updateParameters();
+
   }
 
   /**
@@ -355,33 +355,14 @@ public class GameNavigation {
   }
 
   /**
-   * Method used to set the limits of the current region
+   * Method used to set the limits of the island, those limits are useful during obstacle avoidance
    */
   public void setLimits() {
-    // set the limits depending on the current region
-    switch (GameResources.getCurrentRegion()) {
-      case GREEN:
-        GameResources.currentLeftLimit = Resources.green.ll.x;
-        GameResources.currentRightLimit = Resources.green.ur.x;
-        GameResources.currentTopLimit = Resources.green.ur.y;
-        GameResources.currentBottomLimit = Resources.green.ll.y;
-        break;
-      case RED:
-        GameResources.currentLeftLimit = Resources.red.ll.x;
-        GameResources.currentRightLimit = Resources.red.ur.x;
-        GameResources.currentTopLimit = Resources.red.ur.y;
-        GameResources.currentBottomLimit = Resources.red.ll.y;
-        break;
-      case ISLAND:
-        GameResources.currentLeftLimit = Resources.island.ll.x;
-        GameResources.currentRightLimit = Resources.island.ur.x;
-        GameResources.currentTopLimit = Resources.island.ur.y;
-        GameResources.currentBottomLimit = Resources.island.ll.y;
-        break;
-      default:
-        break;
-
-    }
+    // set the limits of the island
+    GameResources.currentLeftLimit = Resources.island.ll.x;
+    GameResources.currentRightLimit = Resources.island.ur.x;
+    GameResources.currentTopLimit = Resources.island.ur.y;
+    GameResources.currentBottomLimit = Resources.island.ll.y;
   }
 
   /**
@@ -425,22 +406,6 @@ public class GameNavigation {
     }
   }
 
-  /**
-   * Method used to update the region after a tunnel traversal depending on the current region
-   */
-  public void updateRegion() {
-    if (GameResources.getCurrentRegion() == REGION.GREEN || GameResources.getCurrentRegion() == REGION.RED) {
-      GameResources.setCurrentRegion(REGION.ISLAND);
-      System.out.println("REGION SET TO ISLAND" + GameResources.currentRegion);
-    } else if (GameResources.getCurrentRegion() == REGION.ISLAND) {
-      if (GameResources.getColor() == COLOR.GREEN) {
-        GameResources.setCurrentRegion(REGION.GREEN);
-      } else {
-        GameResources.setCurrentRegion(REGION.RED);
-      }
-    }
-
-  }
 
   /**
    * Method setting the coordinates of the starting corner depending on the team color and on the corner of the team
@@ -537,16 +502,6 @@ public class GameNavigation {
     this.setTunnel();
     this.updateTunnelData();
     this.generateLaunchPoints();
-  }
-
-  /**
-   * Method used to update the map parameters after a tunnel traversal
-   */
-  public void updateParameters() {
-    // update the current region of the robot
-    this.updateRegion();
-    // set the new zone limits
-    this.setLimits();
   }
 
 
