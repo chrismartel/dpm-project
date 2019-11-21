@@ -52,45 +52,63 @@ public class GameNavigation {
 
   /**
    * Method used to travel on the field by following the black lines directions, it enables the correction it the
-   * travel() method in the Navigation class. It allows heading correction to be peform each time 2 lines are detected.
+   * travel() method in the Navigation class. It allows heading correction to be perform each time 2 lines are detected.
+   * Each time this method is called, the localized static boolean is set to false. This method has 2 options: either it
+   * travels on the x axis first or either it travels on the y axis first.
    * 
    * @param : x is the goal coordinate on the x axis
    * @param : y is the goal coordinate on the y axis
+   * @param : xFirst, if true, the method travels on the x axis first, if false, the method travels on the y axis first.
    */
-  public void squareNavigation(double x, double y) {
+  public void squareNavigation(double x, double y, boolean xFirst) {
     GameResources.setLocalized(false);
     GameResources.setEnableCorrection(true);
     GameResources.setNavigationCoordinates(new Point(x, y));
-    Navigation.travelTo(x, (GameResources.odometer.getY() / GameResources.TILE_SIZE),
-        GameResources.FORWARD_SPEED_NORMAL);
-    Navigation.travelTo((GameResources.odometer.getX() / GameResources.TILE_SIZE), y,
-        GameResources.FORWARD_SPEED_NORMAL);
+
+    if (xFirst) {
+      Navigation.travelTo(x, (GameResources.odometer.getY() / GameResources.TILE_SIZE),
+          GameResources.FORWARD_SPEED_NORMAL);
+      Navigation.travelTo((GameResources.odometer.getX() / GameResources.TILE_SIZE), y,
+          GameResources.FORWARD_SPEED_NORMAL);
+    } else {
+      Navigation.travelTo((GameResources.odometer.getX() / GameResources.TILE_SIZE), y,
+          GameResources.FORWARD_SPEED_NORMAL);
+      Navigation.travelTo(x, (GameResources.odometer.getY() / GameResources.TILE_SIZE),
+          GameResources.FORWARD_SPEED_NORMAL);
+    }
+
     GameResources.setEnableCorrection(false);
   }
 
 
   /**
    * Method implementing the navigation to the tunnel entrance and the turn towards the tunnel traversal orientation
+   * 
+   * @param : xFirst indicates if the navigation travels on the x or the y axis first
    */
-  public void navigateToTunnelEntrance() {
-    this.squareNavigation(tunnelEntrance.x, tunnelEntrance.y);
+  public void navigateToTunnelEntrance(boolean xFirst) {
+    this.squareNavigation(tunnelEntrance.x, tunnelEntrance.y, xFirst);
     Navigation.turnTo(tunnelEntranceTraversalOrientation, GameResources.ROTATE_SPEED_SLOW);
   }
 
   /**
    * Method implementing the navigation to the tunnel entrance and the turn towards the tunnel traversal orientation
+   * 
+   * @param : xFirst indicates if the navigation travels on the x or the y axis first
    */
-  public void navigateToTunnelExit() {
-    this.squareNavigation(tunnelExit.x, tunnelExit.y);
+  public void navigateToTunnelExit(boolean xFirst) {
+    this.squareNavigation(tunnelExit.x, tunnelExit.y, xFirst);
     Navigation.turnTo(tunnelExitTraversalOrientation, GameResources.ROTATE_SPEED_SLOW);
   }
 
   /**
    * Method implementing the navigation to the launch and the turn towards the bin
+   * 
+   * @param : xFirst indicates if the navigation travels on the x or the y axis first
    */
-  public void navigateToLaunchPoint() {
+  public void navigateToLaunchPoint(boolean xFirst) {
     // navigate to launch point
-    this.squareNavigation(launchPoint.x, launchPoint.y);
+    this.squareNavigation(launchPoint.x, launchPoint.y, xFirst);
   }
 
   /**
@@ -107,10 +125,10 @@ public class GameNavigation {
     Navigation.turnTo(Math.toDegrees(Math.atan2(dX, dY)), GameResources.ROTATE_SPEED_SLOW);
     double distance = this.distanceFromBin(launchPoint.x, launchPoint.y);
     // additional turn so that the ballistic launcher points to the bin
-    double adjustmentAngle = Math.toDegrees((Math.asin((GameResources.BALLISTIC_X_OFFSET_FROM_CENTER/distance))));
-       
+    double adjustmentAngle = Math.toDegrees((Math.asin((GameResources.BALLISTIC_X_OFFSET_FROM_CENTER / distance))));
+
     System.out.println("adjustment: " + adjustmentAngle);
-    Navigation.turn(-9*adjustmentAngle, GameResources.ROTATE_SPEED_SLOW);
+    Navigation.turn(-9 * adjustmentAngle, GameResources.ROTATE_SPEED_SLOW);
 
   }
 
@@ -131,7 +149,7 @@ public class GameNavigation {
     }
     LightLocalizer.twoLineDetection();
     Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
-    this.updateParameters();
+
   }
 
   /**
@@ -337,33 +355,14 @@ public class GameNavigation {
   }
 
   /**
-   * Method used to set the limits of the current region
+   * Method used to set the limits of the island, those limits are useful during obstacle avoidance
    */
   public void setLimits() {
-    // set the limits depending on the current region
-    switch (GameResources.getCurrentRegion()) {
-      case GREEN:
-        GameResources.currentLeftLimit = Resources.green.ll.x;
-        GameResources.currentRightLimit = Resources.green.ur.x;
-        GameResources.currentTopLimit = Resources.green.ur.y;
-        GameResources.currentBottomLimit = Resources.green.ll.y;
-        break;
-      case RED:
-        GameResources.currentLeftLimit = Resources.red.ll.x;
-        GameResources.currentRightLimit = Resources.red.ur.x;
-        GameResources.currentTopLimit = Resources.red.ur.y;
-        GameResources.currentBottomLimit = Resources.red.ll.y;
-        break;
-      case ISLAND:
-        GameResources.currentLeftLimit = Resources.island.ll.x;
-        GameResources.currentRightLimit = Resources.island.ur.x;
-        GameResources.currentTopLimit = Resources.island.ur.y;
-        GameResources.currentBottomLimit = Resources.island.ll.y;
-        break;
-      default:
-        break;
-
-    }
+    // set the limits of the island
+    GameResources.currentLeftLimit = Resources.island.ll.x;
+    GameResources.currentRightLimit = Resources.island.ur.x;
+    GameResources.currentTopLimit = Resources.island.ur.y;
+    GameResources.currentBottomLimit = Resources.island.ll.y;
   }
 
   /**
@@ -407,22 +406,6 @@ public class GameNavigation {
     }
   }
 
-  /**
-   * Method used to update the region after a tunnel traversal depending on the current region
-   */
-  public void updateRegion() {
-    if (GameResources.getCurrentRegion() == REGION.GREEN || GameResources.getCurrentRegion() == REGION.RED) {
-      GameResources.setCurrentRegion(REGION.ISLAND);
-      System.out.println("REGION SET TO ISLAND" + GameResources.currentRegion);
-    } else if (GameResources.getCurrentRegion() == REGION.ISLAND) {
-      if (GameResources.getColor() == COLOR.GREEN) {
-        GameResources.setCurrentRegion(REGION.GREEN);
-      } else {
-        GameResources.setCurrentRegion(REGION.RED);
-      }
-    }
-
-  }
 
   /**
    * Method setting the coordinates of the starting corner depending on the team color and on the corner of the team
@@ -521,16 +504,6 @@ public class GameNavigation {
     this.generateLaunchPoints();
   }
 
-  /**
-   * Method used to update the map parameters after a tunnel traversal
-   */
-  public void updateParameters() {
-    // update the current region of the robot
-    this.updateRegion();
-    // set the new zone limits
-    this.setLimits();
-  }
-
 
   /**
    * Method used to calculate the closest possible launch point from the robot and to set the current launch point of
@@ -552,6 +525,8 @@ public class GameNavigation {
     }
     // set the launch point of the class instance and return it
     this.launchPoint = minimal_point;
+    // set new navigation coordinates
+    GameResources.setNavigationCoordinates(minimal_point);
     return minimal_point;
   }
 
@@ -617,7 +592,16 @@ public class GameNavigation {
     return false;
   }
 
-  public void createRestrictedPoints() {
+  /**
+   * Method creating restricted points. It is called after an obstacle detection. Depending on the orientation of the
+   * robot, (0 degrees, 90 degrees, 180 degrees or 270 degrees), the method estimates the coordinate position of the
+   * center of the obstacle. The method will then add the 9 points surrounding the obstacle in the restricted points
+   * array. If one of those restricted points was the current launching point, the method returns true and indicates
+   * that the launching point must be changed
+   * 
+   * @return: true if the current launching point was restricted, false if the current launching point is not restricted
+   */
+  public boolean createRestrictedPoints() {
     double x = GameResources.odometer.getX();
     double y = GameResources.odometer.getY();
     double theta = GameResources.odometer.getTheta();
@@ -643,6 +627,38 @@ public class GameNavigation {
     int y1 = (int) (y / GameResources.TILE_SIZE);
     int x2 = x1 + 1;
     int y2 = y1 + 1;
+    int x3 = x1 - 1;
+    int y3 = y1 - 1;
+    LinkedList<Point> obstaclePoints = new LinkedList<Point>();
+    Point p1 = new Point(x1, y1);
+    obstaclePoints.add(p1);
+    Point p2 = new Point(x1, y2);
+    obstaclePoints.add(p2);
+    Point p3 = new Point(x1, y3);
+    obstaclePoints.add(p3);
+    Point p4 = new Point(x2, y1);
+    obstaclePoints.add(p4);
+    Point p5 = new Point(x2, y2);
+    obstaclePoints.add(p5);
+    Point p6 = new Point(x2, y3);
+    obstaclePoints.add(p6);
+    Point p7 = new Point(x3, y1);
+    obstaclePoints.add(p7);
+    Point p8 = new Point(x3, y2);
+    obstaclePoints.add(p8);
+    Point p9 = new Point(x3, y3);
+    obstaclePoints.add(p9);
+    boolean newLaunchPoint = false;
+
+    // add the 9 points surrounding the obstacle in the restricted points array
+    for (Point point : obstaclePoints) {
+      GameResources.restrictedPoints.add(point);
+      // if one of the new restricted point was the current launch point, we need a new launch point
+      if (this.getLaunchPoint().x == point.x && this.getLaunchPoint().y == point.y) {
+        newLaunchPoint = true;
+      }
+    }
+    return newLaunchPoint;
   }
 
   /**
