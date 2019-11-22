@@ -197,6 +197,8 @@ public class GameController {
           // navigate through tunnel
           gameNavigation.navigateThroughTunnel();
           tunnel++;
+          // update new zone parameters
+          gameNavigation.updateParameters();
 
           // if more than 4 minutes and a half have passed, don't localize at the end of the second tunnel
           currentTime = System.currentTimeMillis();
