@@ -33,15 +33,15 @@ public class GameController {
     while (GameResources.getGameState() != GameState.Done) {
       switch (GameResources.getGameState()) {
         case Test:
-
+          
           Button.waitForAnyPress();
           GameResources.setGameState(GameState.Navigation);
           GameResources.setCurrentRegion(REGION.ISLAND);
           gameNavigation.setLimits();
-          GameResources.odometer.setXYT(3*GameResources.TILE_SIZE, 3*GameResources.TILE_SIZE, 0);
+          GameResources.odometer.setXYT(3 * GameResources.TILE_SIZE, 3 * GameResources.TILE_SIZE, 0);
           xFirst = true;
-          GameNavigation.squareNavigation(3, 7, xFirst);
-          gameNavigation.setLaunchPoint(new Point(3,5));
+          GameNavigation.squareNavigation(3, 7, xFirst, true);
+          gameNavigation.setLaunchPoint(new Point(3, 5));
 
 
           break;
@@ -126,11 +126,10 @@ public class GameController {
 
               break;
             case LAUNCH_POINT:
-              // compute the closest launch point
-              gameNavigation.generateLaunchPoints();
-              gameNavigation.calculateClosestLaunchPoint();
               // navigate to the closest launch point on the current navigation path indicated by xFirst boolean
               gameNavigation.navigateToLaunchPoint(xFirst);
+              System.out.println(
+                  "launchx: " + gameNavigation.getLaunchPoint().x + ", launchy: " + gameNavigation.getLaunchPoint().y);
 
               if (GameResources.isNavigationCompleted()) {
 
@@ -153,7 +152,8 @@ public class GameController {
               break;
             case END_POINT:
               // navigate back to starting point
-              GameNavigation.squareNavigation(GameResources.STARTING_POINT.x, GameResources.STARTING_POINT.y, xFirst);
+              GameNavigation.squareNavigation(GameResources.STARTING_POINT.x, GameResources.STARTING_POINT.y, xFirst,
+                  true);
               if (GameResources.isNavigationCompleted()) {
                 GameResources.setGameState(GameState.Done);
               }
@@ -181,12 +181,16 @@ public class GameController {
             gameNavigation.navigateThroughTunnel();
             // increment the tunnel traversal counter
             tunnel++;
-            
+
             // LIGHT LOCALIZATION
             closestPoint = gameNavigation.closestPoint();
             Navigation.travelTo(closestPoint.x, closestPoint.y, GameResources.FORWARD_SPEED_NORMAL);
             LightLocalizer.lightLocalize(closestPoint, false);
             GameResources.setLocalized(true);
+
+            // compute the closest launch point
+            gameNavigation.generateLaunchPoints();
+            gameNavigation.calculateClosestLaunchPoint();
           }
           // second tunnel traversal
           else if (tunnel == 1) {
@@ -195,13 +199,12 @@ public class GameController {
                 gameNavigation.getTunnelExitTraversalOrientation());
             // navigate through tunnel
             gameNavigation.navigateThroughTunnel();
-            
+
             // if more than 4 minutes and a half have passed, don't localize at the end of the second tunnel
             currentTime = System.currentTimeMillis();
             if ((currentTime - startTime) <= 270000) {
               // LIGHT LOCALIZATION
               closestPoint = gameNavigation.closestPoint();
-              System.out.println("x: "+closestPoint.x+", y: "+closestPoint.y);
 
               Navigation.travelTo(closestPoint.x, closestPoint.y, GameResources.FORWARD_SPEED_NORMAL);
               LightLocalizer.lightLocalize(closestPoint, false);
@@ -219,11 +222,11 @@ public class GameController {
           Navigation.backUp(GameResources.OBSTACLE_BACKUP, GameResources.FORWARD_SPEED_FAST);
           // create restricted points and check if launch point was changed
           boolean newLaunchPoint = gameNavigation.createRestrictedPoints();
+          gameNavigation.generateLaunchPoints();
+
           // no new launch point, so we have to get around obstacle
           if (!newLaunchPoint) {
             System.out.println("SAME LAUNCH POINT");
-            // generate new launch points considering some points were added in the restricted array
-            gameNavigation.generateLaunchPoints();
             obstacleAvoider.shiftRobot();
             // change the path of square navigation
             if (xFirst) {
@@ -231,13 +234,17 @@ public class GameController {
             } else {
               xFirst = true;
             }
-            for(Point point: GameResources.getRestrictedPoints()) {
-              System.out.println("retsricted point: "+point.x+ ", "+point.y);
+            for (Point point : GameResources.getRestrictedPoints()) {
+              System.out.println("retsricted point: " + point.x + ", " + point.y);
             }
+            //gameNavigation.calculateClosestLaunchPoint();
+
           }
           // new launch point so we may not have to get around obstacle
           else {
             System.out.println("NEW LAUNCH POINT NEEDED");
+            // compute the closest launch point
+            gameNavigation.calculateClosestLaunchPoint();
           }
           // if a new launch point is computed transit to navigation
           GameResources.setGameState(GameState.Navigation);

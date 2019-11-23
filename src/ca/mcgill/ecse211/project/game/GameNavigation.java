@@ -60,10 +60,11 @@ public class GameNavigation {
    * @param : x is the goal coordinate on the x axis
    * @param : y is the goal coordinate on the y axis
    * @param : xFirst, if true, the method travels on the x axis first, if false, the method travels on the y axis first.
+   * @param : correction, if true, navigate with correction, if false, navigate without correction
    */
-  public static void squareNavigation(double x, double y, boolean xFirst) {
+  public static void squareNavigation(double x, double y, boolean xFirst, boolean correction) {
     GameResources.setLocalized(false);
-    GameResources.setEnableCorrection(true);
+    GameResources.setEnableCorrection(correction);
     GameResources.setNavigationCoordinates(new Point(x, y));
 
     if (xFirst) {
@@ -88,7 +89,7 @@ public class GameNavigation {
    * @param : xFirst indicates if the navigation travels on the x or the y axis first
    */
   public void navigateToTunnelEntrance(boolean xFirst) {
-    squareNavigation(tunnelEntrance.x, tunnelEntrance.y, xFirst);
+    squareNavigation(tunnelEntrance.x, tunnelEntrance.y, xFirst,true);
     Navigation.turnTo(tunnelEntranceTraversalOrientation, GameResources.ROTATE_SPEED_FAST);
   }
 
@@ -98,7 +99,7 @@ public class GameNavigation {
    * @param : xFirst indicates if the navigation travels on the x or the y axis first
    */
   public void navigateToTunnelExit(boolean xFirst) {
-    squareNavigation(tunnelExit.x, tunnelExit.y, xFirst);
+    squareNavigation(tunnelExit.x, tunnelExit.y, xFirst,true);
     Navigation.turnTo(tunnelExitTraversalOrientation, GameResources.ROTATE_SPEED_FAST);
   }
 
@@ -113,7 +114,7 @@ public class GameNavigation {
       localized=true;
     }
     // navigate to launch point
-    squareNavigation(launchPoint.x, launchPoint.y, xFirst);
+    squareNavigation(launchPoint.x, launchPoint.y, xFirst,true);
     GameResources.setLocalized(localized);
   }
 
@@ -129,12 +130,13 @@ public class GameNavigation {
     double dY = binY - currentY;
     // turn towards launch point
     Navigation.turnTo(Math.toDegrees(Math.atan2(dX, dY)), GameResources.ROTATE_SPEED_SLOW);
+    System.out.println("atan: "+(Math.toDegrees(Math.atan2(dX, dY))));
     double distance = this.distanceFromBin(launchPoint.x, launchPoint.y);
+    System.out.println("distance: "+distance);
+
     // additional turn so that the ballistic launcher points to the bin
     double adjustmentAngle = Math.toDegrees((Math.asin((GameResources.BALLISTIC_X_OFFSET_FROM_CENTER / distance))));
-
-    System.out.println("adjustment: " + adjustmentAngle);
-    Navigation.turn(GameResources.BALLISTIC_ADJUSTMENT_ANGLE- adjustmentAngle, GameResources.ROTATE_SPEED_SLOW);
+    Navigation.turn(GameResources.BALLISTIC_ADJUSTMENT_ANGLE- 7*adjustmentAngle, GameResources.ROTATE_SPEED_SLOW);
 
   }
 

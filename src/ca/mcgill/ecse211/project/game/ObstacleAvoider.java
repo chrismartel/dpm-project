@@ -224,11 +224,14 @@ public class ObstacleAvoider {
 
       // robot is in the right part of the island--> avoid left
       if (x >= islandMiddleX) {
-        GameNavigation.squareNavigation(x - GameResources.SHIFT_DISTANCE, y, false);
+        // GameNavigation.squareNavigation(x - GameResources.SHIFT_DISTANCE, y, true,false);
+        Navigation.travelTo(x - GameResources.SHIFT_DISTANCE, y, GameResources.FORWARD_SPEED_NORMAL);
       }
       // robot is in the left part of the island --> avoid right
       else {
-        GameNavigation.squareNavigation(x + GameResources.SHIFT_DISTANCE, y, false);
+        // GameNavigation.squareNavigation(x + GameResources.SHIFT_DISTANCE, y, true,false);
+        Navigation.travelTo(x + GameResources.SHIFT_DISTANCE, y, GameResources.FORWARD_SPEED_NORMAL);
+
       }
     }
     // heading approximately towards 90 degrees
@@ -236,11 +239,15 @@ public class ObstacleAvoider {
       System.out.println("HEADING RIGHT");
       // robot is in the top part of the island --> avoid bottom
       if (y >= islandMiddleY) {
-        GameNavigation.squareNavigation(x, y - GameResources.SHIFT_DISTANCE, false);
+        // GameNavigation.squareNavigation(x, y - GameResources.SHIFT_DISTANCE, false,false);
+        Navigation.travelTo(x, y - GameResources.SHIFT_DISTANCE, GameResources.FORWARD_SPEED_NORMAL);
+
       }
       // robot is in the bottom part of the island --> avoid top
       else {
-        GameNavigation.squareNavigation(x, y + GameResources.SHIFT_DISTANCE, false);
+        // GameNavigation.squareNavigation(x, y + GameResources.SHIFT_DISTANCE, false,false);
+        Navigation.travelTo(x, y + GameResources.SHIFT_DISTANCE, GameResources.FORWARD_SPEED_NORMAL);
+
       }
     }
     // heading approximately towards 180 degrees
@@ -249,11 +256,15 @@ public class ObstacleAvoider {
 
       if (x >= islandMiddleX) {
 
-        GameNavigation.squareNavigation(x - GameResources.SHIFT_DISTANCE, y, false);
+        // GameNavigation.squareNavigation(x - GameResources.SHIFT_DISTANCE, y, true,false);
+        Navigation.travelTo(x - GameResources.SHIFT_DISTANCE, y, GameResources.FORWARD_SPEED_NORMAL);
+
       }
       // robot is in the left part of the island --> avoid right
       else {
-        GameNavigation.squareNavigation(x + GameResources.SHIFT_DISTANCE, y, false);
+        // GameNavigation.squareNavigation(x + GameResources.SHIFT_DISTANCE, y, true,false);
+        Navigation.travelTo(x + GameResources.SHIFT_DISTANCE, y, GameResources.FORWARD_SPEED_NORMAL);
+
       }
     }
     // heading approximately towards 270 degrees
@@ -262,12 +273,15 @@ public class ObstacleAvoider {
 
       // robot is in the top part of the island --> avoid bottom
       if (y >= islandMiddleY) {
-        GameNavigation.squareNavigation(x, y - GameResources.SHIFT_DISTANCE, false);
+        // GameNavigation.squareNavigation(x, y - GameResources.SHIFT_DISTANCE, false,false);
+        Navigation.travelTo(x, y - GameResources.SHIFT_DISTANCE, GameResources.FORWARD_SPEED_NORMAL);
 
       }
       // robot is in the bottom part of the island --> avoid top
       else {
-        GameNavigation.squareNavigation(x, y + GameResources.SHIFT_DISTANCE, false);
+        // GameNavigation.squareNavigation(x, y + GameResources.SHIFT_DISTANCE, false,false);
+        Navigation.travelTo(x, y + GameResources.SHIFT_DISTANCE, GameResources.FORWARD_SPEED_NORMAL);
+
       }
     }
 

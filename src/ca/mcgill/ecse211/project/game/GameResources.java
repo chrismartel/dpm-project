@@ -35,7 +35,7 @@ public class GameResources {
   /**
    * The robot width.
    */
-  public static final double TRACK = 15.52;// 14.77;
+  public static final double TRACK = 15.8;// 14.77;
 
 
 
@@ -159,7 +159,7 @@ public class GameResources {
   /**
    * Maximal distance to launch the ball
    */
-  public static final int MAXIMAL_LAUNCH_DISTANCE = 250;
+  public static final int MAXIMAL_LAUNCH_DISTANCE = 220;
   
   /**
    * Minimal distance to launch the ball
@@ -309,7 +309,7 @@ public class GameResources {
   /**
    * Minimum distance to travel to localize
    */
-  public static final double localizationDistance = 30;
+  public static final double localizationDistance = 10;
 
   /**
    * Limits of the current zone
@@ -390,7 +390,12 @@ public class GameResources {
   /*
    * Average width of obstacles
    */
-  public static final double SHIFT_DISTANCE = 1.5;
+  public static final double SHIFT_DISTANCE = 2;
+  
+  /*
+   * Average width of obstacles
+   */
+  public static final double OBSTACLE_BACKUP = 10;
 
 
   /*
