@@ -674,6 +674,7 @@ public class GameNavigation {
     int y2 = y1 + 1;
     int x3 = x1 - 1;
     int y3 = y1 - 1;
+    // create 9 points around the approximate center of the obstacle
     LinkedList<Point> obstaclePoints = new LinkedList<Point>();
     Point p1 = new Point(x1, y1);
     obstaclePoints.add(p1);
@@ -697,6 +698,7 @@ public class GameNavigation {
 
     // add the 9 points surrounding the obstacle in the restricted points array
     for (Point point : obstaclePoints) {
+      // add each point in the restricted points list
       GameResources.restrictedPoints.add(point);
       // if one of the new restricted point was the current launch point, we need a new launch point
       if (this.getLaunchPoint().x == point.x && this.getLaunchPoint().y == point.y) {
