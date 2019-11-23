@@ -16,10 +16,14 @@ public class GameController {
     UltrasonicLocalizer ultrasonicLocalizer = new UltrasonicLocalizer();
     BallisticLauncher ballisticLauncher = new BallisticLauncher();
     ObstacleAvoider obstacleAvoider = new ObstacleAvoider();
+    // closest point used for light loc
     Point closestPoint;
+    // tunnel traversal counter
     int tunnel = 0;
+    // time management tools
     double startTime = 0;
     double currentTime = 0;
+    // boolean indicating if the square navigation should travel on the x axis first or the y axis first
     boolean xFirst = true;
 
     // set initial state
@@ -196,7 +200,10 @@ public class GameController {
           }
           // navigate through tunnel
           gameNavigation.navigateThroughTunnel();
+          // increment the tunnel traversal counter
           tunnel++;
+          // update new zone parameters
+          gameNavigation.updateParameters();
 
           // if more than 4 minutes and a half have passed, don't localize at the end of the second tunnel
           currentTime = System.currentTimeMillis();
@@ -224,9 +231,21 @@ public class GameController {
           if (!newLaunchPoint) {
             // generate new launch points considering some points were added in the restricted array
             gameNavigation.generateLaunchPoints();
+            
+            // STRATEGY 1
             obstacleAvoider.wallFollower(GameResources.FORWARD_SPEED_NORMAL);
-
-            // must light localize after a wall follower
+            
+            // STRATEGY 2
+            obstacleAvoider.shiftRobot();
+            // change the path of square navigation
+            if(xFirst) {
+              xFirst = false;
+            }
+            else {
+              xFirst = true;
+            }
+            
+            // must light localize after an obstacle avoidance procedure
             // LIGHT LOCALIZATION
             closestPoint = gameNavigation.closestPoint();
             Navigation.travelTo(closestPoint.x, closestPoint.y, GameResources.FORWARD_SPEED_NORMAL);
@@ -234,6 +253,7 @@ public class GameController {
             GameResources.setLocalized(true);
 
           } 
+          // if a new launch point is computed transit to navigation
 
           Button.waitForAnyPress();
           GameResources.setGameState(GameState.Navigation);
