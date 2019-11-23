@@ -61,7 +61,7 @@ public class GameNavigation {
    * @param : y is the goal coordinate on the y axis
    * @param : xFirst, if true, the method travels on the x axis first, if false, the method travels on the y axis first.
    */
-  public void squareNavigation(double x, double y, boolean xFirst) {
+  public static void squareNavigation(double x, double y, boolean xFirst) {
     GameResources.setLocalized(false);
     GameResources.setEnableCorrection(true);
     GameResources.setNavigationCoordinates(new Point(x, y));
@@ -77,7 +77,7 @@ public class GameNavigation {
       Navigation.travelTo(x, (GameResources.odometer.getY() / GameResources.TILE_SIZE),
           GameResources.FORWARD_SPEED_NORMAL);
     }
-
+    GameResources.setObstacleDetected(false);
     GameResources.setEnableCorrection(false);
   }
 
@@ -88,7 +88,7 @@ public class GameNavigation {
    * @param : xFirst indicates if the navigation travels on the x or the y axis first
    */
   public void navigateToTunnelEntrance(boolean xFirst) {
-    this.squareNavigation(tunnelEntrance.x, tunnelEntrance.y, xFirst);
+    squareNavigation(tunnelEntrance.x, tunnelEntrance.y, xFirst);
     Navigation.turnTo(tunnelEntranceTraversalOrientation, GameResources.ROTATE_SPEED_FAST);
   }
 
@@ -98,7 +98,7 @@ public class GameNavigation {
    * @param : xFirst indicates if the navigation travels on the x or the y axis first
    */
   public void navigateToTunnelExit(boolean xFirst) {
-    this.squareNavigation(tunnelExit.x, tunnelExit.y, xFirst);
+    squareNavigation(tunnelExit.x, tunnelExit.y, xFirst);
     Navigation.turnTo(tunnelExitTraversalOrientation, GameResources.ROTATE_SPEED_FAST);
   }
 
@@ -113,7 +113,7 @@ public class GameNavigation {
       localized=true;
     }
     // navigate to launch point
-    this.squareNavigation(launchPoint.x, launchPoint.y, xFirst);
+    squareNavigation(launchPoint.x, launchPoint.y, xFirst);
     GameResources.setLocalized(localized);
   }
 
@@ -623,7 +623,7 @@ public class GameNavigation {
         Point point = new Point(i, j);
         double distance = this.distanceFromBin(i, j);
         // check if the distance from the bin is within the maximal distance
-        if (distance <= GameResources.MAXIMAL_LAUNCH_DISTANCE) {
+        if (distance <= GameResources.MAXIMAL_LAUNCH_DISTANCE && distance >= GameResources.MINIMAL_LAUNCH_DISTANCE) {
           boolean restricted = false;
           // check if the point is restricted
           for (Point restrictedPoint : GameResources.restrictedPoints) {
@@ -815,6 +815,10 @@ public class GameNavigation {
    */
   public void setTunnelExitTraversalOrientation(double tunnelExitTraversalOrientation) {
     this.tunnelExitTraversalOrientation = tunnelExitTraversalOrientation;
+  }
+  
+  public void setLaunchPoint(Point launchPoint) {
+    this.launchPoint = launchPoint;
   }
 
 }

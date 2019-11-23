@@ -157,9 +157,14 @@ public class GameResources {
   public static final int RELOAD_ANGLE = 100;
 
   /**
-   * Distance to launch the ball
+   * Maximal distance to launch the ball
    */
   public static final int MAXIMAL_LAUNCH_DISTANCE = 250;
+  
+  /**
+   * Minimal distance to launch the ball
+   */
+  public static final int MINIMAL_LAUNCH_DISTANCE = 150;
 
   /**
    * period of sleeping before launch
@@ -297,6 +302,11 @@ public class GameResources {
   public static boolean localized = false;
   
   /**
+   * Indicates if the robot has detected an obstacle
+   */
+  public static boolean obstacleDetected = false;
+  
+  /**
    * Minimum distance to travel to localize
    */
   public static final double localizationDistance = 30;
@@ -376,16 +386,12 @@ public class GameResources {
    * Average width of obstacles
    */
   public static final double OBSTACLE_WIDTH = TILE_SIZE;
-
+  
   /*
-   * Distance seen when facing a convex corner
+   * Average width of obstacles
    */
-  public static final double CONVEX_CORNER_CONSTANT = 30;
+  public static final double SHIFT_DISTANCE = 1.5;
 
-  /*
-   * Distance seen when facing a convex corner
-   */
-  public static final double CONVEX_CORNER_ADJUSTMENT_DISTANCE = 12;
 
   /*
    * Restricted points on the island
@@ -482,6 +488,16 @@ public class GameResources {
   public static void setLocalized(boolean localized) {
     GameResources.localized = localized;
   }
+  public static void setObstacleDetected(boolean obstacleDetected) {
+    GameResources.obstacleDetected = obstacleDetected;
+  }
+  public static boolean isObstacleDetected() {
+    return obstacleDetected;
+  }
+  public static LinkedList<Point> getRestrictedPoints() {
+    return restrictedPoints;
+  }
+  
   
   
 }

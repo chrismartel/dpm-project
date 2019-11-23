@@ -35,8 +35,13 @@ public class GameController {
         case Test:
 
           Button.waitForAnyPress();
-
-
+          GameResources.setGameState(GameState.Navigation);
+          GameResources.setCurrentRegion(REGION.ISLAND);
+          gameNavigation.setLimits();
+          GameResources.odometer.setXYT(3*GameResources.TILE_SIZE, 3*GameResources.TILE_SIZE, 0);
+          xFirst = true;
+          GameNavigation.squareNavigation(3, 7, xFirst);
+          gameNavigation.setLaunchPoint(new Point(3,5));
 
 
           break;
@@ -148,7 +153,7 @@ public class GameController {
               break;
             case END_POINT:
               // navigate back to starting point
-              gameNavigation.squareNavigation(GameResources.STARTING_POINT.x, GameResources.STARTING_POINT.y, xFirst);
+              GameNavigation.squareNavigation(GameResources.STARTING_POINT.x, GameResources.STARTING_POINT.y, xFirst);
               if (GameResources.isNavigationCompleted()) {
                 GameResources.setGameState(GameState.Done);
               }
@@ -176,6 +181,7 @@ public class GameController {
             gameNavigation.navigateThroughTunnel();
             // increment the tunnel traversal counter
             tunnel++;
+            
             // LIGHT LOCALIZATION
             closestPoint = gameNavigation.closestPoint();
             Navigation.travelTo(closestPoint.x, closestPoint.y, GameResources.FORWARD_SPEED_NORMAL);
@@ -189,6 +195,7 @@ public class GameController {
                 gameNavigation.getTunnelExitTraversalOrientation());
             // navigate through tunnel
             gameNavigation.navigateThroughTunnel();
+            
             // if more than 4 minutes and a half have passed, don't localize at the end of the second tunnel
             currentTime = System.currentTimeMillis();
             if ((currentTime - startTime) <= 270000) {
@@ -208,26 +215,15 @@ public class GameController {
 
         case Avoidance:
           // object avoidance procedure using wall follower with P-Controller
-          Sound.beep();
           System.out.println("OBJECT DETECTED");
+          Navigation.backUp(GameResources.OBSTACLE_BACKUP, GameResources.FORWARD_SPEED_FAST);
           // create restricted points and check if launch point was changed
           boolean newLaunchPoint = gameNavigation.createRestrictedPoints();
-          // no new launch point
+          // no new launch point, so we have to get around obstacle
           if (!newLaunchPoint) {
+            System.out.println("SAME LAUNCH POINT");
             // generate new launch points considering some points were added in the restricted array
             gameNavigation.generateLaunchPoints();
-
-            // // STRATEGY 1
-            // obstacleAvoider.wallFollower(GameResources.FORWARD_SPEED_NORMAL);
-            // // must light localize after an obstacle avoidance procedure
-            // // LIGHT LOCALIZATION
-            // closestPoint = gameNavigation.closestPoint();
-            // Navigation.travelTo(closestPoint.x, closestPoint.y, GameResources.FORWARD_SPEED_NORMAL);
-            // LightLocalizer.lightLocalize(closestPoint, false);
-            // GameResources.setLocalized(true);
-
-            // STRATEGY 2 --> Path Finder
-            // shift the robot from 1 tile and a half
             obstacleAvoider.shiftRobot();
             // change the path of square navigation
             if (xFirst) {
@@ -235,6 +231,13 @@ public class GameController {
             } else {
               xFirst = true;
             }
+            for(Point point: GameResources.getRestrictedPoints()) {
+              System.out.println("retsricted point: "+point.x+ ", "+point.y);
+            }
+          }
+          // new launch point so we may not have to get around obstacle
+          else {
+            System.out.println("NEW LAUNCH POINT NEEDED");
           }
           // if a new launch point is computed transit to navigation
           GameResources.setGameState(GameState.Navigation);
