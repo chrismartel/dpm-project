@@ -2,6 +2,7 @@ package ca.mcgill.ecse211.project.game;
 
 import ca.mcgill.ecse211.project.Resources;
 import ca.mcgill.ecse211.project.game.GameResources.*;
+import lejos.hardware.Sound;
 import java.util.LinkedList;
 import ca.mcgill.ecse211.project.Resources.Point;
 import ca.mcgill.ecse211.project.Localization.LightLocalizer;
@@ -88,7 +89,7 @@ public class GameNavigation {
    */
   public void navigateToTunnelEntrance(boolean xFirst) {
     this.squareNavigation(tunnelEntrance.x, tunnelEntrance.y, xFirst);
-    Navigation.turnTo(tunnelEntranceTraversalOrientation, GameResources.ROTATE_SPEED_SLOW);
+    Navigation.turnTo(tunnelEntranceTraversalOrientation, GameResources.ROTATE_SPEED_FAST);
   }
 
   /**
@@ -98,7 +99,7 @@ public class GameNavigation {
    */
   public void navigateToTunnelExit(boolean xFirst) {
     this.squareNavigation(tunnelExit.x, tunnelExit.y, xFirst);
-    Navigation.turnTo(tunnelExitTraversalOrientation, GameResources.ROTATE_SPEED_SLOW);
+    Navigation.turnTo(tunnelExitTraversalOrientation, GameResources.ROTATE_SPEED_FAST);
   }
 
   /**
@@ -107,8 +108,13 @@ public class GameNavigation {
    * @param : xFirst indicates if the navigation travels on the x or the y axis first
    */
   public void navigateToLaunchPoint(boolean xFirst) {
+    boolean localized = false;
+    if(this.calculateDistance(launchPoint.x, launchPoint.y, GameResources.odometer.getX()/GameResources.TILE_SIZE, GameResources.odometer.getY()/GameResources.TILE_SIZE)<GameResources.localizationDistance) {
+      localized=true;
+    }
     // navigate to launch point
     this.squareNavigation(launchPoint.x, launchPoint.y, xFirst);
+    GameResources.setLocalized(localized);
   }
 
   /**
@@ -128,7 +134,7 @@ public class GameNavigation {
     double adjustmentAngle = Math.toDegrees((Math.asin((GameResources.BALLISTIC_X_OFFSET_FROM_CENTER / distance))));
 
     System.out.println("adjustment: " + adjustmentAngle);
-    Navigation.turn(-9 * adjustmentAngle, GameResources.ROTATE_SPEED_SLOW);
+    Navigation.turn(GameResources.BALLISTIC_ADJUSTMENT_ANGLE- adjustmentAngle, GameResources.ROTATE_SPEED_SLOW);
 
   }
 
@@ -149,6 +155,7 @@ public class GameNavigation {
     }
     LightLocalizer.twoLineDetection();
     Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
+    // update new zone parameters
     this.updateParameters();
   }
 
@@ -299,11 +306,8 @@ public class GameNavigation {
     // determine the target region, the region of the tunnel entrance
     if (GameResources.getCurrentRegion() == REGION.RED) {
       targetRegion = REGION.RED;
-    } else if (GameResources.getCurrentRegion() == REGION.GREEN) {
+    } else  {
       targetRegion = REGION.GREEN;
-    } else {
-      targetRegion = REGION.ISLAND;
-      System.out.println("TARGET REGION IS ISLAND");
     }
     // determine where is the tunnel entrance
     if (tunnelBottom == targetRegion) {
@@ -340,6 +344,8 @@ public class GameNavigation {
    */
   public void setTunnel() {
     if (GameResources.getColor() == COLOR.RED) {
+      System.out.println("RED TUNNEL SET");
+
       GameResources.Tunnel.ll.x = Resources.tnr.ll.x;
       GameResources.Tunnel.ll.y = Resources.tnr.ll.y;
       GameResources.Tunnel.ur.x = Resources.tnr.ur.x;
@@ -361,18 +367,23 @@ public class GameNavigation {
     // set the limits depending on the current region
     switch (GameResources.getCurrentRegion()) {
       case GREEN:
+        System.out.println("GREEN LIMITS SET");
+
         GameResources.currentLeftLimit = Resources.green.ll.x;
         GameResources.currentRightLimit = Resources.green.ur.x;
         GameResources.currentTopLimit = Resources.green.ur.y;
         GameResources.currentBottomLimit = Resources.green.ll.y;
         break;
       case RED:
+        System.out.println("RED LIMITS SET");
         GameResources.currentLeftLimit = Resources.red.ll.x;
         GameResources.currentRightLimit = Resources.red.ur.x;
         GameResources.currentTopLimit = Resources.red.ur.y;
         GameResources.currentBottomLimit = Resources.red.ll.y;
         break;
       case ISLAND:
+        System.out.println("ISLAND LIMITS SET");
+
         GameResources.currentLeftLimit = Resources.island.ll.x;
         GameResources.currentRightLimit = Resources.island.ur.x;
         GameResources.currentTopLimit = Resources.island.ur.y;
@@ -389,10 +400,12 @@ public class GameNavigation {
    */
   public void setColor() {
     if (Resources.redTeam == Resources.TEAM_NUMBER) {
+      System.out.println("RED COLOR SET");
+
       GameResources.setColor(COLOR.RED);
     } else if (Resources.greenTeam == Resources.TEAM_NUMBER) {
       GameResources.setColor(COLOR.GREEN);
-      System.out.println("GREEN TEAM SET");
+      System.out.println("GREEN COLOR SET");
     }
 
   }
@@ -407,6 +420,8 @@ public class GameNavigation {
 
     } else {
       GameResources.setCurrentRegion(REGION.RED);
+      System.out.println("STARTING REGION SET TO RED");
+
     }
   }
 
@@ -416,11 +431,13 @@ public class GameNavigation {
   public void setBin() {
     if (GameResources.getColor() == COLOR.GREEN) {
       GameResources.setBin(Resources.greenBin);
-      System.out.println("STARTING REGION SET TO GREEN");
+      System.out.println("STARTING BIN SET TO GREEN");
 
     } else {
       GameResources.setCurrentRegion(REGION.RED);
       GameResources.setBin(Resources.redBin);
+      System.out.println("STARTING BIN SET TO RED");
+
 
     }
   }
@@ -453,6 +470,8 @@ public class GameNavigation {
         case 0:
           GameResources.CORNER_NUMBER = 0;
           GameResources.STARTING_POINT = new Point(1, 1);
+          System.out.println("GREEN CORNER SET TO 0");
+
           break;
         // lower right corner
         case 1:
@@ -491,21 +510,29 @@ public class GameNavigation {
         case 0:
           GameResources.CORNER_NUMBER = 0;
           GameResources.STARTING_POINT = new Point(1, 1);
+          System.out.println("RED CORNER SET TO 0");
+
           break;
         // lower right corner
         case 1:
           GameResources.CORNER_NUMBER = 1;
           GameResources.STARTING_POINT = new Point(GameResources.FIELD_RIGHT - 1, 1);
+          System.out.println("RED CORNER SET TO 1");
+
           break;
         // top right corner
         case 2:
           GameResources.CORNER_NUMBER = 2;
           GameResources.STARTING_POINT = new Point(GameResources.FIELD_RIGHT - 1, GameResources.FIELD_TOP - 1);
+          System.out.println("RED CORNER SET TO 2");
+
           break;
         // top left corner
         case 3:
           GameResources.CORNER_NUMBER = 3;
           GameResources.STARTING_POINT = new Point(1, GameResources.FIELD_TOP - 1);
+          System.out.println("RED CORNER SET TO 3");
+
           break;
       }
 

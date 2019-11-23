@@ -195,7 +195,7 @@ public class GameResources {
   /**
    * Adjustment angle during the 5 launches
    */
-  public static final double BALLISTIC_ADJUSTMENT_ANGLE = -2;
+  public static final double BALLISTIC_ADJUSTMENT_ANGLE = -4;
 
   // MOTORS AND SENSORS
 
@@ -295,6 +295,11 @@ public class GameResources {
    * Indicates if the robot localized after its navigation or not
    */
   public static boolean localized = false;
+  
+  /**
+   * Minimum distance to travel to localize
+   */
+  public static final double localizationDistance = 30;
 
   /**
    * Limits of the current zone
@@ -399,7 +404,7 @@ public class GameResources {
    * Enumeration of all the possible navigation destinations
    */
   public enum NAVIGATION_DESTINATION {
-    TUNNEL1_ENTRANCE, TUNNEL2_ENTRANCE, LAUNCH_POINT, END_POINT
+    TUNNEL_ENTRANCE, TUNNEL_EXIT, LAUNCH_POINT, END_POINT
   }
   /*
    * Enumeration of all the possible region types
