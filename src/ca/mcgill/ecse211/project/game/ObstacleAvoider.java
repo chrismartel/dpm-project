@@ -64,10 +64,10 @@ public class ObstacleAvoider {
         if (error > 0) {
           // imminent collision
           if (error > GameResources.MAXIMAL_ERROR) {
-            GameResources.leftMotor.backward();
+            GameResources.leftMotor.forward();
             GameResources.rightMotor.forward();
-            leftSpeed = speed;
-            rightSpeed = speed;
+            leftSpeed = (int) (speed - this.calculateGain(error));
+            rightSpeed = (int) (speed + this.calculateGain(error));
           }
           // normal adjustment
           else {
@@ -79,19 +79,26 @@ public class ObstacleAvoider {
         }
         // robot is too close to wall
         else {
-          if (error < GameResources.MINIMAL_ERROR) {
-            GameResources.leftMotor.forward();
-            GameResources.rightMotor.backward();
-            leftSpeed = speed;
-            rightSpeed = speed;
-          }
-          // normal adjustment
-          else {
-            GameResources.leftMotor.forward();
-            GameResources.rightMotor.forward();
-            leftSpeed = (int) (speed + this.calculateGain(error));
-            rightSpeed = (int) (speed - this.calculateGain(error));
-          }
+        GameResources.leftMotor.forward();
+        GameResources.rightMotor.forward();
+        leftSpeed = (int) (speed - this.calculateGain(error));
+        rightSpeed = (int) (speed + this.calculateGain(error));
+          
+//          if (error < GameResources.MINIMAL_ERROR) {
+//            GameResources.leftMotor.forward();
+//            GameResources.rightMotor.backward();
+//            leftSpeed = speed;
+//            rightSpeed = speed;
+//          }
+//          // normal adjustment
+//          else {
+//            GameResources.leftMotor.forward();
+//            GameResources.rightMotor.forward();
+//            leftSpeed = (int) (speed + this.calculateGain(error));
+//            rightSpeed = (int) (speed - this.calculateGain(error));
+//          }
+          
+          
         }
         // set bounds on the speed during avoidance
         if (leftSpeed <= GameResources.MIN_AVOID_SPEED) {

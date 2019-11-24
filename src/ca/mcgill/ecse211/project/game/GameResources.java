@@ -114,7 +114,7 @@ public class GameResources {
   /**
    * Differential value to determine if a black line is detected or not
    */
-  public static final int DIFFERENTIAL_LINE_THRESHOLD = 5; // HAS TO BE DETERMINE BY TESTING
+  public static final int DIFFERENTIAL_LINE_THRESHOLD = 7; // HAS TO BE DETERMINE BY TESTING
 
   /**
    * Window size for the ultrasonic sensor data polling
@@ -340,7 +340,7 @@ public class GameResources {
   /*
    * gain constant used for the P-controller
    */
-  public static final double GAIN_CONSTANT = 2;
+  public static final double GAIN_CONSTANT = 1.8;
   /*
    * minimum speed used during wall following
    */

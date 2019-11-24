@@ -34,23 +34,24 @@ public class GameController {
       switch (GameResources.getGameState()) {
         case Test:
 
-          Button.waitForAnyPress();
+//          Button.waitForAnyPress();
+          System.out.println(System.currentTimeMillis());
           // obstacle avoidance test
-          // GameResources.setCurrentRegion(REGION.ISLAND);
-          // GameResources.setGameState(GameState.Navigation);
-          // GameResources.odometer.setXYT(GameResources.TILE_SIZE, GameResources.TILE_SIZE, 0);
-          // System.out.println(GameResources.getGameState());
-          // gameNavigation.squareNavigation(1, 4);
+           GameResources.setCurrentRegion(REGION.ISLAND);
+           GameResources.setGameState(GameState.Navigation);
+           GameResources.odometer.setXYT(GameResources.TILE_SIZE, GameResources.TILE_SIZE, 0);
+           System.out.println(GameResources.getGameState());
+           gameNavigation.squareNavigation(1, 5, false);
 
-          GameResources.odometer.setXYT(5 * GameResources.TILE_SIZE, 2 * GameResources.TILE_SIZE, 0);
-          gameNavigation.generateLaunchPoints();
-          gameNavigation.calculateClosestLaunchPoint();
-          gameNavigation.navigateToLaunchPoint(xFirst);
-          LightLocalizer.lightLocalize(gameNavigation.getLaunchPoint(), true);
-          gameNavigation.turnToTarget();
-          ballisticLauncher
-              .multipleLaunch(gameNavigation.distanceFromBin(GameResources.odometer.getX() / GameResources.TILE_SIZE,
-                  GameResources.odometer.getY() / GameResources.TILE_SIZE));
+//          GameResources.odometer.setXYT(5 * GameResources.TILE_SIZE, 2 * GameResources.TILE_SIZE, 0);
+//          gameNavigation.generateLaunchPoints();
+//          gameNavigation.calculateClosestLaunchPoint();
+//          gameNavigation.navigateToLaunchPoint(xFirst);
+//          LightLocalizer.lightLocalize(gameNavigation.getLaunchPoint(), true);
+//          gameNavigation.turnToTarget();
+//          ballisticLauncher
+//              .multipleLaunch(gameNavigation.distanceFromBin(GameResources.odometer.getX() / GameResources.TILE_SIZE,
+//                  GameResources.odometer.getY() / GameResources.TILE_SIZE));
 
 
 
@@ -82,7 +83,7 @@ public class GameController {
 
           // transit to ultrasonic localization state
           // Button.waitForAnyPress();
-          GameResources.setGameState(GameState.Test);
+          GameResources.setGameState(GameState.UltrasonicLocalization);
 
 
           break;

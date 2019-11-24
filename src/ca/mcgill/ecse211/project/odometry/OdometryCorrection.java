@@ -49,21 +49,21 @@ public class OdometryCorrection {
     // llDataList = new LinkedList<Float>();
 
     // set sensor to use red light alone
-    GameResources.leftColorSensor.setCurrentMode("Red");
-    GameResources.rightColorSensor.setCurrentMode("Red");
-
-    // leftSensorData = new float[leftColorSensor.sampleSize()];
-
-    // initiate the current readings of the sensor
-    GameResources.leftColorSensor.fetchSample(leftSensorData, 0);
-    GameResources.rightColorSensor.fetchSample(rightSensorData, 0);
-
-    // initialize the sensor readings
-    currentLeftColorValue = (leftSensorData[0] * 100);
-    lastLeftColorValue = currentLeftColorValue;
-
-    currentRightColorValue = (rightSensorData[0] * 100);
-    lastLeftColorValue = currentRightColorValue;
+//    GameResources.leftColorSensor.setCurrentMode("Red");
+//    GameResources.rightColorSensor.setCurrentMode("Red");
+//
+//    // leftSensorData = new float[leftColorSensor.sampleSize()];
+//
+//    // initiate the current readings of the sensor
+//    GameResources.leftColorSensor.fetchSample(leftSensorData, 0);
+//    GameResources.rightColorSensor.fetchSample(rightSensorData, 0);
+//
+//    // initialize the sensor readings
+//    currentLeftColorValue = (leftSensorData[0] * 100);
+//    lastLeftColorValue = currentLeftColorValue;
+//
+//    currentRightColorValue = (rightSensorData[0] * 100);
+//    lastLeftColorValue = currentRightColorValue;
 
     // coordinates = new int[2];
 
