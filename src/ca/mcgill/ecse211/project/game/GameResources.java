@@ -35,7 +35,7 @@ public class GameResources {
   /**
    * The robot width.
    */
-  public static final double TRACK = 15.52;// 14.77;
+  public static final double TRACK = 15.8;// 14.77;
 
 
 
@@ -114,7 +114,7 @@ public class GameResources {
   /**
    * Differential value to determine if a black line is detected or not
    */
-  public static final int DIFFERENTIAL_LINE_THRESHOLD = 5; // HAS TO BE DETERMINE BY TESTING
+  public static final int DIFFERENTIAL_LINE_THRESHOLD = 9; // CHANGE BACK TO 5 IF BAD
 
   /**
    * Window size for the ultrasonic sensor data polling
@@ -138,12 +138,12 @@ public class GameResources {
   /**
    * Coefficient of the launching process to adjust the speed of the motors in function of the distance
    */
-  public static final double LAUNCH_COEFFICIENT = 0.9166; // HAS TO BE DETERMINED BY TESTING
+  public static final double LAUNCH_COEFFICIENT = 0.8202; // HAS TO BE DETERMINED BY TESTING
   
   /**
    * Initial value used to compute the motor speed to apply in functio of the distance
    */
-  public static final double LAUNCH_IV = 80; // HAS TO BE DETERMINED BY TESTING
+  public static final double LAUNCH_IV = 109.334; // HAS TO BE DETERMINED BY TESTING
   
   /**
    * Angle of rotation of the launching motors during launch
@@ -157,9 +157,14 @@ public class GameResources {
   public static final int RELOAD_ANGLE = 100;
 
   /**
-   * Distance to launch the ball
+   * Maximal distance to launch the ball
    */
-  public static final int MAXIMAL_LAUNCH_DISTANCE = 250;
+  public static final int MAXIMAL_LAUNCH_DISTANCE = 232;
+  
+  /**
+   * Minimal distance to launch the ball
+   */
+  public static final int MINIMAL_LAUNCH_DISTANCE = 100;
 
   /**
    * period of sleeping before launch
@@ -195,7 +200,7 @@ public class GameResources {
   /**
    * Adjustment angle during the 5 launches
    */
-  public static final double BALLISTIC_ADJUSTMENT_ANGLE = -2;
+  public static final double BALLISTIC_ADJUSTMENT_ANGLE = -3;
 
   // MOTORS AND SENSORS
 
@@ -295,6 +300,16 @@ public class GameResources {
    * Indicates if the robot localized after its navigation or not
    */
   public static boolean localized = false;
+  
+  /**
+   * Indicates if the robot has detected an obstacle
+   */
+  public static boolean obstacleDetected = false;
+  
+  /**
+   * Minimum distance to travel to localize
+   */
+  public static final double localizationDistance = 10;
 
   /**
    * Limits of the current zone
@@ -321,6 +336,7 @@ public class GameResources {
    * Current region the robot is on
    */
   public static REGION currentRegion;
+
 
 
 
@@ -371,16 +387,17 @@ public class GameResources {
    * Average width of obstacles
    */
   public static final double OBSTACLE_WIDTH = TILE_SIZE;
-
+  
   /*
-   * Distance seen when facing a convex corner
+   * Average width of obstacles
    */
-  public static final double CONVEX_CORNER_CONSTANT = 30;
-
+  public static final double SHIFT_DISTANCE = 2;
+  
   /*
-   * Distance seen when facing a convex corner
+   * Average width of obstacles
    */
-  public static final double CONVEX_CORNER_ADJUSTMENT_DISTANCE = 12;
+  public static final double OBSTACLE_BACKUP = 10;
+
 
   /*
    * Restricted points on the island
@@ -399,7 +416,7 @@ public class GameResources {
    * Enumeration of all the possible navigation destinations
    */
   public enum NAVIGATION_DESTINATION {
-    TUNNEL1_ENTRANCE, TUNNEL2_ENTRANCE, LAUNCH_POINT, END_POINT
+    TUNNEL_ENTRANCE, TUNNEL_EXIT, LAUNCH_POINT, END_POINT
   }
   /*
    * Enumeration of all the possible region types
@@ -477,6 +494,16 @@ public class GameResources {
   public static void setLocalized(boolean localized) {
     GameResources.localized = localized;
   }
+  public static void setObstacleDetected(boolean obstacleDetected) {
+    GameResources.obstacleDetected = obstacleDetected;
+  }
+  public static boolean isObstacleDetected() {
+    return obstacleDetected;
+  }
+  public static LinkedList<Point> getRestrictedPoints() {
+    return restrictedPoints;
+  }
+  
   
   
 }

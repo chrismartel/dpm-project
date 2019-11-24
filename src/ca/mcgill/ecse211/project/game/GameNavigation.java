@@ -2,6 +2,7 @@ package ca.mcgill.ecse211.project.game;
 
 import ca.mcgill.ecse211.project.Resources;
 import ca.mcgill.ecse211.project.game.GameResources.*;
+import lejos.hardware.Sound;
 import java.util.LinkedList;
 import ca.mcgill.ecse211.project.Resources.Point;
 import ca.mcgill.ecse211.project.Localization.LightLocalizer;
@@ -59,10 +60,11 @@ public class GameNavigation {
    * @param : x is the goal coordinate on the x axis
    * @param : y is the goal coordinate on the y axis
    * @param : xFirst, if true, the method travels on the x axis first, if false, the method travels on the y axis first.
+   * @param : correction, if true, navigate with correction, if false, navigate without correction
    */
-  public void squareNavigation(double x, double y, boolean xFirst) {
+  public static void squareNavigation(double x, double y, boolean xFirst, boolean correction) {
     GameResources.setLocalized(false);
-    GameResources.setEnableCorrection(true);
+    GameResources.setEnableCorrection(correction);
     GameResources.setNavigationCoordinates(new Point(x, y));
 
     if (xFirst) {
@@ -76,7 +78,7 @@ public class GameNavigation {
       Navigation.travelTo(x, (GameResources.odometer.getY() / GameResources.TILE_SIZE),
           GameResources.FORWARD_SPEED_NORMAL);
     }
-
+    GameResources.setObstacleDetected(false);
     GameResources.setEnableCorrection(false);
   }
 
@@ -87,8 +89,8 @@ public class GameNavigation {
    * @param : xFirst indicates if the navigation travels on the x or the y axis first
    */
   public void navigateToTunnelEntrance(boolean xFirst) {
-    this.squareNavigation(tunnelEntrance.x, tunnelEntrance.y, xFirst);
-    Navigation.turnTo(tunnelEntranceTraversalOrientation, GameResources.ROTATE_SPEED_SLOW);
+    squareNavigation(tunnelEntrance.x, tunnelEntrance.y, xFirst,true);
+    //Navigation.turnTo(tunnelEntranceTraversalOrientation, GameResources.ROTATE_SPEED_FAST);
   }
 
   /**
@@ -97,8 +99,8 @@ public class GameNavigation {
    * @param : xFirst indicates if the navigation travels on the x or the y axis first
    */
   public void navigateToTunnelExit(boolean xFirst) {
-    this.squareNavigation(tunnelExit.x, tunnelExit.y, xFirst);
-    Navigation.turnTo(tunnelExitTraversalOrientation, GameResources.ROTATE_SPEED_SLOW);
+    squareNavigation(tunnelExit.x, tunnelExit.y, xFirst,true);
+    Navigation.turnTo(tunnelExitTraversalOrientation, GameResources.ROTATE_SPEED_FAST);
   }
 
   /**
@@ -107,8 +109,13 @@ public class GameNavigation {
    * @param : xFirst indicates if the navigation travels on the x or the y axis first
    */
   public void navigateToLaunchPoint(boolean xFirst) {
+    boolean localized = false;
+    if(this.calculateDistance(launchPoint.x, launchPoint.y, GameResources.odometer.getX()/GameResources.TILE_SIZE, GameResources.odometer.getY()/GameResources.TILE_SIZE)<GameResources.localizationDistance) {
+      localized=true;
+    }
     // navigate to launch point
-    this.squareNavigation(launchPoint.x, launchPoint.y, xFirst);
+    squareNavigation(launchPoint.x, launchPoint.y, xFirst,true);
+    GameResources.setLocalized(localized);
   }
 
   /**
@@ -123,12 +130,13 @@ public class GameNavigation {
     double dY = binY - currentY;
     // turn towards launch point
     Navigation.turnTo(Math.toDegrees(Math.atan2(dX, dY)), GameResources.ROTATE_SPEED_SLOW);
+    System.out.println("atan: "+(Math.toDegrees(Math.atan2(dX, dY))));
     double distance = this.distanceFromBin(launchPoint.x, launchPoint.y);
+    System.out.println("distance: "+distance);
+
     // additional turn so that the ballistic launcher points to the bin
     double adjustmentAngle = Math.toDegrees((Math.asin((GameResources.BALLISTIC_X_OFFSET_FROM_CENTER / distance))));
-
-    System.out.println("adjustment: " + adjustmentAngle);
-    Navigation.turn(-9 * adjustmentAngle, GameResources.ROTATE_SPEED_SLOW);
+    Navigation.turn(GameResources.BALLISTIC_ADJUSTMENT_ANGLE- 7*adjustmentAngle, GameResources.ROTATE_SPEED_SLOW);
 
   }
 
@@ -149,6 +157,7 @@ public class GameNavigation {
     }
     LightLocalizer.twoLineDetection();
     Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
+    // update new zone parameters
     this.updateParameters();
   }
 
@@ -299,11 +308,8 @@ public class GameNavigation {
     // determine the target region, the region of the tunnel entrance
     if (GameResources.getCurrentRegion() == REGION.RED) {
       targetRegion = REGION.RED;
-    } else if (GameResources.getCurrentRegion() == REGION.GREEN) {
+    } else  {
       targetRegion = REGION.GREEN;
-    } else {
-      targetRegion = REGION.ISLAND;
-      System.out.println("TARGET REGION IS ISLAND");
     }
     // determine where is the tunnel entrance
     if (tunnelBottom == targetRegion) {
@@ -340,6 +346,8 @@ public class GameNavigation {
    */
   public void setTunnel() {
     if (GameResources.getColor() == COLOR.RED) {
+      System.out.println("RED TUNNEL SET");
+
       GameResources.Tunnel.ll.x = Resources.tnr.ll.x;
       GameResources.Tunnel.ll.y = Resources.tnr.ll.y;
       GameResources.Tunnel.ur.x = Resources.tnr.ur.x;
@@ -361,18 +369,23 @@ public class GameNavigation {
     // set the limits depending on the current region
     switch (GameResources.getCurrentRegion()) {
       case GREEN:
+        System.out.println("GREEN LIMITS SET");
+
         GameResources.currentLeftLimit = Resources.green.ll.x;
         GameResources.currentRightLimit = Resources.green.ur.x;
         GameResources.currentTopLimit = Resources.green.ur.y;
         GameResources.currentBottomLimit = Resources.green.ll.y;
         break;
       case RED:
+        System.out.println("RED LIMITS SET");
         GameResources.currentLeftLimit = Resources.red.ll.x;
         GameResources.currentRightLimit = Resources.red.ur.x;
         GameResources.currentTopLimit = Resources.red.ur.y;
         GameResources.currentBottomLimit = Resources.red.ll.y;
         break;
       case ISLAND:
+        System.out.println("ISLAND LIMITS SET");
+
         GameResources.currentLeftLimit = Resources.island.ll.x;
         GameResources.currentRightLimit = Resources.island.ur.x;
         GameResources.currentTopLimit = Resources.island.ur.y;
@@ -389,10 +402,12 @@ public class GameNavigation {
    */
   public void setColor() {
     if (Resources.redTeam == Resources.TEAM_NUMBER) {
+      System.out.println("RED COLOR SET");
+
       GameResources.setColor(COLOR.RED);
     } else if (Resources.greenTeam == Resources.TEAM_NUMBER) {
       GameResources.setColor(COLOR.GREEN);
-      System.out.println("GREEN TEAM SET");
+      System.out.println("GREEN COLOR SET");
     }
 
   }
@@ -407,6 +422,8 @@ public class GameNavigation {
 
     } else {
       GameResources.setCurrentRegion(REGION.RED);
+      System.out.println("STARTING REGION SET TO RED");
+
     }
   }
 
@@ -416,11 +433,13 @@ public class GameNavigation {
   public void setBin() {
     if (GameResources.getColor() == COLOR.GREEN) {
       GameResources.setBin(Resources.greenBin);
-      System.out.println("STARTING REGION SET TO GREEN");
+      System.out.println("STARTING BIN SET TO GREEN");
 
     } else {
       GameResources.setCurrentRegion(REGION.RED);
       GameResources.setBin(Resources.redBin);
+      System.out.println("STARTING BIN SET TO RED");
+
 
     }
   }
@@ -453,6 +472,8 @@ public class GameNavigation {
         case 0:
           GameResources.CORNER_NUMBER = 0;
           GameResources.STARTING_POINT = new Point(1, 1);
+          System.out.println("GREEN CORNER SET TO 0");
+
           break;
         // lower right corner
         case 1:
@@ -491,21 +512,29 @@ public class GameNavigation {
         case 0:
           GameResources.CORNER_NUMBER = 0;
           GameResources.STARTING_POINT = new Point(1, 1);
+          System.out.println("RED CORNER SET TO 0");
+
           break;
         // lower right corner
         case 1:
           GameResources.CORNER_NUMBER = 1;
           GameResources.STARTING_POINT = new Point(GameResources.FIELD_RIGHT - 1, 1);
+          System.out.println("RED CORNER SET TO 1");
+
           break;
         // top right corner
         case 2:
           GameResources.CORNER_NUMBER = 2;
           GameResources.STARTING_POINT = new Point(GameResources.FIELD_RIGHT - 1, GameResources.FIELD_TOP - 1);
+          System.out.println("RED CORNER SET TO 2");
+
           break;
         // top left corner
         case 3:
           GameResources.CORNER_NUMBER = 3;
           GameResources.STARTING_POINT = new Point(1, GameResources.FIELD_TOP - 1);
+          System.out.println("RED CORNER SET TO 3");
+
           break;
       }
 
@@ -575,7 +604,7 @@ public class GameNavigation {
     return minimal_point;
   }
 
-
+ 
   /**
    * Method used to populate the linked list of possible launch points on the island of the game navigation instance. A
    * possible launch point is a point that is not on the borders of the current region, that is within the maximal
@@ -596,7 +625,7 @@ public class GameNavigation {
         Point point = new Point(i, j);
         double distance = this.distanceFromBin(i, j);
         // check if the distance from the bin is within the maximal distance
-        if (distance <= GameResources.MAXIMAL_LAUNCH_DISTANCE) {
+        if (distance <= GameResources.MAXIMAL_LAUNCH_DISTANCE && distance >= GameResources.MINIMAL_LAUNCH_DISTANCE) {
           boolean restricted = false;
           // check if the point is restricted
           for (Point restrictedPoint : GameResources.restrictedPoints) {
@@ -788,6 +817,10 @@ public class GameNavigation {
    */
   public void setTunnelExitTraversalOrientation(double tunnelExitTraversalOrientation) {
     this.tunnelExitTraversalOrientation = tunnelExitTraversalOrientation;
+  }
+  
+  public void setLaunchPoint(Point launchPoint) {
+    this.launchPoint = launchPoint;
   }
 
 }

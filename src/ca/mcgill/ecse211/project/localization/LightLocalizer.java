@@ -222,6 +222,7 @@ public class LightLocalizer {
     if ((point.x != 1) && (point.x != (GameResources.FIELD_RIGHT - 1)) && (point.y != 1)
         && (point.y != (GameResources.FIELD_TOP - 1))) {
       // GENERAL PROCEDURE
+      System.out.println("GENERAL PROCEDURE");
       Navigation.turnTo(0, GameResources.ROTATE_SPEED_FAST);
       LightLocalizer.twoLineDetection();
       Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
@@ -233,6 +234,7 @@ public class LightLocalizer {
     }
     // The point is near a wall --> SPECIAL CASES
     else {
+      System.out.println("CLOSE TO A WALL");
       // close to top wall and right wall
       if (point.x == (GameResources.FIELD_RIGHT - 1) && point.y == (GameResources.FIELD_RIGHT - 1)) {
         Navigation.turnTo(180, GameResources.ROTATE_SPEED_FAST);
@@ -258,7 +260,7 @@ public class LightLocalizer {
 
       }
       // only close to top wall
-      else if (point.y == (GameResources.currentTopLimit - 1)) {
+      else if (point.y == (GameResources.FIELD_TOP - 1)) {
         Navigation.turnTo(180, GameResources.ROTATE_SPEED_FAST);
         LightLocalizer.twoLineDetection();
         Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
@@ -298,7 +300,7 @@ public class LightLocalizer {
 
     switch (corner) {
       case 0:
-        Navigation.turnTo(0, GameResources.ROTATE_SPEED_FAST);
+        //Navigation.turnTo(0, GameResources.ROTATE_SPEED_FAST);
         twoLineDetection();
         Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
         GameResources.odometer.setXYT(GameResources.odometer.getX(), (point.y * GameResources.TILE_SIZE), 0);

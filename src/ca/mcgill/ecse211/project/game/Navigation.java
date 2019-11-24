@@ -45,7 +45,7 @@ public class Navigation {
    */
   public static void travelTo(double x, double y, int speed) {
     // Convert the coordinates to centimeters
-    if (GameResources.getGameState()!=GameState.Avoidance) {
+    if (!GameResources.isObstacleDetected()) {
       x = x * GameResources.TILE_SIZE;
       y = y * GameResources.TILE_SIZE;
       GameResources.leftMotor.setSpeed(speed);
@@ -154,7 +154,7 @@ public class Navigation {
     travelForward(speed);
 
     // navigates as long as the state is not in avoidance
-    while (GameResources.getGameState()!=GameState.Avoidance) {
+    while (!GameResources.isObstacleDetected()) {
       dX = Math.abs(GameResources.odometer.getX() - lastX);
       dY = Math.abs(GameResources.odometer.getY() - lastY);
       // TODO: if game state is in tunnel--> check if the wall is too close and adjust
