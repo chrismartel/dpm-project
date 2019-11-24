@@ -81,15 +81,24 @@ public class GameController {
           ultrasonicLocalizer.fallingEdge(GameResources.ROTATE_SPEED_FAST);
           // transition to light localization state
           GameResources.setGameState(GameState.LightLocalization);
+
           break;
 
 
         case LightLocalization:
+          
           // initial localization depending on the starting point and starting corner
           LightLocalizer.initialLightLocalize(GameResources.STARTING_POINT, GameResources.CORNER_NUMBER);
           // transit to navigation state
           GameResources.gameState = GameState.Navigation;
           GameResources.setLocalized(true);
+          Navigation.travel(10, 150);
+          try {
+            Thread.sleep(500);
+          } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
           break;
 
 
@@ -250,7 +259,7 @@ public class GameController {
           GameResources.setGameState(GameState.Navigation);
           break;
 
-
+          
         case Launch:
           // perform the launches
           ballisticLauncher

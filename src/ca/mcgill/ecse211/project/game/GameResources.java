@@ -114,7 +114,7 @@ public class GameResources {
   /**
    * Differential value to determine if a black line is detected or not
    */
-  public static final int DIFFERENTIAL_LINE_THRESHOLD = 5; // HAS TO BE DETERMINE BY TESTING
+  public static final int DIFFERENTIAL_LINE_THRESHOLD = 9; // CHANGE BACK TO 5 IF BAD
 
   /**
    * Window size for the ultrasonic sensor data polling
@@ -138,12 +138,12 @@ public class GameResources {
   /**
    * Coefficient of the launching process to adjust the speed of the motors in function of the distance
    */
-  public static final double LAUNCH_COEFFICIENT = 0.9166; // HAS TO BE DETERMINED BY TESTING
+  public static final double LAUNCH_COEFFICIENT = 0.8202; // HAS TO BE DETERMINED BY TESTING
   
   /**
    * Initial value used to compute the motor speed to apply in functio of the distance
    */
-  public static final double LAUNCH_IV = 80; // HAS TO BE DETERMINED BY TESTING
+  public static final double LAUNCH_IV = 109.334; // HAS TO BE DETERMINED BY TESTING
   
   /**
    * Angle of rotation of the launching motors during launch
@@ -159,12 +159,12 @@ public class GameResources {
   /**
    * Maximal distance to launch the ball
    */
-  public static final int MAXIMAL_LAUNCH_DISTANCE = 220;
+  public static final int MAXIMAL_LAUNCH_DISTANCE = 232;
   
   /**
    * Minimal distance to launch the ball
    */
-  public static final int MINIMAL_LAUNCH_DISTANCE = 150;
+  public static final int MINIMAL_LAUNCH_DISTANCE = 100;
 
   /**
    * period of sleeping before launch
@@ -200,7 +200,7 @@ public class GameResources {
   /**
    * Adjustment angle during the 5 launches
    */
-  public static final double BALLISTIC_ADJUSTMENT_ANGLE = -4;
+  public static final double BALLISTIC_ADJUSTMENT_ANGLE = -3;
 
   // MOTORS AND SENSORS
 
@@ -336,6 +336,7 @@ public class GameResources {
    * Current region the robot is on
    */
   public static REGION currentRegion;
+
 
 
 

@@ -90,7 +90,7 @@ public class GameNavigation {
    */
   public void navigateToTunnelEntrance(boolean xFirst) {
     squareNavigation(tunnelEntrance.x, tunnelEntrance.y, xFirst,true);
-    Navigation.turnTo(tunnelEntranceTraversalOrientation, GameResources.ROTATE_SPEED_FAST);
+    //Navigation.turnTo(tunnelEntranceTraversalOrientation, GameResources.ROTATE_SPEED_FAST);
   }
 
   /**
@@ -604,7 +604,7 @@ public class GameNavigation {
     return minimal_point;
   }
 
-
+ 
   /**
    * Method used to populate the linked list of possible launch points on the island of the game navigation instance. A
    * possible launch point is a point that is not on the borders of the current region, that is within the maximal
