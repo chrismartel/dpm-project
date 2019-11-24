@@ -197,31 +197,6 @@ public class ObstacleAvoider {
 
 
   /**
-   * Method used to perform the convex corner procedure during wall following to avoid crashing into the walls
-   */
-  public void convexCornerProcedure() {
-    // convex corner procedure
-    Navigation.travel(GameResources.CONVEX_CORNER_ADJUSTMENT_DISTANCE / 2, GameResources.FORWARD_SPEED_FAST);
-    double currentTheta = GameResources.odometer.getTheta();
-    double goalTheta = currentTheta - 90;
-    if (goalTheta < 0) {
-      goalTheta = goalTheta + 360;
-    }
-    // 90 degrees turn towards the left
-    Navigation.rotate(Turn.COUNTER_CLOCK_WISE, GameResources.ROTATE_SPEED_SLOW);
-    while (!orientationCheck()) {
-      if (Math.abs(GameResources.odometer.getTheta() - goalTheta) <= 1) {
-        Navigation.travel(GameResources.CONVEX_CORNER_ADJUSTMENT_DISTANCE, GameResources.FORWARD_SPEED_FAST);
-        break;
-      }
-    }
-    return;
-
-
-  }
-
-
-  /**
    * STRATEGY 2 : PATH FINDER Robot can navigate in 2 different paths in square navigation, either x axis first or y
    * axis first. If an obstacle is detected, the robot is shifted of a tile and navigates using the other path.
    */
@@ -239,53 +214,81 @@ public class ObstacleAvoider {
     //
     double islandWidth = Resources.island.ur.x - Resources.island.ll.x;
     double islandHeight = Resources.island.ur.y - Resources.island.ll.y;
-    double islandMiddleX = Resources.island.ur.x- (islandWidth/2);
-    double islandMiddleY = Resources.island.ur.y- (islandHeight/2);
+    double islandMiddleX = Resources.island.ur.x - (islandWidth / 2);
+    double islandMiddleY = Resources.island.ur.y - (islandHeight / 2);
+    System.out.println("island width: " + islandWidth);
+    System.out.println("island height: " + islandHeight);
+    System.out.println("island middle x: " + islandMiddleX);
+    System.out.println("island middle y: " + islandMiddleY);
+
     // coordinates of the robots position
     double x = GameResources.odometer.getX() / GameResources.TILE_SIZE;
     double y = GameResources.odometer.getY() / GameResources.TILE_SIZE;
 
     // heading approximately towards 0 degrees
     if ((theta >= 355 && theta <= 360) || (theta >= 0 && theta <= 5)) {
+      System.out.println("HEADING UP");
+
       // robot is in the right part of the island--> avoid left
       if (x >= islandMiddleX) {
-        Navigation.travelTo(x - 1.5, y, GameResources.FORWARD_SPEED_FAST);
+        // GameNavigation.squareNavigation(x - GameResources.SHIFT_DISTANCE, y, true,false);
+        Navigation.travelTo(x - GameResources.SHIFT_DISTANCE, y, GameResources.FORWARD_SPEED_NORMAL);
       }
       // robot is in the left part of the island --> avoid right
       else {
-        Navigation.travelTo(x + 1.5, y, GameResources.FORWARD_SPEED_FAST);
+        // GameNavigation.squareNavigation(x + GameResources.SHIFT_DISTANCE, y, true,false);
+        Navigation.travelTo(x + GameResources.SHIFT_DISTANCE, y, GameResources.FORWARD_SPEED_NORMAL);
+
       }
     }
     // heading approximately towards 90 degrees
     else if (theta >= 85 && theta <= 95) {
+      System.out.println("HEADING RIGHT");
       // robot is in the top part of the island --> avoid bottom
       if (y >= islandMiddleY) {
-        Navigation.travelTo(x, y - 1.5, GameResources.FORWARD_SPEED_FAST);
+        // GameNavigation.squareNavigation(x, y - GameResources.SHIFT_DISTANCE, false,false);
+        Navigation.travelTo(x, y - GameResources.SHIFT_DISTANCE, GameResources.FORWARD_SPEED_NORMAL);
+
       }
       // robot is in the bottom part of the island --> avoid top
       else {
-        Navigation.travelTo(x, y + 1.5, GameResources.FORWARD_SPEED_FAST);
+        // GameNavigation.squareNavigation(x, y + GameResources.SHIFT_DISTANCE, false,false);
+        Navigation.travelTo(x, y + GameResources.SHIFT_DISTANCE, GameResources.FORWARD_SPEED_NORMAL);
+
       }
     }
     // heading approximately towards 180 degrees
     else if (theta >= 175 && theta <= 185) {
+      System.out.println("HEADING DOWN");
+
       if (x >= islandMiddleX) {
-        Navigation.travelTo(x - 1.5, y, GameResources.FORWARD_SPEED_FAST);
+
+        // GameNavigation.squareNavigation(x - GameResources.SHIFT_DISTANCE, y, true,false);
+        Navigation.travelTo(x - GameResources.SHIFT_DISTANCE, y, GameResources.FORWARD_SPEED_NORMAL);
+
       }
       // robot is in the left part of the island --> avoid right
       else {
-        Navigation.travelTo(x + 1.5, y, GameResources.FORWARD_SPEED_FAST);
+        // GameNavigation.squareNavigation(x + GameResources.SHIFT_DISTANCE, y, true,false);
+        Navigation.travelTo(x + GameResources.SHIFT_DISTANCE, y, GameResources.FORWARD_SPEED_NORMAL);
+
       }
     }
     // heading approximately towards 270 degrees
     else if (theta >= 265 && theta <= 275) {
+      System.out.println("HEADING LEFT");
+
       // robot is in the top part of the island --> avoid bottom
       if (y >= islandMiddleY) {
-        Navigation.travelTo(x, y - 1, GameResources.FORWARD_SPEED_FAST);
+        // GameNavigation.squareNavigation(x, y - GameResources.SHIFT_DISTANCE, false,false);
+        Navigation.travelTo(x, y - GameResources.SHIFT_DISTANCE, GameResources.FORWARD_SPEED_NORMAL);
+
       }
       // robot is in the bottom part of the island --> avoid top
       else {
-        Navigation.travelTo(x, y + 1, GameResources.FORWARD_SPEED_FAST);
+        // GameNavigation.squareNavigation(x, y + GameResources.SHIFT_DISTANCE, false,false);
+        Navigation.travelTo(x, y + GameResources.SHIFT_DISTANCE, GameResources.FORWARD_SPEED_NORMAL);
+
       }
     }
 

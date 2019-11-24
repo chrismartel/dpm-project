@@ -1,6 +1,7 @@
 package ca.mcgill.ecse211.project.sensor;
 
 import ca.mcgill.ecse211.project.game.GameResources;
+import ca.mcgill.ecse211.project.game.GameResources.NAVIGATION_DESTINATION;
 import ca.mcgill.ecse211.project.game.GameResources.REGION;
 // import ca.mcgill.ecse211.project.game.GameController.NAVIGATION_DESTINATION;
 import ca.mcgill.ecse211.project.game.GameState;
@@ -86,7 +87,9 @@ public class UltrasonicPoller implements Runnable {
         // Process the fetched distance in the front controller
         frontUsController.processDistance(this.frontDistance);
         // when navigating on the island, check for obstacles
-        if (GameResources.getGameState() == GameState.Navigation && GameResources.getCurrentRegion() == REGION.ISLAND) {
+        if ((GameResources.getGameState() == GameState.Navigation && GameResources.getCurrentRegion() == REGION.ISLAND)
+            || (GameResources.getGameState() == GameState.Tunnel && GameResources.getCurrentRegion() == REGION.ISLAND
+                && GameResources.getNavigationDestination() == NAVIGATION_DESTINATION.LAUNCH_POINT)) {
           frontUsController.checkForObstacle();
         }
       }
