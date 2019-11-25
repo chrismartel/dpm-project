@@ -20,7 +20,7 @@ public class OdometryCorrection {
   double[] leftValues = null;
   double[] rightValues = null;
 
-
+// TODO: document method
   public static void correctValues() {
     int difference = 5;
     double lowerBound = GameResources.odometer.getTheta() - difference;

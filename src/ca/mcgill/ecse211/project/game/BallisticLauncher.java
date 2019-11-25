@@ -1,7 +1,5 @@
 package ca.mcgill.ecse211.project.game;
 
-import ca.mcgill.ecse211.project.game.GameResources.*;
-
 /**
  * This class implements the behaviour of the ballistic launcher of the robot
  */
@@ -15,13 +13,13 @@ public class BallisticLauncher {
 
   public void launch(double distance) {
     // sleeps 5 seconds before launch
-    System.out.println("DISTANCE FROM BIN: "+distance);
+    System.out.println("DISTANCE FROM BIN: " + distance);
     try {
       Thread.sleep(GameResources.LAUNCH_SLEEP);
     } catch (InterruptedException e) {
     }
     // set the launching speed to a constant (only for lab 5)
-    int  motorLaunchingSpeed = (int) this.computeMotorSpeed(distance);
+    int motorLaunchingSpeed = (int) this.computeMotorSpeed(distance);
     // set the speeds and accelerations of the launching motors
     GameResources.leftBallisticMotor.setSpeed(motorLaunchingSpeed);
     GameResources.rightBallisticMotor.setSpeed(motorLaunchingSpeed);
@@ -36,7 +34,7 @@ public class BallisticLauncher {
     } catch (InterruptedException e) {
     }
   }
-  
+
   /**
    * Method used to test the ballistic launcher at different motor speeds in order to determine the launch coefficient
    * 
@@ -77,23 +75,23 @@ public class BallisticLauncher {
     GameResources.rightBallisticMotor.rotate(GameResources.RELOAD_ANGLE, false);
 
   }
-  
+
   /**
    * Method implementing multiple launches and reload depending on how many balls the robot is carrying
    */
   public void multipleLaunch(double distance) {
     Navigation.turn(-3, 150);
-    for(int i = 0 ; i< GameResources.NUMBER_OF_BALLS; i++) {
-//      if(i==3)
-//      Navigation.turn(GameResources.BALLISTIC_ADJUSTMENT_ANGLE,GameResources.FORWARD_SPEED_NORMAL);
+    for (int i = 0; i < GameResources.NUMBER_OF_BALLS; i++) {
+      // if(i==3)
+      // Navigation.turn(GameResources.BALLISTIC_ADJUSTMENT_ANGLE,GameResources.FORWARD_SPEED_NORMAL);
       this.launch(distance);
 
       this.reload();
     }
   }
-  
+
   public double computeMotorSpeed(double distance) {
-    double motorSpeed = GameResources.LAUNCH_COEFFICIENT*distance+ GameResources.LAUNCH_IV;
+    double motorSpeed = GameResources.LAUNCH_COEFFICIENT * distance + GameResources.LAUNCH_IV;
     return motorSpeed;
   }
 

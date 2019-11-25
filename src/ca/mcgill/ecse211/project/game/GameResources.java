@@ -40,7 +40,7 @@ public class GameResources {
   /**
    * Light sensor to center of wheel-base distance
    */
-  public static final double OFFSET_FROM_WHEELBASE = 11.4;
+  public static final double OFFSET_FROM_WHEELBASE = 12.5;
 
   /**
    * The number of balls that the robot holds
@@ -148,12 +148,12 @@ public class GameResources {
   /**
    * Coefficient of the launching process to adjust the speed of the motors in function of the distance
    */
-  public static final double LAUNCH_COEFFICIENT = 0.8802; // HAS TO BE DETERMINED BY TESTING
+  public static final double LAUNCH_COEFFICIENT = 0.7502; // HAS TO BE DETERMINED BY TESTING
 
   /**
    * Initial value used to compute the motor speed to apply in functio of the distance
    */
-  public static final double LAUNCH_IV = 109.334; // HAS TO BE DETERMINED BY TESTING
+  public static final double LAUNCH_IV = 113.334; // HAS TO BE DETERMINED BY TESTING
 
   /**
    * Angle of rotation of the launching motors during launch
@@ -420,7 +420,7 @@ public class GameResources {
   /*
    * Distance to shift the robot in path finder avoidance strategy
    */
-  public static final double SHIFT_DISTANCE = 2;
+  public static final double SHIFT_DISTANCE = 30;
 
   /*
    * Average width of obstacles
@@ -430,7 +430,7 @@ public class GameResources {
   /*
    * Minimum distance required to avoid right
    */
-  public static final double MINIMAL_AVOID_DISTANCE = 30;
+  public static final double MINIMAL_AVOID_DISTANCE = 45;
 
 
 
