@@ -246,7 +246,7 @@ public class LightLocalizer {
     }
     // The point is near a wall --> SPECIAL CASES
     else {
-      System.out.println("CLOSE TO A WALL");
+//      System.out.println("CLOSE TO A WALL");
       // close to top wall and right wall
       if (point.x == (GameResources.FIELD_RIGHT - 1) && point.y == (GameResources.FIELD_RIGHT - 1)) {
         Navigation.turnTo(180, GameResources.ROTATE_SPEED_FAST);
