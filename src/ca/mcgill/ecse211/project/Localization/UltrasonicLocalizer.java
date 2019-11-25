@@ -39,7 +39,7 @@ public class UltrasonicLocalizer {
       lastDistance = distances[1];
       
       if (lastDistance > (GameResources.FALLINGEDGE_D + GameResources.FALLINGEDGE_K) && currentDistance < (GameResources.FALLINGEDGE_D - GameResources.FALLINGEDGE_K)) {
-        System.out.println("differential: "+(lastDistance-currentDistance));
+//        System.out.println("differential: "+(lastDistance-currentDistance));
         this.alpha = GameResources.odometer.getTheta();
         Navigation.stopMotors();
         break;

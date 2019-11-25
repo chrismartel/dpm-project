@@ -126,7 +126,7 @@ public class LightLocalizer {
    * @return : false if both motors are stopped, true if 0 or 1 motor is stopped
    */
   public boolean lightLocalize() {
-    long MIN_TIME = 3000;
+    long MIN_TIME = 2000;
     int lines = lineDetected();
     if (lines == 1) {
       // only left sensor detected

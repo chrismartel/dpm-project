@@ -101,7 +101,7 @@ public class GameNavigation {
    */
   public void navigateToTunnelExit(boolean xFirst) {
     squareNavigation(tunnelExit.x, tunnelExit.y, xFirst, true);
-    //Navigation.turnTo(tunnelExitTraversalOrientation, GameResources.ROTATE_SPEED_FAST);
+    Navigation.turnTo(tunnelExitTraversalOrientation, GameResources.ROTATE_SPEED_FAST);
   }
 
   /**
@@ -132,9 +132,9 @@ public class GameNavigation {
     double dY = binY - currentY;
     // turn towards launch point
     Navigation.turnTo(Math.toDegrees(Math.atan2(dX, dY)), GameResources.ROTATE_SPEED_SLOW);
-    System.out.println("atan: " + (Math.toDegrees(Math.atan2(dX, dY))));
+//    System.out.println("atan: " + (Math.toDegrees(Math.atan2(dX, dY))));
     double distance = this.distanceFromBin(launchPoint.x, launchPoint.y);
-    System.out.println("distance: " + distance);
+//    System.out.println("distance: " + distance);
 
     // additional turn so that the ballistic launcher points to the bin
     double adjustmentAngle = Math.toDegrees((Math.asin((GameResources.BALLISTIC_X_OFFSET_FROM_CENTER / distance))));
@@ -332,13 +332,13 @@ public class GameNavigation {
       this.setTunnelExitTraversalOrientation(270);
 
     } else if (tunnelRight == targetRegion) {
-      System.out.println("ENTRANCE IS RIGHT");
+//      System.out.println("ENTRANCE IS RIGHT");
       this.setTunnelEntrance(new Point(GameResources.Tunnel.ur.x + 1, GameResources.Tunnel.ur.y - 0.5));
       this.setTunnelExit(new Point(GameResources.Tunnel.ll.x - 1, GameResources.Tunnel.ll.y + 0.5));
       this.setTunnelEntranceTraversalOrientation(270);
       this.setTunnelExitTraversalOrientation(90);
 
-      System.out.println("TUNNEL ENTRANCE: " + tunnelEntrance.x + ", " + tunnelEntrance.y);
+//      System.out.println("TUNNEL ENTRANCE: " + tunnelEntrance.x + ", " + tunnelEntrance.y);
 
     }
   }
@@ -348,14 +348,14 @@ public class GameNavigation {
    */
   public void setTunnel() {
     if (GameResources.getColor() == COLOR.RED) {
-      System.out.println("RED TUNNEL SET");
+//      System.out.println("RED TUNNEL SET");
 
       GameResources.Tunnel.ll.x = Resources.tnr.ll.x;
       GameResources.Tunnel.ll.y = Resources.tnr.ll.y;
       GameResources.Tunnel.ur.x = Resources.tnr.ur.x;
       GameResources.Tunnel.ur.y = Resources.tnr.ur.y;
     } else {
-      System.out.println("GREEN TUNNEL SET");
+//      System.out.println("GREEN TUNNEL SET");
 
       GameResources.Tunnel.ll.x = Resources.tng.ll.x;
       GameResources.Tunnel.ll.y = Resources.tng.ll.y;
@@ -371,7 +371,7 @@ public class GameNavigation {
     // set the limits depending on the current region
     switch (GameResources.getCurrentRegion()) {
       case GREEN:
-        System.out.println("GREEN LIMITS SET");
+//        System.out.println("GREEN LIMITS SET");
 
         GameResources.currentLeftLimit = Resources.green.ll.x;
         GameResources.currentRightLimit = Resources.green.ur.x;
@@ -379,14 +379,14 @@ public class GameNavigation {
         GameResources.currentBottomLimit = Resources.green.ll.y;
         break;
       case RED:
-        System.out.println("RED LIMITS SET");
+//        System.out.println("RED LIMITS SET");
         GameResources.currentLeftLimit = Resources.red.ll.x;
         GameResources.currentRightLimit = Resources.red.ur.x;
         GameResources.currentTopLimit = Resources.red.ur.y;
         GameResources.currentBottomLimit = Resources.red.ll.y;
         break;
       case ISLAND:
-        System.out.println("ISLAND LIMITS SET");
+//        System.out.println("ISLAND LIMITS SET");
 
         GameResources.currentLeftLimit = Resources.island.ll.x;
         GameResources.currentRightLimit = Resources.island.ur.x;
@@ -404,12 +404,12 @@ public class GameNavigation {
    */
   public void setColor() {
     if (Resources.redTeam == Resources.TEAM_NUMBER) {
-      System.out.println("RED COLOR SET");
+//      System.out.println("RED COLOR SET");
 
       GameResources.setColor(COLOR.RED);
     } else if (Resources.greenTeam == Resources.TEAM_NUMBER) {
       GameResources.setColor(COLOR.GREEN);
-      System.out.println("GREEN COLOR SET");
+//      System.out.println("GREEN COLOR SET");
     }
 
   }
@@ -420,11 +420,11 @@ public class GameNavigation {
   public void setStartingRegion() {
     if (GameResources.getColor() == COLOR.GREEN) {
       GameResources.setCurrentRegion(REGION.GREEN);
-      System.out.println("STARTING REGION SET TO GREEN");
+//      System.out.println("STARTING REGION SET TO GREEN");
 
     } else {
       GameResources.setCurrentRegion(REGION.RED);
-      System.out.println("STARTING REGION SET TO RED");
+//      System.out.println("STARTING REGION SET TO RED");
 
     }
   }
@@ -435,12 +435,12 @@ public class GameNavigation {
   public void setBin() {
     if (GameResources.getColor() == COLOR.GREEN) {
       GameResources.setBin(Resources.greenBin);
-      System.out.println("STARTING BIN SET TO GREEN");
+//      System.out.println("STARTING BIN SET TO GREEN");
 
     } else {
       GameResources.setCurrentRegion(REGION.RED);
       GameResources.setBin(Resources.redBin);
-      System.out.println("STARTING BIN SET TO RED");
+//      System.out.println("STARTING BIN SET TO RED");
 
 
     }
@@ -452,7 +452,7 @@ public class GameNavigation {
   public void updateRegion() {
     if (GameResources.getCurrentRegion() == REGION.GREEN || GameResources.getCurrentRegion() == REGION.RED) {
       GameResources.setCurrentRegion(REGION.ISLAND);
-      System.out.println("REGION SET TO ISLAND" + GameResources.currentRegion);
+//      System.out.println("REGION SET TO ISLAND" + GameResources.currentRegion);
     } else if (GameResources.getCurrentRegion() == REGION.ISLAND) {
       if (GameResources.getColor() == COLOR.GREEN) {
         GameResources.setCurrentRegion(REGION.GREEN);
@@ -474,27 +474,27 @@ public class GameNavigation {
         case 0:
           GameResources.CORNER_NUMBER = 0;
           GameResources.STARTING_POINT = new Point(1, 1);
-          System.out.println("GREEN CORNER SET TO 0");
+//          System.out.println("GREEN CORNER SET TO 0");
 
           break;
         // lower right corner
         case 1:
-          System.out.println("GREEN CORNER SET TO 1");
+//          System.out.println("GREEN CORNER SET TO 1");
 
           GameResources.CORNER_NUMBER = 1;
           GameResources.STARTING_POINT = new Point(GameResources.FIELD_RIGHT - 1, 1);
-          System.out
-              .println("STARTING POINT: " + GameResources.STARTING_POINT.x + ", " + GameResources.STARTING_POINT.y);
+//          System.out
+//              .println("STARTING POINT: " + GameResources.STARTING_POINT.x + ", " + GameResources.STARTING_POINT.y);
 
           break;
         // top right corner
         case 2:
-          System.out.println("GREEN CORNER SET TO 2");
+//          System.out.println("GREEN CORNER SET TO 2");
 
           GameResources.CORNER_NUMBER = 2;
           GameResources.STARTING_POINT = new Point(GameResources.FIELD_RIGHT - 1, GameResources.FIELD_TOP - 1);
-          System.out
-              .println("STARTING POINT: " + GameResources.STARTING_POINT.x + ", " + GameResources.STARTING_POINT.y);
+//          System.out
+//              .println("STARTING POINT: " + GameResources.STARTING_POINT.x + ", " + GameResources.STARTING_POINT.y);
 
           break;
         // top left corner
@@ -503,8 +503,8 @@ public class GameNavigation {
 
           GameResources.CORNER_NUMBER = 3;
           GameResources.STARTING_POINT = new Point(1, GameResources.FIELD_TOP - 1);
-          System.out
-              .println("STARTING POINT: " + GameResources.STARTING_POINT.x + ", " + GameResources.STARTING_POINT.y);
+//          System.out
+//              .println("STARTING POINT: " + GameResources.STARTING_POINT.x + ", " + GameResources.STARTING_POINT.y);
 
           break;
       }
@@ -514,28 +514,28 @@ public class GameNavigation {
         case 0:
           GameResources.CORNER_NUMBER = 0;
           GameResources.STARTING_POINT = new Point(1, 1);
-          System.out.println("RED CORNER SET TO 0");
+//          System.out.println("RED CORNER SET TO 0");
 
           break;
         // lower right corner
         case 1:
           GameResources.CORNER_NUMBER = 1;
           GameResources.STARTING_POINT = new Point(GameResources.FIELD_RIGHT - 1, 1);
-          System.out.println("RED CORNER SET TO 1");
+//          System.out.println("RED CORNER SET TO 1");
 
           break;
         // top right corner
         case 2:
           GameResources.CORNER_NUMBER = 2;
           GameResources.STARTING_POINT = new Point(GameResources.FIELD_RIGHT - 1, GameResources.FIELD_TOP - 1);
-          System.out.println("RED CORNER SET TO 2");
+//          System.out.println("RED CORNER SET TO 2");
 
           break;
         // top left corner
         case 3:
           GameResources.CORNER_NUMBER = 3;
           GameResources.STARTING_POINT = new Point(1, GameResources.FIELD_TOP - 1);
-          System.out.println("RED CORNER SET TO 3");
+//          System.out.println("RED CORNER SET TO 3");
 
           break;
       }

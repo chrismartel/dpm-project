@@ -307,11 +307,11 @@ public class GameResources {
   /**
    * Right wall x coordinate
    */
-  public static int FIELD_RIGHT = 8;
+  public static int FIELD_RIGHT = 15;
   /**
    * Top wall y coordinate
    */
-  public static int FIELD_TOP = 8;
+  public static int FIELD_TOP = 9;
   /**
    * Current state of the game state machine
    */

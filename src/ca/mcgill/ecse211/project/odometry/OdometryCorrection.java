@@ -22,7 +22,7 @@ public class OdometryCorrection {
 
 // TODO: document method
   public static void correctValues() {
-    int difference = 5;
+    int difference = 20;
     double lowerBound = GameResources.odometer.getTheta() - difference;
     double upperBound = GameResources.odometer.getTheta() + difference;
 
@@ -43,6 +43,7 @@ public class OdometryCorrection {
       // System.out.println("line count" + lineCount);
       GameResources.odometer.setX(lineCount * GameResources.TILE_SIZE + GameResources.OFFSET_FROM_WHEELBASE);
       GameResources.odometer.setTheta(90);
+      
       // System.out.println("GOING right");
     } else if (lowerBound >= (180 - (2 * difference)) && upperBound <= (180 + (2 * difference))) {
       // going backward

@@ -81,7 +81,7 @@ public class GameController {
           // Button.waitForAnyPress();
           GameResources.setGameState(GameState.UltrasonicLocalization);
 
-
+          
           break;
 
 
@@ -107,13 +107,22 @@ public class GameController {
           try {
             Thread.sleep(500);
           } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
           }
           break;
 
 
         case Navigation:
+          System.out.println(gameNavigation.getTunnelEntrance());
+          System.out.println(" ");
+          System.out.println(" ");
+          System.out.println(" ");
+          System.out.println(" ");
+          System.out.println(" ");
+          System.out.println(" ");
+          System.out.println(" ");
+          System.out.println(" ");
+          GameResources.LCD.clear();
           // navigation is considered uncompleted initially
           GameResources.navigationCompleted = false;
 
@@ -135,9 +144,9 @@ public class GameController {
               break;
             case TUNNEL_EXIT:
               // travel to the second tunnel entrance
-              System.out.println("EXIT"+gameNavigation.getTunnelExit().x+", "+gameNavigation.getTunnelExit().y);
+//              System.out.println("EXIT"+gameNavigation.getTunnelExit().x+", "+gameNavigation.getTunnelExit().y);
               gameNavigation.navigateToTunnelExit(xFirst);
-              System.out.println("navigation to tunnel done");
+//              System.out.println("navigation to tunnel done");
 
               if (GameResources.isNavigationCompleted()) {
                 // LIGHT LOCALIZATION
@@ -152,7 +161,7 @@ public class GameController {
 
 
 //                gameNavigation.navigateToTunnelExit(xFirst);
-                System.out.println("second navigation to tunnel done");
+//                System.out.println("second navigation to tunnel done");
 
                 // update new checkpoint
                 GameResources.setNavigationDestination(NAVIGATION_DESTINATION.END_POINT);
