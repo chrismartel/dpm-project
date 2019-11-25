@@ -35,14 +35,16 @@ public class GameController {
         case Test:
 
           
-          Button.waitForAnyPress();
+//          Button.waitForAnyPress();
           GameResources.setGameState(GameState.Navigation);
+          GameResources.setNavigationDestination(NAVIGATION_DESTINATION.LAUNCH_POINT);
           GameResources.setCurrentRegion(REGION.ISLAND);
           gameNavigation.setLimits();
-          GameResources.odometer.setXYT(3 * GameResources.TILE_SIZE, 3 * GameResources.TILE_SIZE, 0);
+          GameResources.odometer.setXYT(7 * GameResources.TILE_SIZE, 5 * GameResources.TILE_SIZE, 270);
           xFirst = true;
-          GameNavigation.squareNavigation(3, 7, xFirst, true);
-          gameNavigation.setLaunchPoint(new Point(3, 5));
+          GameNavigation.squareNavigation(5, 5, xFirst, false);
+          
+//          gameNavigation.setLaunchPoint(new Point(3, 5));
 
 
 
@@ -72,20 +74,16 @@ public class GameController {
           GameResources.rightBallisticMotor.rotate(+5, false);
 
           // transit to ultrasonic localization state
-<<<<<<< HEAD
           // Button.waitForAnyPress();
           GameResources.setGameState(GameState.UltrasonicLocalization);
 
 
-=======
-          GameResources.setGameState(GameState.UltrasonicLocalization);
->>>>>>> 10e13b0de1aa051a7dc095b3277f450be0549c4c
           break;
 
 
         case UltrasonicLocalization:
           // ultrasonic localization using falling edge routine
-          Button.waitForAnyPress();
+//          Button.waitForAnyPress();
 
           ultrasonicLocalizer.fallingEdge(GameResources.ROTATE_SPEED_FAST);
           // transition to light localization state
@@ -101,7 +99,7 @@ public class GameController {
           // transit to navigation state
           GameResources.gameState = GameState.Navigation;
           GameResources.setLocalized(true);
-          Navigation.travel(10, 150);
+          
           try {
             Thread.sleep(500);
           } catch (InterruptedException e) {
@@ -235,7 +233,13 @@ public class GameController {
 
 
         case Avoidance:
+          
+          
           // object avoidance procedure using wall follower with P-Controller
+          
+          
+          
+          
           System.out.println("OBJECT DETECTED");
           Navigation.backUp(GameResources.OBSTACLE_BACKUP, GameResources.FORWARD_SPEED_FAST);
           // create restricted points and check if launch point was changed
@@ -245,7 +249,8 @@ public class GameController {
           // no new launch point, so we have to get around obstacle
           if (!newLaunchPoint) {
             System.out.println("SAME LAUNCH POINT");
-            obstacleAvoider.shiftRobot();
+//            obstacleAvoider.shiftRobot();
+            ObstacleAvoider.wallFollower(150);            
             // change the path of square navigation
             if (xFirst) {
               xFirst = false;
@@ -264,8 +269,12 @@ public class GameController {
             // compute the closest launch point
             gameNavigation.calculateClosestLaunchPoint();
           }
+          
+          
+          
           // if a new launch point is computed transit to navigation
           GameResources.setGameState(GameState.Navigation);
+          
           break;
 
           
