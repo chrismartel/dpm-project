@@ -300,7 +300,7 @@ public class LightLocalizer {
 
     switch (corner) {
       case 0:
-        Navigation.turnTo(0, GameResources.ROTATE_SPEED_FAST);
+        //Navigation.turnTo(0, GameResources.ROTATE_SPEED_FAST);
         twoLineDetection();
         Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
         GameResources.odometer.setXYT(GameResources.odometer.getX(), (point.y * GameResources.TILE_SIZE), 0);

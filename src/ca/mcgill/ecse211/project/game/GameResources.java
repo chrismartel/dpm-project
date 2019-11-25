@@ -277,7 +277,7 @@ public class GameResources {
   public static int CORNER_NUMBER = 1;
   public static Point bin = new Point(0,0);
 
-  public static int FIELD_RIGHT = 8;
+  public static int FIELD_RIGHT = 8;   
   public static int FIELD_TOP = 8;
 
   // GAME CONSTANTS

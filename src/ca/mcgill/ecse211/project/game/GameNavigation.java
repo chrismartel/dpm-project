@@ -4,6 +4,7 @@ import ca.mcgill.ecse211.project.Resources;
 import ca.mcgill.ecse211.project.game.GameResources.*;
 import lejos.hardware.Sound;
 import java.util.LinkedList;
+import java.util.Random;
 import ca.mcgill.ecse211.project.Resources.Point;
 import ca.mcgill.ecse211.project.Localization.LightLocalizer;
 
@@ -602,6 +603,20 @@ public class GameNavigation {
     // set new navigation coordinates
     GameResources.setNavigationCoordinates(minimal_point);
     return minimal_point;
+  }
+  
+  /**
+   * Method used to calculate a random launch point 
+   * 
+   * @return: The random launch pointn
+   */
+  public Point calculateRandomLaunchPoint() {
+    int length = this.launchPoints.size();
+    Random random = new Random();
+    int index = random.nextInt(length);
+    Point newLaunchPoint = launchPoints.get(index);
+    this.launchPoint = newLaunchPoint;
+    return newLaunchPoint;
   }
 
  
