@@ -46,7 +46,7 @@ public class GameResources {
    * The number of balls that the robot holds
    */
   public static final int NUMBER_OF_BALLS = 5;
-  
+
   /**
    * The offset of the arm from the center of the robot in centimeters.
    */
@@ -372,11 +372,9 @@ public class GameResources {
 
   // ****************************** OBSTACLE AVOIDANCE ******************************** //
   /*
-   * integer indicating the avoidance strategy
-   * if 1 : wall following strategy
-   * if 2: path finding strategy
+   * integer indicating the avoidance strategy if 1 : wall following strategy if 2: path finding strategy
    */
-  public static final int AVOIDANCE_STRATEGY=1;
+  public static final int AVOIDANCE_STRATEGY = 1;
   /*
    * Error acceptable for the orientation check during the wall folowing
    */
@@ -418,7 +416,7 @@ public class GameResources {
    * Distance of obstacle detection
    */
   public static final double OBSTACLE_DETECTION_DISTANCE = 15;
-  
+
   /*
    * Distance to shift the robot in path finder avoidance strategy
    */
@@ -428,6 +426,11 @@ public class GameResources {
    * Average width of obstacles
    */
   public static final double OBSTACLE_BACKUP = 10;
+  
+  /*
+   * Minimum distance required to avoid right
+   */
+  public static final double MINIMAL_AVOID_DISTANCE = 30;
 
 
 
@@ -539,6 +542,37 @@ public class GameResources {
     return restrictedPoints;
   }
 
+  public static void setCurrentLeftLimit(double currentLeftLimit) {
+    GameResources.currentLeftLimit = currentLeftLimit;
+  }
+
+  public static void setCurrentBottomLimit(double currentBottomLimit) {
+    GameResources.currentBottomLimit = currentBottomLimit;
+  }
+
+  public static void setCurrentTopLimit(double currentTopLimit) {
+    GameResources.currentTopLimit = currentTopLimit;
+  }
+
+  public static void setCurrentRightLimit(double currentRightLimit) {
+    GameResources.currentRightLimit = currentRightLimit;
+  }
+
+  public static double getCurrentBottomLimit() {
+    return currentBottomLimit;
+  }
+
+  public static double getCurrentLeftLimit() {
+    return currentLeftLimit;
+  }
+
+  public static double getCurrentRightLimit() {
+    return currentRightLimit;
+  }
+
+  public static double getCurrentTopLimit() {
+    return currentTopLimit;
+  }
 
 
 }

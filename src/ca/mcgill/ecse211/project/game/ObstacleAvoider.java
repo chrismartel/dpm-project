@@ -206,21 +206,33 @@ public class ObstacleAvoider {
    */
 
   public boolean avoidRight() {
-    double x = GameResources.odometer.getX() / GameResources.TILE_SIZE;
-    double y = GameResources.odometer.getY() / GameResources.TILE_SIZE;
+    double x = GameResources.odometer.getX();
+    double y = GameResources.odometer.getY();
     double theta = GameResources.odometer.getTheta();
+    double distance = 40;
 
     // heading approximately towards 0 degrees
     if ((theta >= 355 && theta <= 360) || (theta >= 0 && theta <= 5)) {
+      distance = GameResources.getCurrentRightLimit()*GameResources.TILE_SIZE-x;
     }
     // heading approximately towards 90 degrees
     else if (theta >= 85 && theta <= 95) {
+      distance = y-GameResources.getCurrentBottomLimit()*GameResources.TILE_SIZE;
+
     }
     // heading approximately towards 180 degrees
     else if (theta >= 175 && theta <= 185) {
+      distance = x- GameResources.getCurrentLeftLimit()*GameResources.TILE_SIZE;
     }
     // heading approximately towards 270 degrees
     else if (theta >= 265 && theta <= 275) {
+      distance = GameResources.getCurrentTopLimit()*GameResources.TILE_SIZE-y;
+    }
+    if(distance < GameResources.MINIMAL_AVOID_DISTANCE) {
+      return false;
+    }
+    else {
+      return true;
     }
   }
 
