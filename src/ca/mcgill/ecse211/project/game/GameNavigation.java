@@ -111,7 +111,9 @@ public class GameNavigation {
    */
   public void navigateToLaunchPoint(boolean xFirst) {
     boolean localized = false;
-    if(this.calculateDistance(launchPoint.x, launchPoint.y, GameResources.odometer.getX()/GameResources.TILE_SIZE, GameResources.odometer.getY()/GameResources.TILE_SIZE)<GameResources.localizationDistance) {
+    if(this.calculateDistance(launchPoint.x, launchPoint.y, 
+        GameResources.odometer.getX()/GameResources.TILE_SIZE, 
+        GameResources.odometer.getY()/GameResources.TILE_SIZE)<GameResources.localizationDistance) {
       localized=true;
     }
     // navigate to launch point

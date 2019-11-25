@@ -114,7 +114,8 @@ public class GameResources {
   /**
    * Differential value to determine if a black line is detected or not
    */
-  public static final int DIFFERENTIAL_LINE_THRESHOLD = 9; // CHANGE BACK TO 5 IF BAD
+
+  public static final int DIFFERENTIAL_LINE_THRESHOLD = 7; // HAS TO BE DETERMINE BY TESTING
 
   /**
    * Window size for the ultrasonic sensor data polling
@@ -138,7 +139,7 @@ public class GameResources {
   /**
    * Coefficient of the launching process to adjust the speed of the motors in function of the distance
    */
-  public static final double LAUNCH_COEFFICIENT = 0.8202; // HAS TO BE DETERMINED BY TESTING
+  public static final double LAUNCH_COEFFICIENT = 0.8802; // HAS TO BE DETERMINED BY TESTING
   
   /**
    * Initial value used to compute the motor speed to apply in functio of the distance
@@ -309,7 +310,7 @@ public class GameResources {
   /**
    * Minimum distance to travel to localize
    */
-  public static final double localizationDistance = 10;
+  public static final double localizationDistance = 20;
 
   /**
    * Limits of the current zone
@@ -344,11 +345,11 @@ public class GameResources {
   /*
    * Error acceptable for the orientation check during the wall folowing
    */
-  public static final double ORIENTATION_CHECK_ERROR = 1;
+  public static final double ORIENTATION_CHECK_ERROR = 3;
   /*
    * band center for the wall following
    */
-  public static final double BAND_CENTER = 15;
+  public static final double BAND_CENTER = 25;
   /*
    * band width for the wall following
    */
@@ -356,7 +357,7 @@ public class GameResources {
   /*
    * gain constant used for the P-controller
    */
-  public static final double GAIN_CONSTANT = 2;
+  public static final double GAIN_CONSTANT = 5;
   /*
    * minimum speed used during wall following
    */

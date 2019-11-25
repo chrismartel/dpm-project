@@ -16,7 +16,7 @@ public class ObstacleAvoider {
   /**
    * Method describing the wall following process using P-Controller
    */
-  public void wallFollower(int speed) {
+  public static void wallFollower(int speed) {
     // initial positioning
     Navigation.turn(90, GameResources.ROTATE_SPEED_FAST);
     double wallDistance;
@@ -25,6 +25,7 @@ public class ObstacleAvoider {
     double startTime;
     double endTime;
     int convexCornerCounter = 0;
+    int counter = 0;
     Navigation.travelForward(speed);
     while (!orientationCheck()) {
       startTime = System.currentTimeMillis();
@@ -32,7 +33,6 @@ public class ObstacleAvoider {
       wallDistance = GameResources.ultrasonicPoller.getLeftUsController().getDistance();
       System.out.println("DISTANCE WALL FOLOWER1:" + wallDistance);
 
-      System.out.println("DISTANCE WALL FOLOWER2:" + wallDistance);
 
       /*
        * // CONVEX CORNER HANDLING if (wallDistance >= GameResources.CONVEX_CORNER_CONSTANT) {
@@ -62,36 +62,56 @@ public class ObstacleAvoider {
       else {
         // robot is too far from wall
         if (error > 0) {
+//          System.out.println("going closer to wall");
           // imminent collision
           if (error > GameResources.MAXIMAL_ERROR) {
-            GameResources.leftMotor.backward();
-            GameResources.rightMotor.forward();
-            leftSpeed = speed;
-            rightSpeed = speed;
+            counter++;
+            if(counter > 15) {
+              GameResources.leftMotor.forward();
+              GameResources.rightMotor.forward();
+              leftSpeed = (int) (speed - (calculateGain(error)/1.5));
+              rightSpeed = (int) (speed + (calculateGain(error)/1.5));
+            }else {
+              GameResources.leftMotor.forward();
+              GameResources.rightMotor.forward();
+              leftSpeed = (int) (speed);
+              rightSpeed = (int) (speed + calculateGain(error));
+            }
+
           }
-          // normal adjustment
+          // normal adjustment, just slightly too far from wall
           else {
+            counter = 0;
             GameResources.leftMotor.forward();
             GameResources.rightMotor.forward();
-            leftSpeed = (int) (speed - this.calculateGain(error));
-            rightSpeed = (int) (speed + this.calculateGain(error));
+            leftSpeed = (int) (speed);
+            rightSpeed = (int) (speed + calculateGain(error));
           }
         }
         // robot is too close to wall
         else {
-          if (error < GameResources.MINIMAL_ERROR) {
-            GameResources.leftMotor.forward();
-            GameResources.rightMotor.backward();
-            leftSpeed = speed;
-            rightSpeed = speed;
-          }
-          // normal adjustment
-          else {
-            GameResources.leftMotor.forward();
-            GameResources.rightMotor.forward();
-            leftSpeed = (int) (speed + this.calculateGain(error));
-            rightSpeed = (int) (speed - this.calculateGain(error));
-          }
+          counter = 0;
+//          System.out.println("going away");
+          GameResources.leftMotor.forward();
+          GameResources.rightMotor.forward();
+          leftSpeed = (int) (speed + calculateGain(error));
+          rightSpeed = (int) (speed);
+          
+//          if (error < GameResources.MINIMAL_ERROR) {
+//            GameResources.leftMotor.forward();
+//            GameResources.rightMotor.backward();
+//            leftSpeed = speed;
+//            rightSpeed = speed;
+//          }
+//          // normal adjustment
+//          else {
+//            GameResources.leftMotor.forward();
+//            GameResources.rightMotor.forward();
+//            leftSpeed = (int) (speed + this.calculateGain(error));
+//            rightSpeed = (int) (speed - this.calculateGain(error));
+//          }
+          
+          
         }
         // set bounds on the speed during avoidance
         if (leftSpeed <= GameResources.MIN_AVOID_SPEED) {
@@ -153,10 +173,13 @@ public class ObstacleAvoider {
     }
     // if the orientation is with 1 degree from the expected navigation orientation and that there are no objects in
     // front of the robot --> return true
-    if (Math.abs(rotation) <= GameResources.ORIENTATION_CHECK_ERROR && GameResources.ultrasonicPoller
-        .getFrontUsController().getDistance() > 1.5 * GameResources.OBSTACLE_DETECTION_DISTANCE) {
+    if (Math.abs(rotation) <= GameResources.ORIENTATION_CHECK_ERROR 
+//        && 
+//        GameResources.ultrasonicPoller.getFrontUsController().getDistance() > 1.5 * GameResources.OBSTACLE_DETECTION_DISTANCE
+        ){
       return true;
     }
+//    System.out.println(rotation);
     return false;
   }
 
@@ -167,7 +190,7 @@ public class ObstacleAvoider {
    * @param : the error between the wall distance and the band center
    * @return : the gain to apply to the motor speeds
    */
-  private double calculateGain(double error) {
+  private static double calculateGain(double error) {
     double absError = Math.abs(error);
     double gain = absError * GameResources.GAIN_CONSTANT;
     return gain;

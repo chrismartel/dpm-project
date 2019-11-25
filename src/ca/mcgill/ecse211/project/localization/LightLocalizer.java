@@ -40,7 +40,7 @@ public class LightLocalizer {
 
   private static LightLocalizer loc; // Returned as singleton
 
-
+  long firstLineTime;
 
   /**
    * Constructor of the light localization class
@@ -126,21 +126,33 @@ public class LightLocalizer {
    * @return : false if both motors are stopped, true if 0 or 1 motor is stopped
    */
   public boolean lightLocalize() {
+    long MIN_TIME = 3000;
     int lines = lineDetected();
     if (lines == 1) {
       // only left sensor detected
       GameResources.leftMotor.setSpeed(0);
+      firstLineTime = System.currentTimeMillis();
     } else if (lines == 2) {
       // only right sensor detected
       GameResources.rightMotor.setSpeed(0);
+      firstLineTime = System.currentTimeMillis();
     } else if (lines == 3) {
       Navigation.stopMotors();
       // Both lines detected or no lines detected.
       // Therefore, do nothing
     }
     if (GameResources.leftMotor.getSpeed() == 0 && GameResources.rightMotor.getSpeed() == 0) {
-      // SET THE ODOMETER HERE
+      // Both motors have stopped so turn light localize off.
       return false;
+    }
+    else if(System.currentTimeMillis() - MIN_TIME > firstLineTime && 
+        (GameResources.rightMotor.getSpeed() != GameResources.leftMotor.getSpeed())) {
+      if(GameResources.leftMotor.getSpeed() == 0) {
+        GameResources.rightMotor.backward();
+      }
+      else if(GameResources.rightMotor.getSpeed() == 0){
+        GameResources.leftMotor.backward();
+      }
     }
 
     if (endTime - startTime < GameResources.LIGHT_SENSOR_PERIOD) {
@@ -300,7 +312,7 @@ public class LightLocalizer {
 
     switch (corner) {
       case 0:
-        //Navigation.turnTo(0, GameResources.ROTATE_SPEED_FAST);
+        Navigation.turnTo(0, GameResources.ROTATE_SPEED_FAST);
         twoLineDetection();
         Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
         GameResources.odometer.setXYT(GameResources.odometer.getX(), (point.y * GameResources.TILE_SIZE), 0);
@@ -336,6 +348,7 @@ public class LightLocalizer {
         GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) + GameResources.OFFSET_FROM_WHEELBASE, GameResources.odometer.getY(), 90);
         break;
     }
+    Navigation.travel(10, 150);
   }
 
 
