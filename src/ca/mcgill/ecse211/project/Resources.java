@@ -25,7 +25,7 @@ public class Resources {
    * beta demo and competition.
    */
 
-  public static final String SERVER_IP = "192.168.2.25";
+  public static final String SERVER_IP = "192.168.2.32";
 
   
   /**

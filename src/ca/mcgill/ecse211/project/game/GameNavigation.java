@@ -91,7 +91,7 @@ public class GameNavigation {
    */
   public void navigateToTunnelEntrance(boolean xFirst) {
     squareNavigation(tunnelEntrance.x, tunnelEntrance.y, xFirst, true);
-    // Navigation.turnTo(tunnelEntranceTraversalOrientation, GameResources.ROTATE_SPEED_FAST);
+    //Navigation.turnTo(tunnelEntranceTraversalOrientation, GameResources.ROTATE_SPEED_FAST);
   }
 
   /**
@@ -101,7 +101,7 @@ public class GameNavigation {
    */
   public void navigateToTunnelExit(boolean xFirst) {
     squareNavigation(tunnelExit.x, tunnelExit.y, xFirst, true);
-    Navigation.turnTo(tunnelExitTraversalOrientation, GameResources.ROTATE_SPEED_FAST);
+    //Navigation.turnTo(tunnelExitTraversalOrientation, GameResources.ROTATE_SPEED_FAST);
   }
 
   /**
@@ -138,7 +138,7 @@ public class GameNavigation {
 
     // additional turn so that the ballistic launcher points to the bin
     double adjustmentAngle = Math.toDegrees((Math.asin((GameResources.BALLISTIC_X_OFFSET_FROM_CENTER / distance))));
-    Navigation.turn(GameResources.BALLISTIC_ADJUSTMENT_ANGLE - 7 * adjustmentAngle, GameResources.ROTATE_SPEED_SLOW);
+    Navigation.turn(GameResources.BALLISTIC_ADJUSTMENT_ANGLE - 4 * adjustmentAngle, GameResources.ROTATE_SPEED_SLOW);
 
   }
 

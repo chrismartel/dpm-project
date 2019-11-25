@@ -2,6 +2,7 @@ package ca.mcgill.ecse211.project.game;
 
 import ca.mcgill.ecse211.project.game.GameResources.*;
 import ca.mcgill.ecse211.project.Resources.*;
+import ca.mcgill.ecse211.project.Display;
 import ca.mcgill.ecse211.project.Localization.LightLocalizer;
 import ca.mcgill.ecse211.project.Localization.UltrasonicLocalizer;
 import lejos.hardware.Button;
@@ -15,7 +16,7 @@ public class GameController {
     UltrasonicLocalizer ultrasonicLocalizer = new UltrasonicLocalizer();
     BallisticLauncher ballisticLauncher = new BallisticLauncher();
     ObstacleAvoider obstacleAvoider = new ObstacleAvoider();
-    
+
     // closest point used for light loc
     Point closestPoint;
     // tunnel traversal counter
@@ -57,6 +58,7 @@ public class GameController {
           // start threads
           Thread odometerThread = new Thread(GameResources.odometer);
           Thread usPollerTread = new Thread(GameResources.ultrasonicPoller);
+          new Thread(new Display()).start();
           startTime = System.currentTimeMillis();
           odometerThread.start();
           usPollerTread.start();
@@ -133,9 +135,25 @@ public class GameController {
               break;
             case TUNNEL_EXIT:
               // travel to the second tunnel entrance
+              System.out.println("EXIT"+gameNavigation.getTunnelExit().x+", "+gameNavigation.getTunnelExit().y);
               gameNavigation.navigateToTunnelExit(xFirst);
+              System.out.println("navigation to tunnel done");
 
               if (GameResources.isNavigationCompleted()) {
+                // LIGHT LOCALIZATION
+                //closestPoint = gameNavigation.closestPoint();
+//                Navigation.travelTo(closestPoint.x, closestPoint.y, GameResources.FORWARD_SPEED_NORMAL);
+//                System.out.println("navigation to closest point done");
+
+//                LightLocalizer.lightLocalize(closestPoint, false);
+//                GameResources.setLocalized(true);
+//                Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.ROTATE_SPEED_NORMAL);
+//                System.out.println("localization done");
+
+
+//                gameNavigation.navigateToTunnelExit(xFirst);
+                System.out.println("second navigation to tunnel done");
+
                 // update new checkpoint
                 GameResources.setNavigationDestination(NAVIGATION_DESTINATION.END_POINT);
                 // transition to tunnel state
@@ -149,8 +167,8 @@ public class GameController {
 
 
               if (GameResources.isNavigationCompleted()) {
-                System.out.println(
-                    "launchx: " + gameNavigation.getLaunchPoint().x + ", launchy: " + gameNavigation.getLaunchPoint().y);
+                System.out.println("launchx: " + gameNavigation.getLaunchPoint().x + ", launchy: "
+                    + gameNavigation.getLaunchPoint().y);
                 // localize before launch if the robot is not localized anymore
                 if (!GameResources.isLocalized()) {
                   // LIGHT LOCALIZATION
@@ -204,6 +222,7 @@ public class GameController {
             closestPoint = gameNavigation.closestPoint();
             Navigation.travelTo(closestPoint.x, closestPoint.y, GameResources.FORWARD_SPEED_NORMAL);
             LightLocalizer.lightLocalize(closestPoint, false);
+            Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.ROTATE_SPEED_NORMAL);
             GameResources.setLocalized(true);
 
             // compute the closest launch point
@@ -225,6 +244,7 @@ public class GameController {
 
               Navigation.travelTo(closestPoint.x, closestPoint.y, GameResources.FORWARD_SPEED_NORMAL);
               LightLocalizer.lightLocalize(closestPoint, false);
+              Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.ROTATE_SPEED_NORMAL);
               GameResources.setLocalized(true);
             }
           }
@@ -241,21 +261,45 @@ public class GameController {
           gameNavigation.generateLaunchPoints();
           Navigation.backUp(GameResources.OBSTACLE_BACKUP, GameResources.FORWARD_SPEED_FAST);
 
-          // WALL FOLLOWING STRATEGY
-          
+          // WALL FOLLOWING STRATEGY MIXED WITH PATH CHANGE
+
           if (avoidanceStrategy == 1) {
             // launch point is still the same
             if (!newLaunchPoint) {
               System.out.println("SAME LAUNCH POINT");
               // set the objective point of the wall follower
               obstacleAvoider.setGoalPoint(gameNavigation.getLaunchPoint());
-              obstacleAvoider.wallFollower(GameResources.FORWARD_SPEED_NORMAL);
+              // robot can avoid right
+              if (obstacleAvoider.avoidRight()) {
+                obstacleAvoider.wallFollower(GameResources.FORWARD_SPEED_NORMAL);
+              }
+              // robot can't avoid right
+              else {
+                obstacleAvoider.shiftLeft();
+                if (xFirst) {
+                  xFirst = false;
+                } else {
+                  xFirst = true;
+                }
+              }
             } else {
               System.out.println("NEW LAUNCH POINT NEEDED");
               // calculate a new launch point
               gameNavigation.calculateClosestLaunchPoint();
               obstacleAvoider.setGoalPoint(gameNavigation.getLaunchPoint());
-              obstacleAvoider.wallFollower(GameResources.FORWARD_SPEED_NORMAL);
+              // robot can avoid right
+              if (obstacleAvoider.avoidRight()) {
+                obstacleAvoider.wallFollower(GameResources.FORWARD_SPEED_NORMAL);
+              }
+              // robot can't avoid right
+              else {
+                obstacleAvoider.shiftLeft();
+                if (xFirst) {
+                  xFirst = false;
+                } else {
+                  xFirst = true;
+                }
+              }
             }
           }
 
@@ -271,9 +315,9 @@ public class GameController {
               } else {
                 xFirst = true;
               }
-//              for (Point point : GameResources.getRestrictedPoints()) {
-//                System.out.println("retsricted point: " + point.x + ", " + point.y);
-//              }
+              // for (Point point : GameResources.getRestrictedPoints()) {
+              // System.out.println("retsricted point: " + point.x + ", " + point.y);
+              // }
             }
             // new launch point so we may not have to get around obstacle
             else {
@@ -294,6 +338,8 @@ public class GameController {
                   GameResources.odometer.getY() / GameResources.TILE_SIZE));
           // transition back to navigation
           GameResources.setGameState(GameState.Navigation);
+          // LIGHT LOCALIZATION
+          LightLocalizer.lightLocalize(gameNavigation.getLaunchPoint(), true);
           break;
 
         default:
