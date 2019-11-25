@@ -58,7 +58,7 @@ public class GameController {
           // start threads
           Thread odometerThread = new Thread(GameResources.odometer);
           Thread usPollerTread = new Thread(GameResources.ultrasonicPoller);
-          new Thread(new Display()).start();
+          //new Thread(new Display()).start();
           startTime = System.currentTimeMillis();
           odometerThread.start();
           usPollerTread.start();
@@ -176,8 +176,8 @@ public class GameController {
 
 
               if (GameResources.isNavigationCompleted()) {
-                System.out.println("launchx: " + gameNavigation.getLaunchPoint().x + ", launchy: "
-                    + gameNavigation.getLaunchPoint().y);
+//                System.out.println("launchx: " + gameNavigation.getLaunchPoint().x + ", launchy: "
+//                    + gameNavigation.getLaunchPoint().y);
                 // localize before launch if the robot is not localized anymore
                 if (!GameResources.isLocalized()) {
                   // LIGHT LOCALIZATION
@@ -228,10 +228,11 @@ public class GameController {
             tunnel++;
 
             // LIGHT LOCALIZATION
+            Navigation.turn(90, GameResources.ROTATE_SPEED_FAST);
+            Navigation.travel(10, GameResources.FORWARD_SPEED_FAST);
             closestPoint = gameNavigation.closestPoint();
             Navigation.travelTo(closestPoint.x, closestPoint.y, GameResources.FORWARD_SPEED_NORMAL);
-            LightLocalizer.lightLocalize(closestPoint, false);
-            Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.ROTATE_SPEED_NORMAL);
+            LightLocalizer.lightLocalize(closestPoint, true);
             GameResources.setLocalized(true);
 
             // compute the closest launch point
@@ -249,11 +250,12 @@ public class GameController {
             currentTime = System.currentTimeMillis();
             if ((currentTime - startTime) <= 270000) {
               // LIGHT LOCALIZATION
+              Navigation.turn(90, GameResources.ROTATE_SPEED_FAST);
+              Navigation.travel(10, GameResources.FORWARD_SPEED_FAST);
               closestPoint = gameNavigation.closestPoint();
 
               Navigation.travelTo(closestPoint.x, closestPoint.y, GameResources.FORWARD_SPEED_NORMAL);
-              LightLocalizer.lightLocalize(closestPoint, false);
-              Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.ROTATE_SPEED_NORMAL);
+              LightLocalizer.lightLocalize(closestPoint, true);
               GameResources.setLocalized(true);
             }
           }
@@ -316,7 +318,7 @@ public class GameController {
           else if (avoidanceStrategy == 2) {
             // no new launch point, so we have to get around obstacle
             if (!newLaunchPoint) {
-              System.out.println("SAME LAUNCH POINT");
+//              System.out.println("SAME LAUNCH POINT");
               obstacleAvoider.shiftRobot();
               // change the path of square navigation
               if (xFirst) {
@@ -330,7 +332,7 @@ public class GameController {
             }
             // new launch point so we may not have to get around obstacle
             else {
-              System.out.println("NEW LAUNCH POINT NEEDED");
+//              System.out.println("NEW LAUNCH POINT NEEDED");
               // compute the closest launch point
               gameNavigation.calculateClosestLaunchPoint();
             }

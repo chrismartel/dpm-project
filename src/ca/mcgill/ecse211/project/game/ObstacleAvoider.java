@@ -211,20 +211,20 @@ public class ObstacleAvoider {
     double distance = 40;
 
     // heading approximately towards 0 degrees
-    if ((theta >= 355 && theta <= 360) || (theta >= 0 && theta <= 5)) {
+    if ((theta >= 340 && theta <= 360) || (theta >= 0 && theta <= 20)) {
       distance = GameResources.getCurrentRightLimit() * GameResources.TILE_SIZE - x;
     }
     // heading approximately towards 90 degrees
-    else if (theta >= 85 && theta <= 95) {
+    else if (theta >= 70 && theta <= 110) {
       distance = y - GameResources.getCurrentBottomLimit() * GameResources.TILE_SIZE;
 
     }
     // heading approximately towards 180 degrees
-    else if (theta >= 175 && theta <= 185) {
+    else if (theta >= 160 && theta <= 200) {
       distance = x - GameResources.getCurrentLeftLimit() * GameResources.TILE_SIZE;
     }
     // heading approximately towards 270 degrees
-    else if (theta >= 265 && theta <= 275) {
+    else if (theta >= 250 && theta <= 290) {
       distance = GameResources.getCurrentTopLimit() * GameResources.TILE_SIZE - y;
     }
     if (distance < GameResources.MINIMAL_AVOID_DISTANCE) {
@@ -276,7 +276,7 @@ public class ObstacleAvoider {
     double y = GameResources.odometer.getY() / GameResources.TILE_SIZE;
 
     // heading approximately towards 0 degrees
-    if ((theta >= 355 && theta <= 360) || (theta >= 0 && theta <= 5)) {
+    if ((theta >= 340 && theta <= 360) || (theta >= 0 && theta <= 20)) {
       System.out.println("HEADING UP");
 
       // robot is in the right part of the island--> avoid left
@@ -292,7 +292,7 @@ public class ObstacleAvoider {
       }
     }
     // heading approximately towards 90 degrees
-    else if (theta >= 85 && theta <= 95) {
+    else if (theta >= 70 && theta <= 110) {
       System.out.println("HEADING RIGHT");
       // robot is in the top part of the island --> avoid bottom
       if (y >= islandMiddleY) {
@@ -306,7 +306,7 @@ public class ObstacleAvoider {
       }
     }
     // heading approximately towards 180 degrees
-    else if (theta >= 175 && theta <= 185) {
+    else if (theta >= 160 && theta <= 200) {
       System.out.println("HEADING DOWN");
 
       if (x >= islandMiddleX) {
@@ -321,7 +321,7 @@ public class ObstacleAvoider {
       }
     }
     // heading approximately towards 270 degrees
-    else if (theta >= 265 && theta <= 275) {
+    else if (theta >= 250 && theta <= 290) {
       System.out.println("HEADING LEFT");
 
       // robot is in the top part of the island --> avoid bottom
