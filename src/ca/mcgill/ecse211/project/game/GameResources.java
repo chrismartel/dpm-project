@@ -148,7 +148,7 @@ public class GameResources {
   /**
    * Coefficient of the launching process to adjust the speed of the motors in function of the distance
    */
-  public static final double LAUNCH_COEFFICIENT = 0.7502; // HAS TO BE DETERMINED BY TESTING
+  public static final double LAUNCH_COEFFICIENT = 0.8002; // HAS TO BE DETERMINED BY TESTING
 
   /**
    * Initial value used to compute the motor speed to apply in functio of the distance

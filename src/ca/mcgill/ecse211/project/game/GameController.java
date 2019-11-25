@@ -2,6 +2,7 @@ package ca.mcgill.ecse211.project.game;
 
 import ca.mcgill.ecse211.project.game.GameResources.*;
 import ca.mcgill.ecse211.project.Resources.*;
+import ca.mcgill.ecse211.project.Display;
 import ca.mcgill.ecse211.project.Localization.LightLocalizer;
 import ca.mcgill.ecse211.project.Localization.UltrasonicLocalizer;
 import lejos.hardware.Button;
@@ -57,6 +58,7 @@ public class GameController {
           // start threads
           Thread odometerThread = new Thread(GameResources.odometer);
           Thread usPollerTread = new Thread(GameResources.ultrasonicPoller);
+          new Thread(new Display()).start();
           startTime = System.currentTimeMillis();
           odometerThread.start();
           usPollerTread.start();
