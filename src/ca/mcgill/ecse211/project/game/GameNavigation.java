@@ -90,8 +90,8 @@ public class GameNavigation {
    * @param : xFirst indicates if the navigation travels on the x or the y axis first
    */
   public void navigateToTunnelEntrance(boolean xFirst) {
-    squareNavigation(tunnelEntrance.x, tunnelEntrance.y, xFirst,true);
-    //Navigation.turnTo(tunnelEntranceTraversalOrientation, GameResources.ROTATE_SPEED_FAST);
+    squareNavigation(tunnelEntrance.x, tunnelEntrance.y, xFirst, true);
+    // Navigation.turnTo(tunnelEntranceTraversalOrientation, GameResources.ROTATE_SPEED_FAST);
   }
 
   /**
@@ -100,7 +100,7 @@ public class GameNavigation {
    * @param : xFirst indicates if the navigation travels on the x or the y axis first
    */
   public void navigateToTunnelExit(boolean xFirst) {
-    squareNavigation(tunnelExit.x, tunnelExit.y, xFirst,true);
+    squareNavigation(tunnelExit.x, tunnelExit.y, xFirst, true);
     Navigation.turnTo(tunnelExitTraversalOrientation, GameResources.ROTATE_SPEED_FAST);
   }
 
@@ -111,13 +111,12 @@ public class GameNavigation {
    */
   public void navigateToLaunchPoint(boolean xFirst) {
     boolean localized = false;
-    if(this.calculateDistance(launchPoint.x, launchPoint.y, 
-        GameResources.odometer.getX()/GameResources.TILE_SIZE, 
-        GameResources.odometer.getY()/GameResources.TILE_SIZE)<GameResources.localizationDistance) {
-      localized=true;
+    if (this.calculateDistance(launchPoint.x, launchPoint.y, GameResources.odometer.getX() / GameResources.TILE_SIZE,
+        GameResources.odometer.getY() / GameResources.TILE_SIZE) < GameResources.LOCALIZATION_DISTANCE) {
+      localized = true;
     }
     // navigate to launch point
-    squareNavigation(launchPoint.x, launchPoint.y, xFirst,true);
+    squareNavigation(launchPoint.x, launchPoint.y, xFirst, true);
     GameResources.setLocalized(localized);
   }
 
@@ -133,13 +132,13 @@ public class GameNavigation {
     double dY = binY - currentY;
     // turn towards launch point
     Navigation.turnTo(Math.toDegrees(Math.atan2(dX, dY)), GameResources.ROTATE_SPEED_SLOW);
-    System.out.println("atan: "+(Math.toDegrees(Math.atan2(dX, dY))));
+    System.out.println("atan: " + (Math.toDegrees(Math.atan2(dX, dY))));
     double distance = this.distanceFromBin(launchPoint.x, launchPoint.y);
-    System.out.println("distance: "+distance);
+    System.out.println("distance: " + distance);
 
     // additional turn so that the ballistic launcher points to the bin
     double adjustmentAngle = Math.toDegrees((Math.asin((GameResources.BALLISTIC_X_OFFSET_FROM_CENTER / distance))));
-    Navigation.turn(GameResources.BALLISTIC_ADJUSTMENT_ANGLE- 7*adjustmentAngle, GameResources.ROTATE_SPEED_SLOW);
+    Navigation.turn(GameResources.BALLISTIC_ADJUSTMENT_ANGLE - 7 * adjustmentAngle, GameResources.ROTATE_SPEED_SLOW);
 
   }
 
@@ -311,7 +310,7 @@ public class GameNavigation {
     // determine the target region, the region of the tunnel entrance
     if (GameResources.getCurrentRegion() == REGION.RED) {
       targetRegion = REGION.RED;
-    } else  {
+    } else {
       targetRegion = REGION.GREEN;
     }
     // determine where is the tunnel entrance
@@ -606,9 +605,9 @@ public class GameNavigation {
     GameResources.setNavigationCoordinates(minimal_point);
     return minimal_point;
   }
-  
+
   /**
-   * Method used to calculate a random launch point 
+   * Method used to calculate a random launch point
    * 
    * @return: The random launch pointn
    */
@@ -621,7 +620,7 @@ public class GameNavigation {
     return newLaunchPoint;
   }
 
- 
+
   /**
    * Method used to populate the linked list of possible launch points on the island of the game navigation instance. A
    * possible launch point is a point that is not on the borders of the current region, that is within the maximal
@@ -791,14 +790,7 @@ public class GameNavigation {
     return tunnelExitTraversalOrientation;
   }
 
-  /**
-   * Getter Method for the launch point
-   * 
-   * @return: the launching coordinate point
-   */
-  public Point getLaunchPoint() {
-    return launchPoint;
-  }
+
 
   /**
    * Setter Method of the tunnel entrance
@@ -835,7 +827,21 @@ public class GameNavigation {
   public void setTunnelExitTraversalOrientation(double tunnelExitTraversalOrientation) {
     this.tunnelExitTraversalOrientation = tunnelExitTraversalOrientation;
   }
-  
+
+  /**
+   * Getter Method for the launch point
+   * 
+   * @return: the launching coordinate point
+   */
+  public Point getLaunchPoint() {
+    return launchPoint;
+  }
+
+  /**
+   * Setter Method for the launch point
+   * 
+   * @param: the current launching point
+   */
   public void setLaunchPoint(Point launchPoint) {
     this.launchPoint = launchPoint;
   }

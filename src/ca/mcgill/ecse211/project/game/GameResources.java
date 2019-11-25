@@ -25,7 +25,7 @@ public class GameResources {
 
 
 
-  // HARDWARE DESIGN CONSTANTS
+  // ****************************** HARDWARE DESIGN CONSTANTS ******************************** //
 
   /**
    * The wheel radius.
@@ -37,22 +37,24 @@ public class GameResources {
    */
   public static final double TRACK = 15.8;// 14.77;
 
-
-
-  // ENVIRONMENT CONSTANTS
+  /**
+   * Light sensor to center of wheel-base distance
+   */
+  public static final double OFFSET_FROM_WHEELBASE = 11.4;
 
   /**
-   * The tile size in centimeters.
+   * The number of balls that the robot holds
    */
-  public static final double TILE_SIZE = 30.48;
-  /*
-   * Width of the black lines (cm)
+  public static final int NUMBER_OF_BALLS = 5;
+  
+  /**
+   * The offset of the arm from the center of the robot in centimeters.
    */
-  public static final double LINE_WIDTH = 0.5;
+  public static final double BALLISTIC_X_OFFSET_FROM_CENTER = 3.5;
 
 
 
-  // MOTORS CONSTANTS
+  // ****************************** MOTOR CONSTANTS ******************************** //
 
   /**
    * The speeds at which the robot moves forward in degrees per second.
@@ -70,7 +72,7 @@ public class GameResources {
 
 
 
-  // ULTRASONIC POLLER AND CONTROLLER CONSTANTS
+  // ****************************** ULTRASONIC POLLER AND CONTROLLER CONSTANTS ******************************** //
 
   /**
    * Window size for the ultrasonic sensor data polling
@@ -87,15 +89,15 @@ public class GameResources {
    * Filter out constant to filter the distance seen by the us sensor
    */
   public static final int FILTER_OUT = 5;
-  
+
   /**
    * Angle to turn in falling edge between the 2 detections
    */
-  public static final int FALLING_EDGE_ADJUSTMENT_ANGLE =-50;
+  public static final int FALLING_EDGE_ADJUSTMENT_ANGLE = -50;
 
 
 
-  // ULTRASONIC LOCALIZATION CONSTANTS
+  // ****************************** ULTRASONIC LOCALIZATION CONSTANTS ******************************** //
 
   /**
    * Arbitrary threshold constant for rising and falling edge cases for the ultrasonic localizer
@@ -109,7 +111,7 @@ public class GameResources {
 
 
 
-  // LIGHT LOCALIZATION CONSTANTS
+  // ****************************** LIGHT LOCALIZATION CONSTANTS ******************************** //
 
   /**
    * Differential value to determine if a black line is detected or not
@@ -127,30 +129,37 @@ public class GameResources {
    */
 
   public static final long LIGHT_SENSOR_PERIOD = 50; // HAS TO BE DETERMINED BY TESTING was 235
+
+
   /**
-   * Light sensor to center of wheel-base distance
+   * Minimum distance to travel to localize
    */
-  public static final double OFFSET_FROM_WHEELBASE = 11.4;
+  public static final double LOCALIZATION_DISTANCE = 20;
+
+  /**
+   * Adjustment distance to travel after initial localization
+   */
+  public static final double INITIAL_LIGHT_LOC_ADJUSTMENT_DISTANCE = 10;
 
 
 
-  // BALLISTIC LAUNCHER CONSTANTS
+  // ****************************** BALLISTIC LAUNCHER CONSTANTS ******************************** //
 
   /**
    * Coefficient of the launching process to adjust the speed of the motors in function of the distance
    */
   public static final double LAUNCH_COEFFICIENT = 0.8802; // HAS TO BE DETERMINED BY TESTING
-  
+
   /**
    * Initial value used to compute the motor speed to apply in functio of the distance
    */
   public static final double LAUNCH_IV = 109.334; // HAS TO BE DETERMINED BY TESTING
-  
+
   /**
    * Angle of rotation of the launching motors during launch
    */
   public static final int LAUNCHING_ANGLE = 100;
-  
+
 
   /**
    * Angle of rotation of the launching motors during reload Must be the same than the launching angle
@@ -161,7 +170,7 @@ public class GameResources {
    * Maximal distance to launch the ball
    */
   public static final int MAXIMAL_LAUNCH_DISTANCE = 232;
-  
+
   /**
    * Minimal distance to launch the ball
    */
@@ -184,26 +193,16 @@ public class GameResources {
   public static final int RELOAD_ACCELERATION = 3000;
 
   /**
-   * The number of balls that the robot holds
-   */
-  public static final int NUMBER_OF_BALLS = 5;
-
-  /**
-   * The offset of the arm from the center of the robot in centimeters.
-   */
-  public static final double BALLISTIC_X_OFFSET_FROM_CENTER = 3.5;
-
-  /**
    * The offset of the arm from the center of the robot in centimeters.
    */
   public static final int RELOAD_SPEED = 275;
-  
+
   /**
    * Adjustment angle during the 5 launches
    */
   public static final double BALLISTIC_ADJUSTMENT_ANGLE = -3;
 
-  // MOTORS AND SENSORS
+  // ****************************** MOTORS AND SENSORS ******************************** //
 
   /**
    * The left motor.
@@ -252,7 +251,7 @@ public class GameResources {
 
 
 
-  // SINGLETONS
+  // ****************************** SINGLETONS ******************************** //
 
   /**
    * The odometer singleton.
@@ -272,16 +271,47 @@ public class GameResources {
 
 
 
-  // MAP CONSTANTS
+  // ****************************** GAME CONSTANTS ******************************** //
+
+  /**
+   * The tile size in centimeters.
+   */
+  public static final double TILE_SIZE = 30.48;
+  /*
+   * Width of the black lines (cm)
+   */
+  public static final double LINE_WIDTH = 0.5;
+
+  /*
+   * Average width of obstacles
+   */
+  public static final double OBSTACLE_WIDTH = TILE_SIZE;
+
+  /**
+   * Region of team tunnel
+   */
   public static Region Tunnel = new Region(tng.ll, tng.ur); // default to green tunnel
-  public static Point STARTING_POINT; 
+  /**
+   * Coordinate point of team starting point
+   */
+  public static Point STARTING_POINT;
+  /**
+   * Team corner number
+   */
   public static int CORNER_NUMBER = 1;
-  public static Point bin = new Point(0,0);
+  /**
+   * Coordinate of team bin
+   */
+  public static Point bin = new Point(0, 0);
 
-  public static int FIELD_RIGHT = 8;   
+  /**
+   * Right wall x coordinate
+   */
+  public static int FIELD_RIGHT = 8;
+  /**
+   * Top wall y coordinate
+   */
   public static int FIELD_TOP = 8;
-
-  // GAME CONSTANTS
   /**
    * Current state of the game state machine
    */
@@ -296,21 +326,21 @@ public class GameResources {
    * Indicates if the odometry correction enabled or not
    */
   public static boolean enableCorrection = false;
-  
+
   /**
    * Indicates if the robot localized after its navigation or not
    */
   public static boolean localized = false;
-  
+
   /**
    * Indicates if the robot has detected an obstacle
    */
   public static boolean obstacleDetected = false;
-  
-  /**
-   * Minimum distance to travel to localize
+
+  /*
+   * Restricted points on the island
    */
-  public static final double localizationDistance = 20;
+  public static LinkedList<Point> restrictedPoints = new LinkedList<Point>();
 
   /**
    * Limits of the current zone
@@ -340,8 +370,13 @@ public class GameResources {
 
 
 
-
-  // OBSTACLE AVOIDANCE
+  // ****************************** OBSTACLE AVOIDANCE ******************************** //
+  /*
+   * integer indicating the avoidance strategy
+   * if 1 : wall following strategy
+   * if 2: path finding strategy
+   */
+  public static final int AVOIDANCE_STRATEGY=1;
   /*
    * Error acceptable for the orientation check during the wall folowing
    */
@@ -383,29 +418,20 @@ public class GameResources {
    * Distance of obstacle detection
    */
   public static final double OBSTACLE_DETECTION_DISTANCE = 15;
-
-  /*
-   * Average width of obstacles
-   */
-  public static final double OBSTACLE_WIDTH = TILE_SIZE;
   
   /*
-   * Average width of obstacles
+   * Distance to shift the robot in path finder avoidance strategy
    */
   public static final double SHIFT_DISTANCE = 2;
-  
+
   /*
    * Average width of obstacles
    */
   public static final double OBSTACLE_BACKUP = 10;
 
 
-  /*
-   * Restricted points on the island
-   */
-  public static LinkedList<Point> restrictedPoints = new LinkedList<Point>();
 
-  // ENUMS
+  // ****************************** ENUMERATIONS******************************** //
   /*
    * Enumeration of all team colors
    */
@@ -426,9 +452,9 @@ public class GameResources {
     RED, WATER, TUNNEL_RED, TUNNEL_GREEN, GREEN, ISLAND
   }
 
-  /*
-   * Getters and setters that variables that are changed throughout the game
-   */
+
+  // ****************************** GETTERS AND SETTERS METHODS ******************************** //
+
   public static GameState getGameState() {
     return gameState;
   }
@@ -468,23 +494,27 @@ public class GameResources {
   public static NAVIGATION_DESTINATION getNavigationDestination() {
     return navigationDestination;
   }
-  
+
   public static void setEnableCorrection(boolean enableCorrection) {
     GameResources.enableCorrection = enableCorrection;
   }
+
   public static boolean isEnableCorrection() {
     return enableCorrection;
   }
-  
+
   public static void setNavigationCompleted(boolean navigationCompleted) {
     GameResources.navigationCompleted = navigationCompleted;
   }
+
   public static boolean isNavigationCompleted() {
     return navigationCompleted;
   }
+
   public static Point getBin() {
     return bin;
   }
+
   public static void setBin(Point bin) {
     GameResources.bin = bin;
   }
@@ -492,19 +522,23 @@ public class GameResources {
   public static boolean isLocalized() {
     return localized;
   }
+
   public static void setLocalized(boolean localized) {
     GameResources.localized = localized;
   }
+
   public static void setObstacleDetected(boolean obstacleDetected) {
     GameResources.obstacleDetected = obstacleDetected;
   }
+
   public static boolean isObstacleDetected() {
     return obstacleDetected;
   }
+
   public static LinkedList<Point> getRestrictedPoints() {
     return restrictedPoints;
   }
-  
-  
-  
+
+
+
 }

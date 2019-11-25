@@ -1,12 +1,12 @@
 package ca.mcgill.ecse211.project.game;
 
 import ca.mcgill.ecse211.project.Resources;
+import ca.mcgill.ecse211.project.Resources.Point;
 import ca.mcgill.ecse211.project.game.Navigation.Turn;
 
 public class ObstacleAvoider {
 
-  private int obstacleDistance;
-
+  private Point goalPoint;
 
   /**
    * STRATEGY 1 : WALL FOLLOWER Robot avoids obstacle by wall following around them, wall following stops when the robot
@@ -16,7 +16,7 @@ public class ObstacleAvoider {
   /**
    * Method describing the wall following process using P-Controller
    */
-  public static void wallFollower(int speed) {
+  public void wallFollower(int speed) {
     // initial positioning
     Navigation.turn(90, GameResources.ROTATE_SPEED_FAST);
     double wallDistance;
@@ -27,7 +27,7 @@ public class ObstacleAvoider {
     int convexCornerCounter = 0;
     int counter = 0;
     Navigation.travelForward(speed);
-    while (!orientationCheck()) {
+    while (!this.orientationCheck()) {
       startTime = System.currentTimeMillis();
       // get distance from obstacle
       wallDistance = GameResources.ultrasonicPoller.getLeftUsController().getDistance();
@@ -62,16 +62,16 @@ public class ObstacleAvoider {
       else {
         // robot is too far from wall
         if (error > 0) {
-//          System.out.println("going closer to wall");
+          // System.out.println("going closer to wall");
           // imminent collision
           if (error > GameResources.MAXIMAL_ERROR) {
             counter++;
-            if(counter > 15) {
+            if (counter > 15) {
               GameResources.leftMotor.forward();
               GameResources.rightMotor.forward();
-              leftSpeed = (int) (speed - (calculateGain(error)/1.5));
-              rightSpeed = (int) (speed + (calculateGain(error)/1.5));
-            }else {
+              leftSpeed = (int) (speed - (calculateGain(error) / 1.5));
+              rightSpeed = (int) (speed + (calculateGain(error) / 1.5));
+            } else {
               GameResources.leftMotor.forward();
               GameResources.rightMotor.forward();
               leftSpeed = (int) (speed);
@@ -91,27 +91,27 @@ public class ObstacleAvoider {
         // robot is too close to wall
         else {
           counter = 0;
-//          System.out.println("going away");
+          // System.out.println("going away");
           GameResources.leftMotor.forward();
           GameResources.rightMotor.forward();
           leftSpeed = (int) (speed + calculateGain(error));
           rightSpeed = (int) (speed);
-          
-//          if (error < GameResources.MINIMAL_ERROR) {
-//            GameResources.leftMotor.forward();
-//            GameResources.rightMotor.backward();
-//            leftSpeed = speed;
-//            rightSpeed = speed;
-//          }
-//          // normal adjustment
-//          else {
-//            GameResources.leftMotor.forward();
-//            GameResources.rightMotor.forward();
-//            leftSpeed = (int) (speed + this.calculateGain(error));
-//            rightSpeed = (int) (speed - this.calculateGain(error));
-//          }
-          
-          
+
+          // if (error < GameResources.MINIMAL_ERROR) {
+          // GameResources.leftMotor.forward();
+          // GameResources.rightMotor.backward();
+          // leftSpeed = speed;
+          // rightSpeed = speed;
+          // }
+          // // normal adjustment
+          // else {
+          // GameResources.leftMotor.forward();
+          // GameResources.rightMotor.forward();
+          // leftSpeed = (int) (speed + this.calculateGain(error));
+          // rightSpeed = (int) (speed - this.calculateGain(error));
+          // }
+
+
         }
         // set bounds on the speed during avoidance
         if (leftSpeed <= GameResources.MIN_AVOID_SPEED) {
@@ -153,11 +153,11 @@ public class ObstacleAvoider {
    *         front of the robot, false if the orientation is not facing the goal coordinates or if there is an object in
    *         front of the robot
    */
-  public static boolean orientationCheck() {
+  public boolean orientationCheck() {
     double currentX = GameResources.odometer.getX();
     double currentY = GameResources.odometer.getY();
-    double goalX = GameResources.getNavigationCoordinates().x * GameResources.TILE_SIZE;
-    double goalY = GameResources.getNavigationCoordinates().y * GameResources.TILE_SIZE;
+    double goalX = this.getGoalPoint().x * GameResources.TILE_SIZE;
+    double goalY = this.getGoalPoint().y * GameResources.TILE_SIZE;
     double dX = goalX - currentX;
     double dY = goalY - currentY;
     double turnToAngle = Math.toDegrees(Math.atan2(dX, dY));
@@ -173,13 +173,14 @@ public class ObstacleAvoider {
     }
     // if the orientation is with 1 degree from the expected navigation orientation and that there are no objects in
     // front of the robot --> return true
-    if (Math.abs(rotation) <= GameResources.ORIENTATION_CHECK_ERROR 
-//        && 
-//        GameResources.ultrasonicPoller.getFrontUsController().getDistance() > 1.5 * GameResources.OBSTACLE_DETECTION_DISTANCE
-        ){
+    if (Math.abs(rotation) <= GameResources.ORIENTATION_CHECK_ERROR
+    // &&
+    // GameResources.ultrasonicPoller.getFrontUsController().getDistance() > 1.5 *
+    // GameResources.OBSTACLE_DETECTION_DISTANCE
+    ) {
       return true;
     }
-//    System.out.println(rotation);
+    // System.out.println(rotation);
     return false;
   }
 
@@ -204,11 +205,24 @@ public class ObstacleAvoider {
    * @return : true if the robot can avoid right, false if the robot can't avoid right
    */
 
-  // public boolean avoidRight() {
-  //
-  //
-  //
-  // }
+  public boolean avoidRight() {
+    double x = GameResources.odometer.getX() / GameResources.TILE_SIZE;
+    double y = GameResources.odometer.getY() / GameResources.TILE_SIZE;
+    double theta = GameResources.odometer.getTheta();
+
+    // heading approximately towards 0 degrees
+    if ((theta >= 355 && theta <= 360) || (theta >= 0 && theta <= 5)) {
+    }
+    // heading approximately towards 90 degrees
+    else if (theta >= 85 && theta <= 95) {
+    }
+    // heading approximately towards 180 degrees
+    else if (theta >= 175 && theta <= 185) {
+    }
+    // heading approximately towards 270 degrees
+    else if (theta >= 265 && theta <= 275) {
+    }
+  }
 
 
 
@@ -309,5 +323,13 @@ public class ObstacleAvoider {
     }
 
 
+  }
+
+  public void setGoalPoint(Point goalPoint) {
+    this.goalPoint = goalPoint;
+  }
+
+  public Point getGoalPoint() {
+    return goalPoint;
   }
 }

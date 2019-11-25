@@ -86,10 +86,11 @@ public class UltrasonicPoller implements Runnable {
       else {
         // Process the fetched distance in the front controller
         frontUsController.processDistance(this.frontDistance);
-        // when navigating on the island, check for obstacles
+        // when navigating on the island or when localizing after first tunnel, check for obstacles
         if ((GameResources.getGameState() == GameState.Navigation && GameResources.getCurrentRegion() == REGION.ISLAND)
             || (GameResources.getGameState() == GameState.Tunnel && GameResources.getCurrentRegion() == REGION.ISLAND
                 && GameResources.getNavigationDestination() == NAVIGATION_DESTINATION.LAUNCH_POINT)) {
+          // check for obstacles
           frontUsController.checkForObstacle();
         }
       }

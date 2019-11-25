@@ -12,24 +12,7 @@ public class BallisticLauncher {
    * 
    * @param : the distance we want the ball to travel in cm
    */
-  public void launch(double distance, int motorLaunchingSpeed) {
-    // sleeps 5 seconds before launch
 
-    // set the launching speed to a constant (only for lab 5)
-    // set the speeds and accelerations of the launching motors
-    GameResources.leftBallisticMotor.setSpeed(motorLaunchingSpeed);
-    GameResources.rightBallisticMotor.setSpeed(motorLaunchingSpeed);
-    GameResources.leftBallisticMotor.setAcceleration(GameResources.LAUNCH_ACCELERATION);
-    GameResources.rightBallisticMotor.setAcceleration(GameResources.LAUNCH_ACCELERATION);
-    // launch the ball by rotating a particular amount of degrees
-    GameResources.leftBallisticMotor.rotate(-GameResources.LAUNCHING_ANGLE, true);
-    GameResources.rightBallisticMotor.rotate(-GameResources.LAUNCHING_ANGLE, false);
-    // sleeps after launch
-    try {
-      Thread.sleep(GameResources.RELOAD_SLEEP);
-    } catch (InterruptedException e) {
-    }
-  }
   public void launch(double distance) {
     // sleeps 5 seconds before launch
     System.out.println("DISTANCE FROM BIN: "+distance);

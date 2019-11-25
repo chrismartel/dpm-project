@@ -312,7 +312,7 @@ public class LightLocalizer {
 
     switch (corner) {
       case 0:
-        Navigation.turnTo(0, GameResources.ROTATE_SPEED_FAST);
+        //Navigation.turnTo(0, GameResources.ROTATE_SPEED_FAST);
         twoLineDetection();
         Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
         GameResources.odometer.setXYT(GameResources.odometer.getX(), (point.y * GameResources.TILE_SIZE), 0);
@@ -348,7 +348,7 @@ public class LightLocalizer {
         GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) + GameResources.OFFSET_FROM_WHEELBASE, GameResources.odometer.getY(), 90);
         break;
     }
-    Navigation.travel(10, 150);
+    Navigation.travel(GameResources.INITIAL_LIGHT_LOC_ADJUSTMENT_DISTANCE, GameResources.FORWARD_SPEED_NORMAL);
   }
 
 
