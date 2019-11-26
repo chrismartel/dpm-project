@@ -3,6 +3,7 @@ package ca.mcgill.ecse211.project.Localization;
 import ca.mcgill.ecse211.project.Resources.Point;
 import ca.mcgill.ecse211.project.game.GameResources;
 import ca.mcgill.ecse211.project.game.Navigation;
+import ca.mcgill.ecse211.project.odometry.OdometryCorrection;
 
 /**
  * This class implements the methods used to execute the light localization using 2 sensors at the back of the robot
@@ -126,7 +127,7 @@ public class LightLocalizer {
    * @return : false if both motors are stopped, true if 0 or 1 motor is stopped
    */
   public boolean lightLocalize() {
-    long MIN_TIME = 2000;
+    long MIN_TIME = 1500;
     int lines = lineDetected();
     if (lines == 1) {
       // only left sensor detected
@@ -237,12 +238,14 @@ public class LightLocalizer {
       System.out.println("GENERAL PROCEDURE");
       Navigation.turnTo(0, GameResources.ROTATE_SPEED_FAST);
       LightLocalizer.twoLineDetection();
+      OdometryCorrection.correctValues();
       Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
-      GameResources.odometer.setXYT(GameResources.odometer.getX(), point.y * GameResources.TILE_SIZE, 0);
+//      GameResources.odometer.setXYT(GameResources.odometer.getX(), point.y * GameResources.TILE_SIZE, 0);
       Navigation.turnTo(90, GameResources.ROTATE_SPEED_FAST);
       LightLocalizer.twoLineDetection();
-      GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) + GameResources.OFFSET_FROM_WHEELBASE,
-          GameResources.odometer.getY(), 90);
+      OdometryCorrection.correctValues();
+//      GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) + GameResources.OFFSET_FROM_WHEELBASE,
+//          GameResources.odometer.getY(), 90);
     }
     // The point is near a wall --> SPECIAL CASES
     else {
@@ -251,47 +254,55 @@ public class LightLocalizer {
       if (point.x == (GameResources.FIELD_RIGHT - 1) && point.y == (GameResources.FIELD_RIGHT - 1)) {
         Navigation.turnTo(180, GameResources.ROTATE_SPEED_FAST);
         LightLocalizer.twoLineDetection();
+        OdometryCorrection.correctValues();
         Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
-        GameResources.odometer.setXYT(GameResources.odometer.getX(), point.y * GameResources.TILE_SIZE, 180);
+//        GameResources.odometer.setXYT(GameResources.odometer.getX(), point.y * GameResources.TILE_SIZE, 180);
         Navigation.turnTo(270, GameResources.ROTATE_SPEED_FAST);
         LightLocalizer.twoLineDetection();
-        GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) - GameResources.OFFSET_FROM_WHEELBASE,
-            GameResources.odometer.getY(), 270);
+        OdometryCorrection.correctValues();
+//        GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) - GameResources.OFFSET_FROM_WHEELBASE,
+//            GameResources.odometer.getY(), 270);
       }
 
       // only close to right wall
       else if (point.x == (GameResources.FIELD_RIGHT - 1)) {
         Navigation.turnTo(0, GameResources.ROTATE_SPEED_FAST);
         LightLocalizer.twoLineDetection();
+        OdometryCorrection.correctValues();
         Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
-        GameResources.odometer.setXYT(GameResources.odometer.getX(), point.y * GameResources.TILE_SIZE, 0);
+//        GameResources.odometer.setXYT(GameResources.odometer.getX(), point.y * GameResources.TILE_SIZE, 0);
         Navigation.turnTo(270, GameResources.ROTATE_SPEED_FAST);
         LightLocalizer.twoLineDetection();
-        GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) - GameResources.OFFSET_FROM_WHEELBASE,
-            GameResources.odometer.getY(), 270);
+        OdometryCorrection.correctValues();
+//        GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) - GameResources.OFFSET_FROM_WHEELBASE,
+//            GameResources.odometer.getY(), 270);
 
       }
       // only close to top wall
       else if (point.y == (GameResources.FIELD_TOP - 1)) {
         Navigation.turnTo(180, GameResources.ROTATE_SPEED_FAST);
         LightLocalizer.twoLineDetection();
+        OdometryCorrection.correctValues();
         Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
-        GameResources.odometer.setXYT(GameResources.odometer.getX(), point.y * GameResources.TILE_SIZE, 0);
+//        GameResources.odometer.setXYT(GameResources.odometer.getX(), point.y * GameResources.TILE_SIZE, 0);
         Navigation.turnTo(90, GameResources.ROTATE_SPEED_FAST);
         LightLocalizer.twoLineDetection();
-        GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) + GameResources.OFFSET_FROM_WHEELBASE,
-            GameResources.odometer.getY(), 90);
+        OdometryCorrection.correctValues();
+//        GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) + GameResources.OFFSET_FROM_WHEELBASE,
+//            GameResources.odometer.getY(), 90);
       }
       // either close to left wall or to bottom wall --> general procedure
       else if (point.x == 1 || point.y == 1) {
         Navigation.turnTo(0, GameResources.ROTATE_SPEED_FAST);
         LightLocalizer.twoLineDetection();
+        OdometryCorrection.correctValues();
         Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
-        GameResources.odometer.setXYT(GameResources.odometer.getX(), point.y * GameResources.TILE_SIZE, 0);
+//        GameResources.odometer.setXYT(GameResources.odometer.getX(), point.y * GameResources.TILE_SIZE, 0);
         Navigation.turnTo(90, GameResources.ROTATE_SPEED_FAST);
         LightLocalizer.twoLineDetection();
-        GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) + GameResources.OFFSET_FROM_WHEELBASE,
-            GameResources.odometer.getY(), 90);
+        OdometryCorrection.correctValues();
+//        GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) + GameResources.OFFSET_FROM_WHEELBASE,
+//            GameResources.odometer.getY(), 90);
       }
 
     }

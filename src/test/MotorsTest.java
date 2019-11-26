@@ -11,7 +11,7 @@ public class MotorsTest {
     new Thread(odometer).start();
     new Thread(new Display()).start();
     while(true) {
-    Navigation.turn(90, 150);
+    Navigation.turn(-90, 150);
     Button.waitForAnyPress();
     }
     

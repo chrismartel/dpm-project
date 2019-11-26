@@ -2,6 +2,7 @@ package ca.mcgill.ecse211.project.game;
 
 import ca.mcgill.ecse211.project.Resources;
 import ca.mcgill.ecse211.project.Resources.Point;
+import ca.mcgill.ecse211.project.odometry.Odometer;
 
 public class ObstacleAvoider {
 
@@ -266,10 +267,13 @@ public class ObstacleAvoider {
     double islandHeight = Resources.island.ur.y - Resources.island.ll.y;
     double islandMiddleX = Resources.island.ur.x - (islandWidth / 2);
     double islandMiddleY = Resources.island.ur.y - (islandHeight / 2);
+    double newX = GameResources.odometer.getX();
+    double newY = GameResources.odometer.getY();
     System.out.println("island width: " + islandWidth);
     System.out.println("island height: " + islandHeight);
     System.out.println("island middle x: " + islandMiddleX);
     System.out.println("island middle y: " + islandMiddleY);
+    boolean xFirst = true;
 
     // coordinates of the robots position
     double x = GameResources.odometer.getX() / GameResources.TILE_SIZE;
@@ -278,64 +282,77 @@ public class ObstacleAvoider {
     // heading approximately towards 0 degrees
     if ((theta >= 340 && theta <= 360) || (theta >= 0 && theta <= 20)) {
       System.out.println("HEADING UP");
-
+      xFirst = true;
       // robot is in the right part of the island--> avoid left
       if (x >= islandMiddleX) {
         // GameNavigation.squareNavigation(x - GameResources.SHIFT_DISTANCE, y, true,false);
         Navigation.turn(-90, GameResources.ROTATE_SPEED_NORMAL);
+        newX = newX - GameResources.SHIFT_DISTANCE;
+        
       }
       // robot is in the left part of the island --> avoid right
       else {
         // GameNavigation.squareNavigation(x + GameResources.SHIFT_DISTANCE, y, true,false);
         Navigation.turn(90, GameResources.ROTATE_SPEED_NORMAL);
+        newX = newX + GameResources.SHIFT_DISTANCE;
 
       }
     }
     // heading approximately towards 90 degrees
     else if (theta >= 70 && theta <= 110) {
       System.out.println("HEADING RIGHT");
+      xFirst = false;
       // robot is in the top part of the island --> avoid bottom
       if (y >= islandMiddleY) {
         // GameNavigation.squareNavigation(x, y - GameResources.SHIFT_DISTANCE, false,false);
         Navigation.turn(90, GameResources.ROTATE_SPEED_NORMAL);
+        newY = newY - GameResources.SHIFT_DISTANCE;
       }
       // robot is in the bottom part of the island --> avoid top
       else {
         // GameNavigation.squareNavigation(x, y + GameResources.SHIFT_DISTANCE, false,false);
         Navigation.turn(-90, GameResources.ROTATE_SPEED_NORMAL);
+        newY = newY + GameResources.SHIFT_DISTANCE;
       }
     }
     // heading approximately towards 180 degrees
     else if (theta >= 160 && theta <= 200) {
       System.out.println("HEADING DOWN");
-
+      xFirst = true;
       if (x >= islandMiddleX) {
 
         // GameNavigation.squareNavigation(x - GameResources.SHIFT_DISTANCE, y, true,false);
-        Navigation.turn(90, GameResources.ROTATE_SPEED_NORMAL);
+        Navigation.turn(-90, GameResources.ROTATE_SPEED_NORMAL);
+        newX = newX - GameResources.SHIFT_DISTANCE;
       }
       // robot is in the left part of the island --> avoid right
       else {
         // GameNavigation.squareNavigation(x + GameResources.SHIFT_DISTANCE, y, true,false);
         Navigation.turn(90, GameResources.ROTATE_SPEED_NORMAL);
+        newX = newX + GameResources.SHIFT_DISTANCE;
       }
     }
     // heading approximately towards 270 degrees
     else if (theta >= 250 && theta <= 290) {
       System.out.println("HEADING LEFT");
-
+      xFirst = false;
       // robot is in the top part of the island --> avoid bottom
       if (y >= islandMiddleY) {
         // GameNavigation.squareNavigation(x, y - GameResources.SHIFT_DISTANCE, false,false);
         Navigation.turn(-90, GameResources.ROTATE_SPEED_NORMAL);
+        newY = newY - GameResources.SHIFT_DISTANCE;
       }
       // robot is in the bottom part of the island --> avoid top
       else {
         // GameNavigation.squareNavigation(x, y + GameResources.SHIFT_DISTANCE, false,false);
         Navigation.turn(90, GameResources.ROTATE_SPEED_NORMAL);
+        newY = newY + GameResources.SHIFT_DISTANCE;
       }
     }
+    GameResources.setEnableCorrection(true);
     Navigation.travel(GameResources.SHIFT_DISTANCE, GameResources.FORWARD_SPEED_NORMAL);
+    GameResources.setEnableCorrection(false);
+//    GameNavigation.squareNavigation(newX/GameResources.TILE_SIZE,newY/GameResources.TILE_SIZE, xFirst, true);
   }
 
   /**

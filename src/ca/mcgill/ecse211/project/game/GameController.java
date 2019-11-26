@@ -58,7 +58,7 @@ public class GameController {
           // start threads
           Thread odometerThread = new Thread(GameResources.odometer);
           Thread usPollerTread = new Thread(GameResources.ultrasonicPoller);
-          //new Thread(new Display()).start();
+          new Thread(new Display()).start();
           startTime = System.currentTimeMillis();
           odometerThread.start();
           usPollerTread.start();
@@ -145,6 +145,7 @@ public class GameController {
             case TUNNEL_EXIT:
               // travel to the second tunnel entrance
 //              System.out.println("EXIT"+gameNavigation.getTunnelExit().x+", "+gameNavigation.getTunnelExit().y);
+              obstacleAvoider.setGoalPoint(gameNavigation.getTunnelExit());
               gameNavigation.navigateToTunnelExit(xFirst);
 //              System.out.println("navigation to tunnel done");
 
@@ -179,11 +180,11 @@ public class GameController {
 //                System.out.println("launchx: " + gameNavigation.getLaunchPoint().x + ", launchy: "
 //                    + gameNavigation.getLaunchPoint().y);
                 // localize before launch if the robot is not localized anymore
-                if (!GameResources.isLocalized()) {
-                  // LIGHT LOCALIZATION
-                  LightLocalizer.lightLocalize(gameNavigation.getLaunchPoint(), true);
-                  GameResources.setLocalized(true);
-                }
+//                if (!GameResources.isLocalized()) {
+//                  // LIGHT LOCALIZATION
+//                  LightLocalizer.lightLocalize(gameNavigation.getLaunchPoint(), true);
+//                  GameResources.setLocalized(true);
+//                }
                 // turn towards the bin
                 gameNavigation.turnToTarget();
 
@@ -214,50 +215,52 @@ public class GameController {
           // adjust heading
           LightLocalizer.twoLineDetection();
           // position center of rotation at tunnel entrance
-          Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_NORMAL);
-
+          
           // correct odometer according to tunnel entrance data
           // first tunnel traversal
           if (tunnel == 0) {
-            GameResources.odometer.setXYT(gameNavigation.getTunnelEntrance().x * GameResources.TILE_SIZE,
-                gameNavigation.getTunnelEntrance().y * GameResources.TILE_SIZE,
-                gameNavigation.getTunnelEntranceTraversalOrientation());
+            
+//            GameResources.odometer.setXYT(gameNavigation.getTunnelEntrance().x * GameResources.TILE_SIZE,
+//                gameNavigation.getTunnelEntrance().y * GameResources.TILE_SIZE,
+//                gameNavigation.getTunnelEntranceTraversalOrientation());
             // navigate through tunnel
             gameNavigation.navigateThroughTunnel();
             // increment the tunnel traversal counter
             tunnel++;
 
             // LIGHT LOCALIZATION
-            Navigation.turn(90, GameResources.ROTATE_SPEED_FAST);
-            Navigation.travel(10, GameResources.FORWARD_SPEED_FAST);
-            closestPoint = gameNavigation.closestPoint();
-            Navigation.travelTo(closestPoint.x, closestPoint.y, GameResources.FORWARD_SPEED_NORMAL);
-            LightLocalizer.lightLocalize(closestPoint, true);
-            GameResources.setLocalized(true);
+//            Navigation.turn(90, GameResources.ROTATE_SPEED_FAST);
+//            Navigation.travel(10, GameResources.FORWARD_SPEED_FAST);
+//            closestPoint = gameNavigation.closestPoint();
+//            Navigation.travelTo(closestPoint.x, closestPoint.y, GameResources.FORWARD_SPEED_NORMAL);
+//            LightLocalizer.lightLocalize(closestPoint, true);
+//            GameResources.setLocalized(true);
 
             // compute the closest launch point
             gameNavigation.calculateClosestLaunchPoint();
           }
           // second tunnel traversal
           else if (tunnel == 1) {
-            GameResources.odometer.setXYT(gameNavigation.getTunnelExit().x * GameResources.TILE_SIZE,
-                gameNavigation.getTunnelExit().y * GameResources.TILE_SIZE,
-                gameNavigation.getTunnelExitTraversalOrientation());
+//            closestPoint = gameNavigation.closestPoint();
+//            LightLocalizer.lightLocalize(closestPoint, true);
+//            GameResources.odometer.setXYT(gameNavigation.getTunnelExit().x * GameResources.TILE_SIZE,
+//                gameNavigation.getTunnelExit().y * GameResources.TILE_SIZE,
+//                gameNavigation.getTunnelExitTraversalOrientation());
             // navigate through tunnel
             gameNavigation.navigateThroughTunnel();
 
             // if more than 4 minutes and a half have passed, don't localize at the end of the second tunnel
             currentTime = System.currentTimeMillis();
-            if ((currentTime - startTime) <= 270000) {
-              // LIGHT LOCALIZATION
-              Navigation.turn(90, GameResources.ROTATE_SPEED_FAST);
-              Navigation.travel(10, GameResources.FORWARD_SPEED_FAST);
-              closestPoint = gameNavigation.closestPoint();
+//            if ((currentTime - startTime) <= 270000) {
+//              // LIGHT LOCALIZATION
+//              Navigation.turn(90, GameResources.ROTATE_SPEED_FAST);
+//              Navigation.travel(10, GameResources.FORWARD_SPEED_FAST);
+//              closestPoint = gameNavigation.closestPoint();
 
-              Navigation.travelTo(closestPoint.x, closestPoint.y, GameResources.FORWARD_SPEED_NORMAL);
-              LightLocalizer.lightLocalize(closestPoint, true);
-              GameResources.setLocalized(true);
-            }
+//              Navigation.travelTo(closestPoint.x, closestPoint.y, GameResources.FORWARD_SPEED_NORMAL);
+//              LightLocalizer.lightLocalize(closestPoint, true);
+//              GameResources.setLocalized(true);
+//            }
           }
           // transition back to navigation
           GameResources.setGameState(GameState.Navigation);
@@ -270,7 +273,8 @@ public class GameController {
           boolean newLaunchPoint = gameNavigation.createRestrictedPoints();
           // possible launch points updated
           gameNavigation.generateLaunchPoints();
-          Navigation.backUp(GameResources.OBSTACLE_BACKUP, GameResources.FORWARD_SPEED_FAST);
+          double backupDistance = gameNavigation.calculateBackwardDistance();
+          Navigation.backUp(backupDistance, GameResources.FORWARD_SPEED_FAST);
 
           // WALL FOLLOWING STRATEGY MIXED WITH PATH CHANGE
 
@@ -282,11 +286,18 @@ public class GameController {
               obstacleAvoider.setGoalPoint(gameNavigation.getLaunchPoint());
               // robot can avoid right
               if (obstacleAvoider.avoidRight()) {
-                obstacleAvoider.wallFollower(GameResources.FORWARD_SPEED_NORMAL);
+                obstacleAvoider.shiftRobot();
+                if (xFirst) {
+                  xFirst = false;
+                } else {
+                  xFirst = true;
+                }
+//                obstacleAvoider.wallFollower(GameResources.FORWARD_SPEED_NORMAL);
               }
               // robot can't avoid right
               else {
-                obstacleAvoider.shiftLeft();
+                obstacleAvoider.shiftRobot();
+//                obstacleAvoider.shiftLeft();
                 if (xFirst) {
                   xFirst = false;
                 } else {
@@ -300,11 +311,19 @@ public class GameController {
               obstacleAvoider.setGoalPoint(gameNavigation.getLaunchPoint());
               // robot can avoid right
               if (obstacleAvoider.avoidRight()) {
-                obstacleAvoider.wallFollower(GameResources.FORWARD_SPEED_NORMAL);
+//                obstacleAvoider.wallFollower(GameResources.FORWARD_SPEED_NORMAL);
+                obstacleAvoider.shiftRobot();
+                if (xFirst) {
+                  xFirst = false;
+                } else {
+                  xFirst = true;
+                }
               }
               // robot can't avoid right
               else {
-                obstacleAvoider.shiftLeft();
+                obstacleAvoider.shiftRobot();
+
+//                obstacleAvoider.shiftLeft();
                 if (xFirst) {
                   xFirst = false;
                 } else {
@@ -350,7 +369,7 @@ public class GameController {
           // transition back to navigation
           GameResources.setGameState(GameState.Navigation);
           // LIGHT LOCALIZATION
-          LightLocalizer.lightLocalize(gameNavigation.getLaunchPoint(), true);
+//          LightLocalizer.lightLocalize(gameNavigation.getLaunchPoint(), true);
           break;
 
         default:

@@ -117,7 +117,7 @@ public class GameResources {
    * Differential value to determine if a black line is detected or not
    */
 
-  public static final int DIFFERENTIAL_LINE_THRESHOLD = 7; // HAS TO BE DETERMINE BY TESTING
+  public static int DIFFERENTIAL_LINE_THRESHOLD = 7; // HAS TO BE DETERMINE BY TESTING
 
   /**
    * Window size for the ultrasonic sensor data polling
@@ -169,7 +169,7 @@ public class GameResources {
   /**
    * Maximal distance to launch the ball
    */
-  public static final int MAXIMAL_LAUNCH_DISTANCE = 210;
+  public static final int MAXIMAL_LAUNCH_DISTANCE = 230;
 
   /**
    * Minimal distance to launch the ball
@@ -420,7 +420,7 @@ public class GameResources {
   /*
    * Distance to shift the robot in path finder avoidance strategy
    */
-  public static final double SHIFT_DISTANCE = 30;
+  public static final double SHIFT_DISTANCE = 45;
 
   /*
    * Average width of obstacles
@@ -572,6 +572,10 @@ public class GameResources {
 
   public static double getCurrentTopLimit() {
     return currentTopLimit;
+  }
+  
+  public static void setDifferential(int differential) {
+    DIFFERENTIAL_LINE_THRESHOLD = differential;
   }
 
 

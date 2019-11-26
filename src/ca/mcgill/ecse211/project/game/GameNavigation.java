@@ -101,7 +101,7 @@ public class GameNavigation {
    */
   public void navigateToTunnelExit(boolean xFirst) {
     squareNavigation(tunnelExit.x, tunnelExit.y, xFirst, true);
-    Navigation.turnTo(tunnelExitTraversalOrientation, GameResources.ROTATE_SPEED_FAST);
+//    Navigation.turnTo(tunnelExitTraversalOrientation, GameResources.ROTATE_SPEED_FAST);
   }
 
   /**
@@ -138,7 +138,7 @@ public class GameNavigation {
 
     // additional turn so that the ballistic launcher points to the bin
     double adjustmentAngle = Math.toDegrees((Math.asin((GameResources.BALLISTIC_X_OFFSET_FROM_CENTER / distance))));
-    Navigation.turn(GameResources.BALLISTIC_ADJUSTMENT_ANGLE - 4 * adjustmentAngle, GameResources.ROTATE_SPEED_SLOW);
+    Navigation.turn(GameResources.BALLISTIC_ADJUSTMENT_ANGLE - 2 * adjustmentAngle, GameResources.ROTATE_SPEED_SLOW);
 
   }
 
@@ -149,18 +149,32 @@ public class GameNavigation {
    */
   public void navigateThroughTunnel() {
     // first tunnel traversal
+//    GameResources.setDifferential(12);
     if (tunnel == 0) {
+      Navigation.turnTo(tunnelExit.x, tunnelExit.y, GameResources.FORWARD_SPEED_NORMAL);
+      Navigation.backUp((GameResources.OFFSET_FROM_WHEELBASE+10), GameResources.FORWARD_SPEED_NORMAL);
+      GameResources.setEnableCorrection(true);
+      Navigation.travel((GameResources.OFFSET_FROM_WHEELBASE+10),GameResources.FORWARD_SPEED_NORMAL);
+      GameResources.setEnableCorrection(false);
       Navigation.travelTo(tunnelExit.x, tunnelExit.y, GameResources.FORWARD_SPEED_FAST);
+//      squareNavigation(tunnelExit.x, tunnelExit.y, true, true);
       tunnel++;
     }
     // second tunnel traversal
     else if (tunnel == 1) {
+      Navigation.turnTo(tunnelEntrance.x, tunnelEntrance.y, GameResources.FORWARD_SPEED_NORMAL);
+      Navigation.backUp((GameResources.OFFSET_FROM_WHEELBASE+5), GameResources.FORWARD_SPEED_NORMAL);
+      GameResources.setEnableCorrection(true);
+      Navigation.travel((GameResources.OFFSET_FROM_WHEELBASE+5),GameResources.FORWARD_SPEED_NORMAL);
+      GameResources.setEnableCorrection(false);
       Navigation.travelTo(tunnelEntrance.x, tunnelEntrance.y, GameResources.FORWARD_SPEED_FAST);
+//      squareNavigation(tunnelEntrance.x, tunnelEntrance.y, true, true);
     }
     LightLocalizer.twoLineDetection();
     Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
     // update new zone parameters
     this.updateParameters();
+//    GameResources.setDifferential(7);
   }
 
   /**
@@ -362,6 +376,50 @@ public class GameNavigation {
       GameResources.Tunnel.ur.x = Resources.tng.ur.x;
       GameResources.Tunnel.ur.y = Resources.tng.ur.y;
     }
+  }
+  
+  public double calculateBackwardDistance() {
+    int difference = 20;
+    double lowerBound = GameResources.odometer.getTheta() - difference;
+    double upperBound = GameResources.odometer.getTheta() + difference;
+    double distance = GameResources.OBSTACLE_BACKUP;
+
+    if ((lowerBound >= (0 - difference) && upperBound <= (0 + (2 * difference)))
+        || (lowerBound >= (360 - (2 * difference)) && upperBound <= (360 + difference))) {
+      // The robot is going forward
+      double currentYLine = GameResources.odometer.getY() - GameResources.OFFSET_FROM_WHEELBASE;
+      int lineCount = (int) Math.floor(currentYLine / GameResources.TILE_SIZE);
+//      GameResources.odometer.setY(lineCount * GameResources.TILE_SIZE + GameResources.OFFSET_FROM_WHEELBASE);
+//      GameResources.odometer.setTheta(0);
+      distance = GameResources.odometer.getY() - (lineCount * GameResources.TILE_SIZE);
+      // System.out.println("GOING FORWARD");
+    }
+
+    else if (lowerBound >= (90 - (2 * difference)) && upperBound <= (90 + (2 * difference))) {
+      // going right
+      double currentXLine = GameResources.odometer.getX() - GameResources.OFFSET_FROM_WHEELBASE;
+      int lineCount = (int) Math.floor(currentXLine / GameResources.TILE_SIZE);
+      // System.out.println("line count" + lineCount);
+      distance = GameResources.odometer.getX() - (lineCount * GameResources.TILE_SIZE);
+      
+      // System.out.println("GOING right");
+    } else if (lowerBound >= (180 - (2 * difference)) && upperBound <= (180 + (2 * difference))) {
+      // going backward
+      double currentYLine = GameResources.odometer.getY() + GameResources.OFFSET_FROM_WHEELBASE;
+      int lineCount = (int) Math.floor(currentYLine / GameResources.TILE_SIZE) + 1;
+      distance = GameResources.odometer.getY() - (lineCount * GameResources.TILE_SIZE);
+      // System.out.println("GOING backward");
+    } else if (lowerBound >= (270 - (2 * difference)) && upperBound <= (270 + (2 * difference))) {
+      // going left
+      double currentXLine = GameResources.odometer.getX() + GameResources.OFFSET_FROM_WHEELBASE;
+      int lineCount = (int) Math.floor(currentXLine / GameResources.TILE_SIZE) + 1;
+      distance = GameResources.odometer.getX() - (lineCount * GameResources.TILE_SIZE);
+      // System.out.println("GOING left");
+    }
+    if(distance > GameResources.TILE_SIZE) {
+      distance = distance - GameResources.TILE_SIZE;
+    }
+    return distance;
   }
 
   /**
