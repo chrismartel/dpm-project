@@ -33,22 +33,6 @@ public class ObstacleAvoider {
       wallDistance = GameResources.ultrasonicPoller.getLeftUsController().getDistance();
       System.out.println("DISTANCE WALL FOLOWER1:" + wallDistance);
 
-
-      /*
-       * // CONVEX CORNER HANDLING if (wallDistance >= GameResources.CONVEX_CORNER_CONSTANT) {
-       * System.out.println("CONVEX CORNER");
-       * 
-       * convexCornerCounter++; // convex corner is faced if (convexCornerCounter > 5) { convexCornerCounter = 0;
-       * this.convexCornerProcedure(); // after passing the convex corner, get new distance and restart time counter
-       * wallDistance = GameResources.ultrasonicPoller.getLeftUsController().getDistance(); wallDistance =
-       * this.calculateLateralDistance(wallDistance);
-       * 
-       * } }
-       */
-
-      // GENERAL WALL FOLLOWING PROCEDURE
-      // The distance seen is small
-      // else {
       double error = wallDistance - GameResources.BAND_CENTER;
       System.out.println("ERROR: " + error);
       // both motors go forward, robot is at correct distance from obstacle
@@ -97,20 +81,6 @@ public class ObstacleAvoider {
           leftSpeed = (int) (speed + calculateGain(error));
           rightSpeed = (int) (speed);
 
-          // if (error < GameResources.MINIMAL_ERROR) {
-          // GameResources.leftMotor.forward();
-          // GameResources.rightMotor.backward();
-          // leftSpeed = speed;
-          // rightSpeed = speed;
-          // }
-          // // normal adjustment
-          // else {
-          // GameResources.leftMotor.forward();
-          // GameResources.rightMotor.forward();
-          // leftSpeed = (int) (speed + this.calculateGain(error));
-          // rightSpeed = (int) (speed - this.calculateGain(error));
-          // }
-
 
         }
         // set bounds on the speed during avoidance
@@ -138,9 +108,6 @@ public class ObstacleAvoider {
         }
       }
     }
-
-
-
     Navigation.stopMotors();
 
 
@@ -212,20 +179,21 @@ public class ObstacleAvoider {
     double distance = 40;
 
     // heading approximately towards 0 degrees
-    if ((theta >= 340 && theta <= 360) || (theta >= 0 && theta <= 20)) {
+    if ((theta >= 360 - GameResources.THETA_RANGE && theta <= 360)
+        || (theta >= 0 && theta <= GameResources.THETA_RANGE)) {
       distance = GameResources.getCurrentRightLimit() * GameResources.TILE_SIZE - x;
     }
     // heading approximately towards 90 degrees
-    else if (theta >= 70 && theta <= 110) {
+    else if (theta >= 90 - GameResources.THETA_RANGE && theta <= 90 + GameResources.THETA_RANGE) {
       distance = y - GameResources.getCurrentBottomLimit() * GameResources.TILE_SIZE;
 
     }
     // heading approximately towards 180 degrees
-    else if (theta >= 160 && theta <= 200) {
+    else if (theta >= 180 - GameResources.THETA_RANGE && theta <= 180 + GameResources.THETA_RANGE) {
       distance = x - GameResources.getCurrentLeftLimit() * GameResources.TILE_SIZE;
     }
     // heading approximately towards 270 degrees
-    else if (theta >= 250 && theta <= 290) {
+    else if (theta >= 270 - GameResources.THETA_RANGE && theta <= 270 + GameResources.THETA_RANGE) {
       distance = GameResources.getCurrentTopLimit() * GameResources.TILE_SIZE - y;
     }
     if (distance < GameResources.MINIMAL_AVOID_DISTANCE) {
@@ -239,7 +207,7 @@ public class ObstacleAvoider {
    * Method used to shift the robot to its left when it can't avoid right
    */
 
-  public  void shiftLeft() {
+  public void shiftLeft() {
     Navigation.turn(-90, GameResources.ROTATE_SPEED_NORMAL);
     Navigation.travel(GameResources.SHIFT_DISTANCE, GameResources.FORWARD_SPEED_NORMAL);
 
@@ -280,7 +248,8 @@ public class ObstacleAvoider {
     double y = GameResources.odometer.getY() / GameResources.TILE_SIZE;
 
     // heading approximately towards 0 degrees
-    if ((theta >= 340 && theta <= 360) || (theta >= 0 && theta <= 20)) {
+    if ((theta >= 360 - GameResources.THETA_RANGE && theta <= 360)
+        || (theta >= 0 && theta <= GameResources.THETA_RANGE)) {
       System.out.println("HEADING UP");
       xFirst = true;
       // robot is in the right part of the island--> avoid left
@@ -288,7 +257,7 @@ public class ObstacleAvoider {
         // GameNavigation.squareNavigation(x - GameResources.SHIFT_DISTANCE, y, true,false);
         Navigation.turn(-90, GameResources.ROTATE_SPEED_NORMAL);
         newX = newX - GameResources.SHIFT_DISTANCE;
-        
+
       }
       // robot is in the left part of the island --> avoid right
       else {
@@ -299,7 +268,7 @@ public class ObstacleAvoider {
       }
     }
     // heading approximately towards 90 degrees
-    else if (theta >= 70 && theta <= 110) {
+    else if (theta >= 90 - GameResources.THETA_RANGE && theta <= 90 + GameResources.THETA_RANGE) {
       System.out.println("HEADING RIGHT");
       xFirst = false;
       // robot is in the top part of the island --> avoid bottom
@@ -316,7 +285,7 @@ public class ObstacleAvoider {
       }
     }
     // heading approximately towards 180 degrees
-    else if (theta >= 160 && theta <= 200) {
+    else if (theta >= 180 - GameResources.THETA_RANGE && theta <= 180 + GameResources.THETA_RANGE) {
       System.out.println("HEADING DOWN");
       xFirst = true;
       if (x >= islandMiddleX) {
@@ -333,7 +302,7 @@ public class ObstacleAvoider {
       }
     }
     // heading approximately towards 270 degrees
-    else if (theta >= 250 && theta <= 290) {
+    else if (theta >= 270 - GameResources.THETA_RANGE && theta <= 270 + GameResources.THETA_RANGE) {
       System.out.println("HEADING LEFT");
       xFirst = false;
       // robot is in the top part of the island --> avoid bottom
@@ -352,7 +321,7 @@ public class ObstacleAvoider {
     GameResources.setEnableCorrection(true);
     Navigation.travel(GameResources.SHIFT_DISTANCE, GameResources.FORWARD_SPEED_NORMAL);
     GameResources.setEnableCorrection(false);
-//    GameNavigation.squareNavigation(newX/GameResources.TILE_SIZE,newY/GameResources.TILE_SIZE, xFirst, true);
+    // GameNavigation.squareNavigation(newX/GameResources.TILE_SIZE,newY/GameResources.TILE_SIZE, xFirst, true);
   }
 
   /**

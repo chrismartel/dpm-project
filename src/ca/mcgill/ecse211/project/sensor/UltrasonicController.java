@@ -183,8 +183,8 @@ public class UltrasonicController {
           Sound.beep();
         }
       } else {
-        obstacleDetectionCounter = 0;          
-        
+        obstacleDetectionCounter = 0;
+
 
       }
       isResetting = false;

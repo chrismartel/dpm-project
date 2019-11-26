@@ -114,12 +114,6 @@ public class GameResources {
   // ****************************** LIGHT LOCALIZATION CONSTANTS ******************************** //
 
   /**
-   * Differential value to determine if a black line is detected or not
-   */
-
-  public static int DIFFERENTIAL_LINE_THRESHOLD = 7; // HAS TO BE DETERMINE BY TESTING
-
-  /**
    * Window size for the ultrasonic sensor data polling
    */
 
@@ -141,7 +135,10 @@ public class GameResources {
    */
   public static final double INITIAL_LIGHT_LOC_ADJUSTMENT_DISTANCE = 10;
 
-
+  /**
+   * Theta range used for odometry correction, and light localization
+   */
+  public static final double THETA_RANGE = 20;
 
   // ****************************** BALLISTIC LAUNCHER CONSTANTS ******************************** //
 
@@ -368,6 +365,12 @@ public class GameResources {
    */
   public static REGION currentRegion;
 
+  // ****************************** TUNNEL ******************************** //
+
+  /*
+   * Distance used to make adjustments before entering tunnel
+   */
+  public static final double TUNNEL_ADJUSTMENT_DISTANCE = 5;
 
 
   // ****************************** OBSTACLE AVOIDANCE ******************************** //
@@ -426,7 +429,7 @@ public class GameResources {
    * Average width of obstacles
    */
   public static final double OBSTACLE_BACKUP = 10;
-  
+
   /*
    * Minimum distance required to avoid right
    */
@@ -573,10 +576,7 @@ public class GameResources {
   public static double getCurrentTopLimit() {
     return currentTopLimit;
   }
-  
-  public static void setDifferential(int differential) {
-    DIFFERENTIAL_LINE_THRESHOLD = differential;
-  }
+
 
 
 }
