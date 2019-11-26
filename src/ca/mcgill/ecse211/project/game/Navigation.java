@@ -175,7 +175,6 @@ public class Navigation {
           Navigation.travelForward(speed);
         }
       }
-
     }
     stopMotors();
 

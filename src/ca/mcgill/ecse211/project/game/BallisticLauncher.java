@@ -80,12 +80,8 @@ public class BallisticLauncher {
    * Method implementing multiple launches and reload depending on how many balls the robot is carrying
    */
   public void multipleLaunch(double distance) {
-    Navigation.turn(-3, 150);
     for (int i = 0; i < GameResources.NUMBER_OF_BALLS; i++) {
-      // if(i==3)
-      // Navigation.turn(GameResources.BALLISTIC_ADJUSTMENT_ANGLE,GameResources.FORWARD_SPEED_NORMAL);
       this.launch(distance);
-
       this.reload();
     }
   }
