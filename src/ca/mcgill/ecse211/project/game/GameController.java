@@ -10,7 +10,7 @@ import lejos.hardware.Sound;
 
 public class GameController {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws InterruptedException {
     // initialize class instances needed
     GameNavigation gameNavigation = new GameNavigation();
     UltrasonicLocalizer ultrasonicLocalizer = new UltrasonicLocalizer();
@@ -78,8 +78,11 @@ public class GameController {
           // initial localization depending on the starting point and starting corner
           LightLocalizer.initialLightLocalize(GameResources.STARTING_POINT, GameResources.CORNER_NUMBER);
           Sound.beep();
+          Thread.sleep(50);
           Sound.beep();
+          Thread.sleep(50);
           Sound.beep();
+          
           Navigation.travel(GameResources.INITIAL_LIGHT_LOC_ADJUSTMENT_DISTANCE, GameResources.FORWARD_SPEED_NORMAL);
           // transit to navigation state
           GameResources.gameState = GameState.Navigation;
@@ -236,7 +239,9 @@ public class GameController {
         case Launch:
           // perform the launches
           Sound.beep();
+          Thread.sleep(50);
           Sound.beep();
+          Thread.sleep(50);
           Sound.beep();
           ballisticLauncher
               .multipleLaunch(gameNavigation.distanceFromBin(GameResources.odometer.getX() / GameResources.TILE_SIZE,
@@ -253,9 +258,13 @@ public class GameController {
       }
     }
     Sound.beep();
+    Thread.sleep(50);
     Sound.beep();
+    Thread.sleep(50);
     Sound.beep();
+    Thread.sleep(50);
     Sound.beep();
+    Thread.sleep(50);
     Sound.beep();
     
     GameResources.LCD.clear();
