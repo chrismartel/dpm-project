@@ -46,7 +46,7 @@ public class GameController {
           // start threads
           Thread odometerThread = new Thread(GameResources.odometer);
           Thread usPollerTread = new Thread(GameResources.ultrasonicPoller);
-          new Thread(new Display()).start();
+//          new Thread(new Display()).start();
           odometerThread.start();
           usPollerTread.start();
 
@@ -177,7 +177,7 @@ public class GameController {
           }
           // second tunnel traversal
           else if (tunnel == 1) {
-            System.out.println(gameNavigation.getTunnelExit());
+//            System.out.println(gameNavigation.getTunnelExit());
             gameNavigation.navigateThroughTunnel();
           }
           // transition back to navigation
@@ -186,19 +186,21 @@ public class GameController {
 
 
         case Avoidance:
-          System.out.println("OBJECT DETECTED");
+//          System.out.println("OBJECT DETECTED");
           // create restricted points and determines if the launch point has to be changed
           boolean newLaunchPoint = gameNavigation.createRestrictedPoints();
           // possible launch points updated
           gameNavigation.generateLaunchPoints();
-          double backupDistance = gameNavigation.calculateBackwardDistance();
-          Navigation.backUp(backupDistance, GameResources.FORWARD_SPEED_FAST);
+          
+//          LightLocalizer.twoLineDetectionBackward();
+//          double backupDistance = gameNavigation.calculateBackwardDistance();
+//          Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_NORMAL);
 
           // OBSTACLE AVOIDANCE STRATEGY
             // launch point is still the same
           if (GameResources.navigationDestination == NAVIGATION_DESTINATION.LAUNCH_POINT) {
             if (!newLaunchPoint) {
-              System.out.println("SAME LAUNCH POINT");
+//              System.out.println("SAME LAUNCH POINT");
               // set the objective point of the wall follower
               obstacleAvoider.setGoalPoint(gameNavigation.getLaunchPoint());
 
@@ -209,7 +211,7 @@ public class GameController {
                   xFirst = true;
                 }
             } else {
-              System.out.println("NEW LAUNCH POINT NEEDED");
+//              System.out.println("NEW LAUNCH POINT NEEDED");
               // calculate a new launch point
               gameNavigation.calculateClosestLaunchPoint();
 //              obstacleAvoider.setGoalPoint(gameNavigation.getLaunchPoint());

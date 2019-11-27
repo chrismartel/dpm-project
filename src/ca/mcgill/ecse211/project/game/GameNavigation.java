@@ -135,7 +135,7 @@ public class GameNavigation {
 
     // additional turn so that the ballistic launcher points to the bin
     double adjustmentAngle = Math.toDegrees((Math.asin((GameResources.BALLISTIC_X_OFFSET_FROM_CENTER / distance))));
-    Navigation.turn(GameResources.BALLISTIC_ADJUSTMENT_ANGLE - 5 * adjustmentAngle, GameResources.ROTATE_SPEED_SLOW);
+    Navigation.turn(GameResources.BALLISTIC_ADJUSTMENT_ANGLE - 4 * adjustmentAngle, GameResources.ROTATE_SPEED_SLOW);
 
   }
 
@@ -320,6 +320,7 @@ public class GameNavigation {
   public void updateTunnelData() {
 
     REGION targetRegion;
+    REGION islandRegion = REGION.ISLAND;
     REGION tunnelBottom = this.regionCalculation((GameResources.Tunnel.ll.x + 0.5), (GameResources.Tunnel.ll.y - 0.5));
     REGION tunnelTop = this.regionCalculation((GameResources.Tunnel.ur.x - 0.5), (GameResources.Tunnel.ur.y + 0.5));
     REGION tunnelLeft = this.regionCalculation((GameResources.Tunnel.ll.x - 0.5), (GameResources.Tunnel.ll.y + 0.5));
@@ -332,26 +333,26 @@ public class GameNavigation {
       targetRegion = REGION.GREEN;
     }
     // determine where is the tunnel entrance
-    if (tunnelBottom == targetRegion) {
-      this.setTunnelEntrance(new Point(GameResources.Tunnel.ll.x + 0.45, GameResources.Tunnel.ll.y - 1));
-      this.setTunnelExit(new Point(GameResources.Tunnel.ur.x - 0.45, GameResources.Tunnel.ur.y + 1));
+    if (tunnelBottom == targetRegion && tunnelTop == islandRegion) {
+      this.setTunnelEntrance(new Point(GameResources.Tunnel.ll.x + 0.475, GameResources.Tunnel.ll.y - 1));
+      this.setTunnelExit(new Point(GameResources.Tunnel.ur.x - 0.475, GameResources.Tunnel.ur.y + 1));
       this.setTunnelEntranceTraversalOrientation(0);
       this.setTunnelExitTraversalOrientation(180);
-    } else if (tunnelTop == targetRegion) {
-      this.setTunnelEntrance(new Point(GameResources.Tunnel.ur.x - 0.45, GameResources.Tunnel.ur.y + 1));
-      this.setTunnelExit(new Point(GameResources.Tunnel.ll.x + 0.45, GameResources.Tunnel.ll.y - 1));
+    } else if (tunnelTop == targetRegion && tunnelBottom == islandRegion) {
+      this.setTunnelEntrance(new Point(GameResources.Tunnel.ur.x - 0.475, GameResources.Tunnel.ur.y + 1));
+      this.setTunnelExit(new Point(GameResources.Tunnel.ll.x + 0.475, GameResources.Tunnel.ll.y - 1));
       this.setTunnelEntranceTraversalOrientation(180);
       this.setTunnelExitTraversalOrientation(0);
 
-    } else if (tunnelLeft == targetRegion) {
-      this.setTunnelEntrance(new Point(GameResources.Tunnel.ll.x - 1, GameResources.Tunnel.ll.y + 0.45));
-      this.setTunnelExit(new Point(GameResources.Tunnel.ur.x + 1, GameResources.Tunnel.ur.y - 0.45));
+    } else if (tunnelLeft == targetRegion && tunnelRight == islandRegion) {
+      this.setTunnelEntrance(new Point(GameResources.Tunnel.ll.x - 1, GameResources.Tunnel.ll.y + 0.475));
+      this.setTunnelExit(new Point(GameResources.Tunnel.ur.x + 1, GameResources.Tunnel.ur.y - 0.475));
       this.setTunnelEntranceTraversalOrientation(90);
       this.setTunnelExitTraversalOrientation(270);
 
-    } else if (tunnelRight == targetRegion) {
-      this.setTunnelEntrance(new Point(GameResources.Tunnel.ur.x + 1, GameResources.Tunnel.ur.y - 0.45));
-      this.setTunnelExit(new Point(GameResources.Tunnel.ll.x - 1, GameResources.Tunnel.ll.y + 0.45));
+    } else if (tunnelRight == targetRegion && tunnelLeft == islandRegion) {
+      this.setTunnelEntrance(new Point(GameResources.Tunnel.ur.x + 1, GameResources.Tunnel.ur.y - 0.475));
+      this.setTunnelExit(new Point(GameResources.Tunnel.ll.x - 1, GameResources.Tunnel.ll.y + 0.475));
       this.setTunnelEntranceTraversalOrientation(270);
       this.setTunnelExitTraversalOrientation(90);
     }
@@ -373,6 +374,7 @@ public class GameNavigation {
       GameResources.Tunnel.ur.y = Resources.tng.ur.y;
     }
   }
+ 
 
   public double calculateBackwardDistance() {
     double lowerBound = GameResources.odometer.getTheta() - GameResources.THETA_RANGE;
@@ -407,10 +409,10 @@ public class GameNavigation {
       int lineCount = (int) Math.floor(currentXLine / GameResources.TILE_SIZE) + 1;
       distance = GameResources.odometer.getX() - (lineCount * GameResources.TILE_SIZE);
     }
-    while (distance > GameResources.TILE_SIZE) {
+    while (distance >= GameResources.TILE_SIZE) {
       distance = distance - GameResources.TILE_SIZE;
     }
-    return distance;
+    return (distance/2);
   }
 
   /**

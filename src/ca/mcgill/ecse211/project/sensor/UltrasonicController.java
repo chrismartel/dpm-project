@@ -180,7 +180,6 @@ public class UltrasonicController {
         if (obstacleDetectionCounter == 3) {
           GameResources.setObstacleDetected(true);
           GameResources.setGameState(GameState.Avoidance);
-          Sound.beep();
         }
       } else {
         obstacleDetectionCounter = 0;

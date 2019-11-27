@@ -120,6 +120,43 @@ public class LightLocalizer {
 
     }
   }
+  
+  public static void twoLineDetectionBackward() {
+    float lastLeftValue = -1000;
+    float currentLeftValue = 0;
+    float lastRightValue = -1000;
+    float currentRightValue = 0;
+    GameResources.leftColorSensor.setCurrentMode("Red");
+    GameResources.rightColorSensor.setCurrentMode("Red");
+    boolean left = false, right = false;
+    float[] leftSensorData = new float[3];
+    float[] rightSensorData = new float[3];
+    Navigation.travelBackward(GameResources.FORWARD_SPEED_NORMAL);
+    while (!(left && right)) {
+      GameResources.leftColorSensor.fetchSample(leftSensorData, 0);
+      GameResources.rightColorSensor.fetchSample(rightSensorData, 0);
+      currentLeftValue = leftSensorData[0] * 100;
+      currentRightValue = rightSensorData[0] * 100;
+
+      if (-currentLeftValue + lastLeftValue >= GameResources.DIFFERENTIAL_LINE_THRESHOLD) {
+        left = true;
+        GameResources.leftMotor.setSpeed(0);
+      }
+      if (-currentRightValue + lastRightValue >= GameResources.DIFFERENTIAL_LINE_THRESHOLD) {
+        right = true;
+        GameResources.rightMotor.setSpeed(0);
+      }
+      lastLeftValue = currentLeftValue;
+      lastRightValue = currentRightValue;
+      try {
+        Thread.sleep(75);
+      } catch (InterruptedException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+
+    }
+  }
 
   /**
    * Method that checks if lines are detected and stops the corresponding motors accordingly

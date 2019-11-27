@@ -31,10 +31,20 @@ public class OdometryCorrection {
   public static void correctValues() {
     double lowerBound = GameResources.odometer.getTheta() - GameResources.THETA_RANGE;
     double upperBound = GameResources.odometer.getTheta() + GameResources.THETA_RANGE;
+    
+    
 
     if ((lowerBound >= (0 - GameResources.THETA_RANGE) && upperBound <= (0 + (2 * GameResources.THETA_RANGE)))
         || (lowerBound >= (360 - (2 * GameResources.THETA_RANGE)) && upperBound <= (360 + GameResources.THETA_RANGE))) {
       // The robot is going forward
+      
+      if((((GameResources.odometer.getY() - GameResources.OFFSET_FROM_WHEELBASE) / GameResources.TILE_SIZE <= 4.6 &&
+            (GameResources.odometer.getY() - GameResources.OFFSET_FROM_WHEELBASE) / GameResources.TILE_SIZE >= 4.4))
+        ){
+        GameResources.odometer.setTheta(0);
+        return;
+        
+      }
       double currentYLine = GameResources.odometer.getY() - GameResources.OFFSET_FROM_WHEELBASE;
       int lineCount = (int) Math.round(currentYLine / GameResources.TILE_SIZE);
       GameResources.odometer.setY(lineCount * GameResources.TILE_SIZE + GameResources.OFFSET_FROM_WHEELBASE);
@@ -52,6 +62,14 @@ public class OdometryCorrection {
     } else if (lowerBound >= (180 - (2 * GameResources.THETA_RANGE))
         && upperBound <= (180 + (2 * GameResources.THETA_RANGE))) {
       // going backward
+      
+      if((((GameResources.odometer.getY() + GameResources.OFFSET_FROM_WHEELBASE) / GameResources.TILE_SIZE <= 4.6 &&
+          (GameResources.odometer.getY() + GameResources.OFFSET_FROM_WHEELBASE) / GameResources.TILE_SIZE >= 4.4))
+      ){
+      GameResources.odometer.setTheta(180);
+      return;
+      
+    }
       double currentYLine = GameResources.odometer.getY() + GameResources.OFFSET_FROM_WHEELBASE;
       int lineCount = (int) Math.round(currentYLine / GameResources.TILE_SIZE);
       GameResources.odometer.setY(lineCount * GameResources.TILE_SIZE - GameResources.OFFSET_FROM_WHEELBASE);
