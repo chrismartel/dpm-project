@@ -359,7 +359,7 @@ public class LightLocalizer {
         GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) + GameResources.OFFSET_FROM_WHEELBASE, GameResources.odometer.getY(), 90);
         break;
     }
-    Navigation.travel(GameResources.INITIAL_LIGHT_LOC_ADJUSTMENT_DISTANCE, GameResources.FORWARD_SPEED_NORMAL);
+    
   }
 
 

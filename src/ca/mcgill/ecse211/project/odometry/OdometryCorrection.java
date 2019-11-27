@@ -20,7 +20,14 @@ public class OdometryCorrection {
   double[] leftValues = null;
   double[] rightValues = null;
 
-  // TODO: document method
+
+  
+ /**
+  *  Method that will correct either the X or Y value of the odometer as well as the theta value.
+  *  Uses the  current theta value and the accepted theta ranged from game resources. 
+  *  Uses the nearest line to commpute which value it should correct to. 
+  *  Afterwards, corrects either X or Y and the Theta.
+  */
   public static void correctValues() {
     double lowerBound = GameResources.odometer.getTheta() - GameResources.THETA_RANGE;
     double upperBound = GameResources.odometer.getTheta() + GameResources.THETA_RANGE;

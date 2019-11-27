@@ -77,6 +77,10 @@ public class GameController {
         case LightLocalization:
           // initial localization depending on the starting point and starting corner
           LightLocalizer.initialLightLocalize(GameResources.STARTING_POINT, GameResources.CORNER_NUMBER);
+          Sound.beep();
+          Sound.beep();
+          Sound.beep();
+          Navigation.travel(GameResources.INITIAL_LIGHT_LOC_ADJUSTMENT_DISTANCE, GameResources.FORWARD_SPEED_NORMAL);
           // transit to navigation state
           GameResources.gameState = GameState.Navigation;
           GameResources.setLocalized(true);
@@ -169,6 +173,7 @@ public class GameController {
           }
           // second tunnel traversal
           else if (tunnel == 1) {
+            System.out.println(gameNavigation.getTunnelExit());
             gameNavigation.navigateThroughTunnel();
           }
           // transition back to navigation
@@ -186,54 +191,42 @@ public class GameController {
           Navigation.backUp(backupDistance, GameResources.FORWARD_SPEED_FAST);
 
           // OBSTACLE AVOIDANCE STRATEGY
-          
             // launch point is still the same
+          if (GameResources.navigationDestination == NAVIGATION_DESTINATION.LAUNCH_POINT) {
             if (!newLaunchPoint) {
               System.out.println("SAME LAUNCH POINT");
               // set the objective point of the wall follower
               obstacleAvoider.setGoalPoint(gameNavigation.getLaunchPoint());
-              // robot can avoid right
-              if (obstacleAvoider.avoidRight()) {
+
                 obstacleAvoider.shiftRobot();
                 if (xFirst) {
                   xFirst = false;
                 } else {
                   xFirst = true;
                 }
-              }
-              // robot can't avoid right
-              else {
-                obstacleAvoider.shiftRobot();
-                if (xFirst) {
-                  xFirst = false;
-                } else {
-                  xFirst = true;
-                }
-              }
             } else {
               System.out.println("NEW LAUNCH POINT NEEDED");
               // calculate a new launch point
               gameNavigation.calculateClosestLaunchPoint();
-              obstacleAvoider.setGoalPoint(gameNavigation.getLaunchPoint());
-              // robot can avoid right
-              if (obstacleAvoider.avoidRight()) {
+//              obstacleAvoider.setGoalPoint(gameNavigation.getLaunchPoint());
                 obstacleAvoider.shiftRobot();
                 if (xFirst) {
                   xFirst = false;
                 } else {
                   xFirst = true;
                 }
-              }
-              // robot can't avoid right
-              else {
-                obstacleAvoider.shiftRobot();
-                if (xFirst) {
-                  xFirst = false;
-                } else {
-                  xFirst = true;
-                }
-              }
+
             }
+          }else {
+            obstacleAvoider.shiftRobot();
+            if (xFirst) {
+              xFirst = false;
+            } else {
+              xFirst = true;
+          }
+            
+          }
+            
           
           // transit to navigation after avoidance procedure
           GameResources.setGameState(GameState.Navigation);
@@ -241,11 +234,16 @@ public class GameController {
 
         case Launch:
           // perform the launches
+          Sound.beep();
+          Sound.beep();
+          Sound.beep();
           ballisticLauncher
               .multipleLaunch(gameNavigation.distanceFromBin(GameResources.odometer.getX() / GameResources.TILE_SIZE,
                   GameResources.odometer.getY() / GameResources.TILE_SIZE));
           // transition back to navigation
           GameResources.setGameState(GameState.Navigation);
+//          LightLocalizer.lightLocalize(gameNavigation.getLaunchPoint(), false);
+          xFirst = false;
           break;
 
         default:
@@ -253,9 +251,16 @@ public class GameController {
 
       }
     }
+    Sound.beep();
+    Sound.beep();
+    Sound.beep();
+    Sound.beep();
+    Sound.beep();
+    
     GameResources.LCD.clear();
     GameResources.LCD.drawString("DONE", 1, 1);
   }
+
 
 
 

@@ -146,26 +146,33 @@ public class GameNavigation {
   public void navigateThroughTunnel() {
     // first tunnel traversal
     if (tunnel == 0) {
-      Navigation.turnTo(tunnelExit.x, tunnelExit.y, GameResources.FORWARD_SPEED_NORMAL);
+      Navigation.turnTo(tunnelExit.x, tunnelExit.y,GameResources.ROTATE_SPEED_NORMAL);
       Navigation.backUp((GameResources.OFFSET_FROM_WHEELBASE + GameResources.TUNNEL_ADJUSTMENT_DISTANCE),
           GameResources.FORWARD_SPEED_NORMAL);
       GameResources.setEnableCorrection(true);
       Navigation.travel((GameResources.OFFSET_FROM_WHEELBASE + GameResources.TUNNEL_ADJUSTMENT_DISTANCE),
           GameResources.FORWARD_SPEED_NORMAL);
       GameResources.setEnableCorrection(false);
-      Navigation.travelTo(tunnelExit.x, tunnelExit.y, GameResources.FORWARD_SPEED_FAST);
+//      Navigation.turn(, GameResources.FORWARD_SPEED_NORMAL);
+      Navigation.travel(calculateDistance(GameResources.odometer.getX()/GameResources.TILE_SIZE,
+          GameResources.odometer.getY()/GameResources.TILE_SIZE,
+          tunnelExit.x, tunnelExit.y), GameResources.FORWARD_SPEED_FAST);
       tunnel++;
     }
     // second tunnel traversal
     else if (tunnel == 1) {
-      Navigation.turnTo(tunnelEntrance.x, tunnelEntrance.y, GameResources.FORWARD_SPEED_NORMAL);
+      Navigation.turnTo(tunnelEntrance.x, tunnelEntrance.y,GameResources.ROTATE_SPEED_NORMAL);
       Navigation.backUp((GameResources.OFFSET_FROM_WHEELBASE + GameResources.TUNNEL_ADJUSTMENT_DISTANCE),
           GameResources.FORWARD_SPEED_NORMAL);
       GameResources.setEnableCorrection(true);
       Navigation.travel((GameResources.OFFSET_FROM_WHEELBASE + GameResources.TUNNEL_ADJUSTMENT_DISTANCE),
           GameResources.FORWARD_SPEED_NORMAL);
       GameResources.setEnableCorrection(false);
-      Navigation.travelTo(tunnelEntrance.x, tunnelEntrance.y, GameResources.FORWARD_SPEED_FAST);
+//      Navigation.turn(-5, GameResources.FORWARD_SPEED_NORMAL);
+      Navigation.travel(calculateDistance(GameResources.odometer.getX()/GameResources.TILE_SIZE,
+          GameResources.odometer.getY()/GameResources.TILE_SIZE,
+          tunnelEntrance.x , tunnelEntrance.y), GameResources.FORWARD_SPEED_FAST);
+//      Navigation.travelTo(tunnelEntrance.x, tunnelEntrance.y, GameResources.FORWARD_SPEED_FAST);
     }
     LightLocalizer.twoLineDetection();
     Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
@@ -325,25 +332,25 @@ public class GameNavigation {
     }
     // determine where is the tunnel entrance
     if (tunnelBottom == targetRegion) {
-      this.setTunnelEntrance(new Point(GameResources.Tunnel.ll.x + 0.5, GameResources.Tunnel.ll.y - 1));
-      this.setTunnelExit(new Point(GameResources.Tunnel.ur.x - 0.5, GameResources.Tunnel.ur.y + 1));
+      this.setTunnelEntrance(new Point(GameResources.Tunnel.ll.x + 0.45, GameResources.Tunnel.ll.y - 1));
+      this.setTunnelExit(new Point(GameResources.Tunnel.ur.x - 0.45, GameResources.Tunnel.ur.y + 1));
       this.setTunnelEntranceTraversalOrientation(0);
       this.setTunnelExitTraversalOrientation(180);
     } else if (tunnelTop == targetRegion) {
-      this.setTunnelEntrance(new Point(GameResources.Tunnel.ur.x - 0.5, GameResources.Tunnel.ur.y + 1));
-      this.setTunnelExit(new Point(GameResources.Tunnel.ll.x + 0.5, GameResources.Tunnel.ll.y - 1));
+      this.setTunnelEntrance(new Point(GameResources.Tunnel.ur.x - 0.45, GameResources.Tunnel.ur.y + 1));
+      this.setTunnelExit(new Point(GameResources.Tunnel.ll.x + 0.45, GameResources.Tunnel.ll.y - 1));
       this.setTunnelEntranceTraversalOrientation(180);
       this.setTunnelExitTraversalOrientation(0);
 
     } else if (tunnelLeft == targetRegion) {
-      this.setTunnelEntrance(new Point(GameResources.Tunnel.ll.x - 1, GameResources.Tunnel.ll.y + 0.5));
-      this.setTunnelExit(new Point(GameResources.Tunnel.ur.x + 1, GameResources.Tunnel.ur.y - 0.5));
+      this.setTunnelEntrance(new Point(GameResources.Tunnel.ll.x - 1, GameResources.Tunnel.ll.y + 0.45));
+      this.setTunnelExit(new Point(GameResources.Tunnel.ur.x + 1, GameResources.Tunnel.ur.y - 0.45));
       this.setTunnelEntranceTraversalOrientation(90);
       this.setTunnelExitTraversalOrientation(270);
 
     } else if (tunnelRight == targetRegion) {
-      this.setTunnelEntrance(new Point(GameResources.Tunnel.ur.x + 1, GameResources.Tunnel.ur.y - 0.5));
-      this.setTunnelExit(new Point(GameResources.Tunnel.ll.x - 1, GameResources.Tunnel.ll.y + 0.5));
+      this.setTunnelEntrance(new Point(GameResources.Tunnel.ur.x + 1, GameResources.Tunnel.ur.y - 0.45));
+      this.setTunnelExit(new Point(GameResources.Tunnel.ll.x - 1, GameResources.Tunnel.ll.y + 0.45));
       this.setTunnelEntranceTraversalOrientation(270);
       this.setTunnelExitTraversalOrientation(90);
     }

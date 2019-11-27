@@ -60,15 +60,15 @@ public class GameResources {
    * The speeds at which the robot moves forward in degrees per second.
    */
   public static final int FORWARD_SPEED_SLOW = 100;
-  public static final int FORWARD_SPEED_NORMAL = 150;
-  public static final int FORWARD_SPEED_FAST = 200;
+  public static final int FORWARD_SPEED_NORMAL = 200;
+  public static final int FORWARD_SPEED_FAST = 300;
 
   /**
    * The speeds at which the robot rotates in degrees per second.
    */
-  public static final int ROTATE_SPEED_SLOW = 80;
-  public static final int ROTATE_SPEED_NORMAL = 100;
-  public static final int ROTATE_SPEED_FAST = 150;
+  public static final int ROTATE_SPEED_SLOW = 100;
+  public static final int ROTATE_SPEED_NORMAL = 150;
+  public static final int ROTATE_SPEED_FAST = 200;
 
 
 
@@ -83,7 +83,7 @@ public class GameResources {
    * The ultrasonic sensor update period in ms. Was calculated in order to have approximately 3 pollings per degree of
    * rotation during slow rotation
    */
-  public static final long US_PERIOD = 25;
+  public static final long US_PERIOD = 20;
 
   /**
    * Filter out constant to filter the distance seen by the us sensor
@@ -113,6 +113,12 @@ public class GameResources {
 
   // ****************************** LIGHT LOCALIZATION CONSTANTS ******************************** //
 
+  /**
+   * Differential value to determine if a black line is detected or not
+   */
+
+  public static int DIFFERENTIAL_LINE_THRESHOLD = 7; // HAS TO BE DETERMINE BY TESTING
+  
   /**
    * Window size for the ultrasonic sensor data polling
    */
@@ -166,7 +172,7 @@ public class GameResources {
   /**
    * Maximal distance to launch the ball
    */
-  public static final int MAXIMAL_LAUNCH_DISTANCE = 230;
+  public static final int MAXIMAL_LAUNCH_DISTANCE = 250;
 
   /**
    * Minimal distance to launch the ball
@@ -423,7 +429,7 @@ public class GameResources {
   /*
    * Distance to shift the robot in path finder avoidance strategy
    */
-  public static final double SHIFT_DISTANCE = 45;
+  public static final double SHIFT_DISTANCE = 30;
 
   /*
    * Average width of obstacles
