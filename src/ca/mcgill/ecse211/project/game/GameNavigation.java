@@ -67,6 +67,7 @@ public class GameNavigation {
     GameResources.setLocalized(false);
     GameResources.setEnableCorrection(correction);
     GameResources.setNavigationCoordinates(new Point(x, y));
+    
 
     if (xFirst) {
       Navigation.travelTo(x, (GameResources.odometer.getY() / GameResources.TILE_SIZE),
@@ -406,7 +407,7 @@ public class GameNavigation {
       int lineCount = (int) Math.floor(currentXLine / GameResources.TILE_SIZE) + 1;
       distance = GameResources.odometer.getX() - (lineCount * GameResources.TILE_SIZE);
     }
-    if (distance > GameResources.TILE_SIZE) {
+    while (distance > GameResources.TILE_SIZE) {
       distance = distance - GameResources.TILE_SIZE;
     }
     return distance;

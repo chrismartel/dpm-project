@@ -69,7 +69,7 @@ public class GameController {
 
         case UltrasonicLocalization:
           // ultrasonic localization using falling edge routine
-          ultrasonicLocalizer.fallingEdge(GameResources.ROTATE_SPEED_FAST);
+          ultrasonicLocalizer.fallingEdge(GameResources.ROTATE_SPEED_NORMAL);
           // transition to light localization state
           GameResources.setGameState(GameState.LightLocalization);
           break;
@@ -134,6 +134,7 @@ public class GameController {
               gameNavigation.navigateToLaunchPoint(xFirst);
               if (GameResources.isNavigationCompleted()) {
                 // turn towards the bin
+                LightLocalizer.lightLocalize(gameNavigation.getLaunchPoint(), false);
                 gameNavigation.turnToTarget();
                 // update new checkpoint
                 GameResources.setNavigationDestination(NAVIGATION_DESTINATION.TUNNEL_EXIT);
@@ -158,7 +159,7 @@ public class GameController {
 
         case Tunnel:
           // adjust heading
-          LightLocalizer.twoLineDetection();
+//          LightLocalizer.twoLineDetection();
           // position center of rotation at tunnel entrance
 
           // correct odometer according to tunnel entrance data

@@ -151,7 +151,7 @@ public class GameResources {
   /**
    * Coefficient of the launching process to adjust the speed of the motors in function of the distance
    */
-  public static final double LAUNCH_COEFFICIENT = 0.8802; // HAS TO BE DETERMINED BY TESTING
+  public static final double LAUNCH_COEFFICIENT = 0.8202; // HAS TO BE DETERMINED BY TESTING
 
   /**
    * Initial value used to compute the motor speed to apply in functio of the distance
@@ -424,7 +424,7 @@ public class GameResources {
   /*
    * Distance of obstacle detection
    */
-  public static final double OBSTACLE_DETECTION_DISTANCE = 15;
+  public static final double OBSTACLE_DETECTION_DISTANCE = 25;
 
   /*
    * Distance to shift the robot in path finder avoidance strategy

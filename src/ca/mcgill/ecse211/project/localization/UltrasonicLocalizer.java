@@ -54,7 +54,7 @@ public class UltrasonicLocalizer {
       currentDistance = distances[0];
       lastDistance = distances[1];
       // if (ultrasonicPoller.getDistance() < COMMON_D - FALLINGEDGE_K) {
-      if (lastDistance >= (GameResources.FALLINGEDGE_D + GameResources.FALLINGEDGE_K) && currentDistance <= (GameResources.FALLINGEDGE_D - GameResources.FALLINGEDGE_K)) {
+      if (lastDistance > (GameResources.FALLINGEDGE_D + GameResources.FALLINGEDGE_K) && currentDistance < (GameResources.FALLINGEDGE_D - GameResources.FALLINGEDGE_K)) {
         this.beta = GameResources.odometer.getTheta();
         Navigation.stopMotors();
         break;
