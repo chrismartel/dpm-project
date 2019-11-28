@@ -186,7 +186,7 @@ public class UltrasonicController {
       if (currentDistance <= GameResources.OBSTACLE_DETECTION_DISTANCE) {
         // increment the counter, when 3 detections have been made --> obstacle detected
         obstacleDetectionCounter++;
-        if (obstacleDetectionCounter == 3) {
+        if (obstacleDetectionCounter == GameResources.OBSTACLE_DETECTION_COUNTER_MAX) {
           GameResources.setObstacleDetected(true);
           GameResources.setGameState(GameState.Avoidance);
         }
