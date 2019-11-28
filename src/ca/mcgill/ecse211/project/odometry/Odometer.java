@@ -1,11 +1,15 @@
 package ca.mcgill.ecse211.project.odometry;
 
 import static ca.mcgill.ecse211.project.game.GameResources.*;
-
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * This class implements the odometer of the robot establishing a local coordinate system to enable the robot to
+ * navigate accurately through the field. This classes implements a lock to avoid concurrent writing when getting or
+ * setting values. It is implemented as a thread.
+ */
 public class Odometer implements Runnable {
 
   /**

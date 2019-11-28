@@ -86,6 +86,14 @@ public class BallisticLauncher {
     }
   }
 
+  /**
+   * Method used to compute the motor speed needed to launch to a particular distance using the launching equation
+   * relating the motor speed to the distance.
+   * 
+   * @param : the distance in centimeters the ball needs to be launched
+   * 
+   * @return : the motor speed needed to launch the ball to the inputted distance
+   */
   public double computeMotorSpeed(double distance) {
     double motorSpeed = GameResources.LAUNCH_COEFFICIENT * distance + GameResources.LAUNCH_IV;
     return motorSpeed;

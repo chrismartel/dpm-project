@@ -8,8 +8,12 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import ca.mcgill.ecse211.project.game.GameResources;
 import ca.mcgill.ecse211.project.game.GameState;
-import lejos.hardware.Sound;
 
+/**
+ * This class implements the controller for an ultrasonic sensor. It implements a median filter used to get rid of noise
+ * in signals and implements a filter out to avoid getting aberrant signal values. It implements a lock to avoid
+ * concurrent writing while getting or setting variables.
+ */
 public class UltrasonicController {
 
   /**
@@ -169,6 +173,11 @@ public class UltrasonicController {
     return distance;
   }
 
+  /**
+   * method used to check for obstacles. The method check the current distance seen by the sensor, and if this distance
+   * is smaller than the obstacle detection distance, the game transits into avoidance state. For an obstacle to be
+   * detected, a distance below the detection threshold must be detected 3 times in a row.
+   */
   public void checkForObstacle() {
     lock.lock();
     isResetting = true;
@@ -183,7 +192,6 @@ public class UltrasonicController {
         }
       } else {
         obstacleDetectionCounter = 0;
-
 
       }
       isResetting = false;

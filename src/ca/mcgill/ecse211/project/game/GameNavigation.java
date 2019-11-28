@@ -2,7 +2,6 @@ package ca.mcgill.ecse211.project.game;
 
 import ca.mcgill.ecse211.project.Resources;
 import ca.mcgill.ecse211.project.game.GameResources.*;
-import lejos.hardware.Sound;
 import java.util.LinkedList;
 import java.util.Random;
 import ca.mcgill.ecse211.project.Resources.Point;
@@ -10,8 +9,8 @@ import ca.mcgill.ecse211.project.Localization.LightLocalizer;
 
 
 /**
- * This class implements all the methods related to map generation, navigation to different locations on the field,
- * tunnel computations or distance computations
+ * This class implements all the high-level methods related to map generation, navigation to different locations on the
+ * field, tunnel computations or distance computations
  * 
  */
 public class GameNavigation {
@@ -67,7 +66,7 @@ public class GameNavigation {
     GameResources.setLocalized(false);
     GameResources.setEnableCorrection(correction);
     GameResources.setNavigationCoordinates(new Point(x, y));
-    
+
 
     if (xFirst) {
       Navigation.travelTo(x, (GameResources.odometer.getY() / GameResources.TILE_SIZE),
@@ -120,7 +119,9 @@ public class GameNavigation {
   }
 
   /**
-   * Method implementing the turn towards the launch point
+   * Method implementing the turn towards the launch point. The ballistic arm is offset from the center of the robot, so
+   * for the arm to point to the bin, we need to add an additional turn using a trigonomeric formula and an adjustment
+   * angle.
    */
   public void turnToTarget() {
     double currentX = GameResources.odometer.getX();
@@ -133,9 +134,9 @@ public class GameNavigation {
     Navigation.turnTo(Math.toDegrees(Math.atan2(dX, dY)), GameResources.ROTATE_SPEED_SLOW);
     double distance = this.distanceFromBin(launchPoint.x, launchPoint.y);
 
-    // additional turn so that the ballistic launcher points to the bin
+    // additional turn computed using arc sin formula so that the ballistic launcher points to the bin
     double adjustmentAngle = Math.toDegrees((Math.asin((GameResources.BALLISTIC_X_OFFSET_FROM_CENTER / distance))));
-    Navigation.turn(GameResources.BALLISTIC_ADJUSTMENT_ANGLE - 4 * adjustmentAngle, GameResources.ROTATE_SPEED_SLOW);
+    Navigation.turn(GameResources.BALLISTIC_ADJUSTMENT_ANGLE - adjustmentAngle, GameResources.ROTATE_SPEED_SLOW);
 
   }
 
@@ -147,35 +148,43 @@ public class GameNavigation {
   public void navigateThroughTunnel() {
     // first tunnel traversal
     if (tunnel == 0) {
-      Navigation.turnTo(tunnelExit.x, tunnelExit.y,GameResources.ROTATE_SPEED_NORMAL);
+      // face the tunnel exit
+      Navigation.turnTo(tunnelExit.x, tunnelExit.y, GameResources.ROTATE_SPEED_NORMAL);
+      // back up from an offset to be able to detect the black line
       Navigation.backUp((GameResources.OFFSET_FROM_WHEELBASE + GameResources.TUNNEL_ADJUSTMENT_DISTANCE),
           GameResources.FORWARD_SPEED_NORMAL);
+      // advance to correct the heading of the robot with the tunnel entrance black line using odometry correction
       GameResources.setEnableCorrection(true);
       Navigation.travel((GameResources.OFFSET_FROM_WHEELBASE + GameResources.TUNNEL_ADJUSTMENT_DISTANCE),
           GameResources.FORWARD_SPEED_NORMAL);
       GameResources.setEnableCorrection(false);
-//      Navigation.turn(, GameResources.FORWARD_SPEED_NORMAL);
-      Navigation.travel(calculateDistance(GameResources.odometer.getX()/GameResources.TILE_SIZE,
-          GameResources.odometer.getY()/GameResources.TILE_SIZE,
-          tunnelExit.x, tunnelExit.y), GameResources.FORWARD_SPEED_FAST);
+      // travel the distance between the tunnel entrance and the tunnel exit
+      Navigation.travel(
+          calculateDistance(GameResources.odometer.getX() / GameResources.TILE_SIZE,
+              GameResources.odometer.getY() / GameResources.TILE_SIZE, tunnelExit.x, tunnelExit.y),
+          GameResources.FORWARD_SPEED_FAST);
       tunnel++;
     }
     // second tunnel traversal
     else if (tunnel == 1) {
-      Navigation.turnTo(tunnelEntrance.x, tunnelEntrance.y,GameResources.ROTATE_SPEED_NORMAL);
+      Navigation.turnTo(tunnelEntrance.x, tunnelEntrance.y, GameResources.ROTATE_SPEED_NORMAL);
+      // back up from an offset to be able to detect the black line
       Navigation.backUp((GameResources.OFFSET_FROM_WHEELBASE + GameResources.TUNNEL_ADJUSTMENT_DISTANCE),
           GameResources.FORWARD_SPEED_NORMAL);
+      // advance to correct the heading of the robot with the tunnel entrance black line using odometry correction
       GameResources.setEnableCorrection(true);
       Navigation.travel((GameResources.OFFSET_FROM_WHEELBASE + GameResources.TUNNEL_ADJUSTMENT_DISTANCE),
           GameResources.FORWARD_SPEED_NORMAL);
       GameResources.setEnableCorrection(false);
-//      Navigation.turn(-5, GameResources.FORWARD_SPEED_NORMAL);
-      Navigation.travel(calculateDistance(GameResources.odometer.getX()/GameResources.TILE_SIZE,
-          GameResources.odometer.getY()/GameResources.TILE_SIZE,
-          tunnelEntrance.x , tunnelEntrance.y), GameResources.FORWARD_SPEED_FAST);
-//      Navigation.travelTo(tunnelEntrance.x, tunnelEntrance.y, GameResources.FORWARD_SPEED_FAST);
+      // travel the distance between the tunnel entrance and the tunnel exit
+      Navigation.travel(
+          calculateDistance(GameResources.odometer.getX() / GameResources.TILE_SIZE,
+              GameResources.odometer.getY() / GameResources.TILE_SIZE, tunnelEntrance.x, tunnelEntrance.y),
+          GameResources.FORWARD_SPEED_FAST);
     }
+    // Use line detection to correct heading with first black line after exiting the tunnel
     LightLocalizer.twoLineDetection();
+    // back up from an offset for the center of rotation of the robot to be on the black line
     Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
     // update new zone parameters
     this.updateParameters();
@@ -315,12 +324,16 @@ public class GameNavigation {
 
   /**
    * Method used to find the tunnel entrance by evaluating the region of the points around the tunnel. Once the method
-   * has found the entrance, it sets the tunnel entrance, exit and length data
+   * has found the entrance, it sets the tunnel entrance, the tunnel exit, the tunnel entrance traversal orientation and
+   * the tunnel exit traversal orientation. To determine the tunnel entrance, 4 regions are computed around the tunnel.
+   * When one of these regions matches the target region and the opposite region is the island region, the entrance is
+   * foud.
    */
   public void updateTunnelData() {
 
     REGION targetRegion;
     REGION islandRegion = REGION.ISLAND;
+    // create 4 regions around the tunnel using the coordinates of the top right and low left corners
     REGION tunnelBottom = this.regionCalculation((GameResources.Tunnel.ll.x + 0.5), (GameResources.Tunnel.ll.y - 0.5));
     REGION tunnelTop = this.regionCalculation((GameResources.Tunnel.ur.x - 0.5), (GameResources.Tunnel.ur.y + 0.5));
     REGION tunnelLeft = this.regionCalculation((GameResources.Tunnel.ll.x - 0.5), (GameResources.Tunnel.ll.y + 0.5));
@@ -332,27 +345,27 @@ public class GameNavigation {
     } else {
       targetRegion = REGION.GREEN;
     }
-    // determine where is the tunnel entrance
+    // determine where is the tunnel entrance and set the entrance and exit accordingly
     if (tunnelBottom == targetRegion && tunnelTop == islandRegion) {
-      this.setTunnelEntrance(new Point(GameResources.Tunnel.ll.x + 0.475, GameResources.Tunnel.ll.y - 1));
-      this.setTunnelExit(new Point(GameResources.Tunnel.ur.x - 0.475, GameResources.Tunnel.ur.y + 1));
+      this.setTunnelEntrance(new Point(GameResources.Tunnel.ll.x + 0.5, GameResources.Tunnel.ll.y - 1));
+      this.setTunnelExit(new Point(GameResources.Tunnel.ur.x - 0.5, GameResources.Tunnel.ur.y + 1));
       this.setTunnelEntranceTraversalOrientation(0);
       this.setTunnelExitTraversalOrientation(180);
     } else if (tunnelTop == targetRegion && tunnelBottom == islandRegion) {
-      this.setTunnelEntrance(new Point(GameResources.Tunnel.ur.x - 0.475, GameResources.Tunnel.ur.y + 1));
-      this.setTunnelExit(new Point(GameResources.Tunnel.ll.x + 0.475, GameResources.Tunnel.ll.y - 1));
+      this.setTunnelEntrance(new Point(GameResources.Tunnel.ur.x - 0.5, GameResources.Tunnel.ur.y + 1));
+      this.setTunnelExit(new Point(GameResources.Tunnel.ll.x + 0.5, GameResources.Tunnel.ll.y - 1));
       this.setTunnelEntranceTraversalOrientation(180);
       this.setTunnelExitTraversalOrientation(0);
 
     } else if (tunnelLeft == targetRegion && tunnelRight == islandRegion) {
-      this.setTunnelEntrance(new Point(GameResources.Tunnel.ll.x - 1, GameResources.Tunnel.ll.y + 0.475));
-      this.setTunnelExit(new Point(GameResources.Tunnel.ur.x + 1, GameResources.Tunnel.ur.y - 0.475));
+      this.setTunnelEntrance(new Point(GameResources.Tunnel.ll.x - 1, GameResources.Tunnel.ll.y + 0.5));
+      this.setTunnelExit(new Point(GameResources.Tunnel.ur.x + 1, GameResources.Tunnel.ur.y - 0.5));
       this.setTunnelEntranceTraversalOrientation(90);
       this.setTunnelExitTraversalOrientation(270);
 
     } else if (tunnelRight == targetRegion && tunnelLeft == islandRegion) {
-      this.setTunnelEntrance(new Point(GameResources.Tunnel.ur.x + 1, GameResources.Tunnel.ur.y - 0.475));
-      this.setTunnelExit(new Point(GameResources.Tunnel.ll.x - 1, GameResources.Tunnel.ll.y + 0.475));
+      this.setTunnelEntrance(new Point(GameResources.Tunnel.ur.x + 1, GameResources.Tunnel.ur.y - 0.5));
+      this.setTunnelExit(new Point(GameResources.Tunnel.ll.x - 1, GameResources.Tunnel.ll.y + 0.5));
       this.setTunnelEntranceTraversalOrientation(270);
       this.setTunnelExitTraversalOrientation(90);
     }
@@ -374,7 +387,7 @@ public class GameNavigation {
       GameResources.Tunnel.ur.y = Resources.tng.ur.y;
     }
   }
- 
+
 
   public double calculateBackwardDistance() {
     double lowerBound = GameResources.odometer.getTheta() - GameResources.THETA_RANGE;
@@ -412,7 +425,7 @@ public class GameNavigation {
     while (distance >= GameResources.TILE_SIZE) {
       distance = distance - GameResources.TILE_SIZE;
     }
-    return (distance/2);
+    return (distance / 2);
   }
 
   /**

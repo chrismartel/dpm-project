@@ -1,11 +1,8 @@
 package ca.mcgill.ecse211.project.game;
 
 import ca.mcgill.ecse211.project.game.GameResources.*;
-import ca.mcgill.ecse211.project.Resources.*;
-import ca.mcgill.ecse211.project.Display;
 import ca.mcgill.ecse211.project.Localization.LightLocalizer;
 import ca.mcgill.ecse211.project.Localization.UltrasonicLocalizer;
-import lejos.hardware.Button;
 import lejos.hardware.Sound;
 
 public class GameController {
@@ -17,36 +14,25 @@ public class GameController {
     BallisticLauncher ballisticLauncher = new BallisticLauncher();
     ObstacleAvoider obstacleAvoider = new ObstacleAvoider();
 
-    // closest point used for light loc
-    Point closestPoint;
     // tunnel traversal counter
     int tunnel = 0;
     // boolean indicating if the square navigation should travel on the x axis first or the y axis first
     boolean xFirst = true;
 
-    // set initial state
+    // set initial state to initialization
     GameResources.setGameState(GameState.Initialization);
 
     // Execute until the game reaches the Done state
     while (GameResources.getGameState() != GameState.Done) {
       switch (GameResources.getGameState()) {
+        // Test case used for testing and debugging puproses
         case Test:
-
-          GameResources.setGameState(GameState.Navigation);
-          GameResources.setNavigationDestination(NAVIGATION_DESTINATION.LAUNCH_POINT);
-          GameResources.setCurrentRegion(REGION.ISLAND);
-          gameNavigation.setLimits();
-          GameResources.odometer.setXYT(7 * GameResources.TILE_SIZE, 5 * GameResources.TILE_SIZE, 270);
-          xFirst = true;
-          GameNavigation.squareNavigation(5, 5, xFirst, false);
           break;
-
-
         case Initialization:
           // start threads
           Thread odometerThread = new Thread(GameResources.odometer);
           Thread usPollerTread = new Thread(GameResources.ultrasonicPoller);
-//          new Thread(new Display()).start();
+          // new Thread(new Display()).start();
           odometerThread.start();
           usPollerTread.start();
 
@@ -62,6 +48,7 @@ public class GameController {
           GameResources.rightBallisticMotor.rotate(-5, false);
           GameResources.leftBallisticMotor.rotate(+5, true);
           GameResources.rightBallisticMotor.rotate(+5, false);
+
           // transit to ultrasonic localization state
           GameResources.setGameState(GameState.UltrasonicLocalization);
           break;
@@ -77,40 +64,29 @@ public class GameController {
         case LightLocalization:
           // initial localization depending on the starting point and starting corner
           LightLocalizer.initialLightLocalize(GameResources.STARTING_POINT, GameResources.CORNER_NUMBER);
+
+          // beep 3 times to indicate light localization is done
           Sound.beep();
           Thread.sleep(50);
           Sound.beep();
           Thread.sleep(50);
           Sound.beep();
-          
+
+          // navigate a small distance forward to avoid detecting the light localization line
           Navigation.travel(GameResources.INITIAL_LIGHT_LOC_ADJUSTMENT_DISTANCE, GameResources.FORWARD_SPEED_NORMAL);
+
           // transit to navigation state
           GameResources.gameState = GameState.Navigation;
-          GameResources.setLocalized(true);
-          try {
-            Thread.sleep(500);
-          } catch (InterruptedException e) {
-            e.printStackTrace();
-          }
           break;
 
 
         case Navigation:
-          System.out.println(gameNavigation.getTunnelEntrance());
-          System.out.println(" ");
-          System.out.println(" ");
-          System.out.println(" ");
-          System.out.println(" ");
-          System.out.println(" ");
-          System.out.println(" ");
-          System.out.println(" ");
-          System.out.println(" ");
-          GameResources.LCD.clear();
           // navigation is considered uncompleted initially
           GameResources.navigationCompleted = false;
+
           // check the current navigation destination
           switch (GameResources.navigationDestination) {
-            // navigation to first tunnel entrance
+            // navigation to tunnel entrance
             case TUNNEL_ENTRANCE:
               // navigate to tunnel entrance and turn to traversal orientation
               gameNavigation.navigateToTunnelEntrance(xFirst);
@@ -121,9 +97,10 @@ public class GameController {
                 GameResources.setNavigationDestination(NAVIGATION_DESTINATION.LAUNCH_POINT);
               }
               break;
+
+            // navigation to tunnel exit
             case TUNNEL_EXIT:
               // travel to the second tunnel entrance
-              obstacleAvoider.setGoalPoint(gameNavigation.getTunnelExit());
               gameNavigation.navigateToTunnelExit(xFirst);
               if (GameResources.isNavigationCompleted()) {
                 // update new checkpoint
@@ -132,12 +109,15 @@ public class GameController {
                 GameResources.setGameState(GameState.Tunnel);
               }
               break;
+
             case LAUNCH_POINT:
-              // navigate to the closest launch point on the current navigation path indicated by xFirst boolean
+              // navigate to the closest launch point from the robot position using the current navigation path
+              // indicated by xFirst boolean
               gameNavigation.navigateToLaunchPoint(xFirst);
               if (GameResources.isNavigationCompleted()) {
-                // turn towards the bin
+                // localize on the launch point before launch
                 LightLocalizer.lightLocalize(gameNavigation.getLaunchPoint(), false);
+                // turn towards the bin
                 gameNavigation.turnToTarget();
                 // update new checkpoint
                 GameResources.setNavigationDestination(NAVIGATION_DESTINATION.TUNNEL_EXIT);
@@ -151,6 +131,7 @@ public class GameController {
               GameNavigation.squareNavigation(GameResources.STARTING_POINT.x, GameResources.STARTING_POINT.y, xFirst,
                   true);
               if (GameResources.isNavigationCompleted()) {
+                // Transit to done state
                 GameResources.setGameState(GameState.Done);
               }
               break;
@@ -161,11 +142,6 @@ public class GameController {
 
 
         case Tunnel:
-          // adjust heading
-//          LightLocalizer.twoLineDetection();
-          // position center of rotation at tunnel entrance
-
-          // correct odometer according to tunnel entrance data
           // first tunnel traversal
           if (tunnel == 0) {
             // navigate through tunnel
@@ -177,7 +153,6 @@ public class GameController {
           }
           // second tunnel traversal
           else if (tunnel == 1) {
-//            System.out.println(gameNavigation.getTunnelExit());
             gameNavigation.navigateThroughTunnel();
           }
           // transition back to navigation
@@ -186,79 +161,84 @@ public class GameController {
 
 
         case Avoidance:
-//          System.out.println("OBJECT DETECTED");
-          // create restricted points and determines if the launch point has to be changed
-          boolean newLaunchPoint = gameNavigation.createRestrictedPoints();
-          // possible launch points updated
-          gameNavigation.generateLaunchPoints();
-          
-//          LightLocalizer.twoLineDetectionBackward();
-//          double backupDistance = gameNavigation.calculateBackwardDistance();
-//          Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_NORMAL);
 
-          // OBSTACLE AVOIDANCE STRATEGY
-            // launch point is still the same
+          // calculate the distance to backUp after an obstacle detection
+          double backupDistance = gameNavigation.calculateBackwardDistance();
+          Navigation.backUp(backupDistance, GameResources.FORWARD_SPEED_NORMAL);
+
+          // OBSTACLE AVOIDANCE PATH CHANGE STRATEGY
+
+          // Robot is navigating towards launch point
           if (GameResources.navigationDestination == NAVIGATION_DESTINATION.LAUNCH_POINT) {
-            if (!newLaunchPoint) {
-//              System.out.println("SAME LAUNCH POINT");
-              // set the objective point of the wall follower
-              obstacleAvoider.setGoalPoint(gameNavigation.getLaunchPoint());
+            // create restricted points and determines if the launch point has to be changed
+            boolean newLaunchPoint = gameNavigation.createRestrictedPoints();
+            // new possible launch points considering the new restricted points
+            gameNavigation.generateLaunchPoints();
 
-                obstacleAvoider.shiftRobot();
-                if (xFirst) {
-                  xFirst = false;
-                } else {
-                  xFirst = true;
-                }
-            } else {
-//              System.out.println("NEW LAUNCH POINT NEEDED");
+            // Launch point was not changed
+            if (!newLaunchPoint) {
+
+              // Shift the robot depending on its position on the island
+              obstacleAvoider.shiftRobot();
+
+              // Change the square navigation path
+              if (xFirst) {
+                xFirst = false;
+              } else {
+                xFirst = true;
+              }
+            }
+            // Launch point was changed
+            else {
               // calculate a new launch point
               gameNavigation.calculateClosestLaunchPoint();
-//              obstacleAvoider.setGoalPoint(gameNavigation.getLaunchPoint());
-                obstacleAvoider.shiftRobot();
-                if (xFirst) {
-                  xFirst = false;
-                } else {
-                  xFirst = true;
-                }
+              // Shift the robot depending on its position on the island
+              obstacleAvoider.shiftRobot();
+              // Change the square navigation path
+              if (xFirst) {
+                xFirst = false;
+              } else {
+                xFirst = true;
+              }
 
             }
-          }else {
+          }
+
+          // Robot is navigating towards tunnel exit
+          else {
+            // Shift the robot depending on its position on the island
             obstacleAvoider.shiftRobot();
+            // Change the square navigation path
             if (xFirst) {
               xFirst = false;
             } else {
               xFirst = true;
+            }
           }
-            
-          }
-            
-          
+
           // transit to navigation after avoidance procedure
           GameResources.setGameState(GameState.Navigation);
           break;
 
         case Launch:
-          // perform the launches
+          // Beep 3 times to indicate the robot has reached its launch point
           Sound.beep();
           Thread.sleep(50);
           Sound.beep();
           Thread.sleep(50);
           Sound.beep();
+          // Perform the launches
           ballisticLauncher
               .multipleLaunch(gameNavigation.distanceFromBin(GameResources.odometer.getX() / GameResources.TILE_SIZE,
                   GameResources.odometer.getY() / GameResources.TILE_SIZE));
           // transition back to navigation
           GameResources.setGameState(GameState.Navigation);
-//          LightLocalizer.lightLocalize(gameNavigation.getLaunchPoint(), false);
-          xFirst = false;
           break;
-
         default:
           break;
-
       }
     }
+    // When state machine terminates, beep 5 times to indicate the robot has came back to its initial point
     Sound.beep();
     Thread.sleep(50);
     Sound.beep();
@@ -268,11 +248,7 @@ public class GameController {
     Sound.beep();
     Thread.sleep(50);
     Sound.beep();
-    
-    GameResources.LCD.clear();
-    GameResources.LCD.drawString("DONE", 1, 1);
   }
-
 
 
 

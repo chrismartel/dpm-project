@@ -1,11 +1,9 @@
 package ca.mcgill.ecse211.project.game;
 
-import ca.mcgill.ecse211.project.game.BallisticLauncher;
 import static ca.mcgill.ecse211.project.Resources.*;
 import java.util.LinkedList;
 import ca.mcgill.ecse211.project.Resources.Point;
 import ca.mcgill.ecse211.project.Localization.LightLocalizer;
-import ca.mcgill.ecse211.project.game.Navigation;
 import ca.mcgill.ecse211.project.odometry.Odometer;
 import ca.mcgill.ecse211.project.sensor.UltrasonicPoller;
 import lejos.hardware.ev3.LocalEV3;
@@ -118,7 +116,7 @@ public class GameResources {
    */
 
   public static int DIFFERENTIAL_LINE_THRESHOLD = 7; // HAS TO BE DETERMINE BY TESTING
-  
+
   /**
    * Window size for the ultrasonic sensor data polling
    */

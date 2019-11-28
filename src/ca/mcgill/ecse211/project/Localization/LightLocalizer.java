@@ -111,16 +111,14 @@ public class LightLocalizer {
       }
       lastLeftValue = currentLeftValue;
       lastRightValue = currentRightValue;
-      try {
-        Thread.sleep(75);
-      } catch (InterruptedException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-
     }
   }
-  
+
+  /**
+   * Method in which the robot travels backwards until one of its 2 light sensors detects a line. When a sensor detects
+   * a line, the corresponding motor stops, and the other motor turns backwards until its light sensor also detects a
+   * line. When 2 lines are detected, the robot stops.
+   */
   public static void twoLineDetectionBackward() {
     float lastLeftValue = -1000;
     float currentLeftValue = 0;
@@ -148,13 +146,6 @@ public class LightLocalizer {
       }
       lastLeftValue = currentLeftValue;
       lastRightValue = currentRightValue;
-      try {
-        Thread.sleep(75);
-      } catch (InterruptedException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-
     }
   }
 
@@ -182,13 +173,11 @@ public class LightLocalizer {
     if (GameResources.leftMotor.getSpeed() == 0 && GameResources.rightMotor.getSpeed() == 0) {
       // Both motors have stopped so turn light localize off.
       return false;
-    }
-    else if(System.currentTimeMillis() - MIN_TIME > firstLineTime && 
-        (GameResources.rightMotor.getSpeed() != GameResources.leftMotor.getSpeed())) {
-      if(GameResources.leftMotor.getSpeed() == 0) {
+    } else if (System.currentTimeMillis() - MIN_TIME > firstLineTime
+        && (GameResources.rightMotor.getSpeed() != GameResources.leftMotor.getSpeed())) {
+      if (GameResources.leftMotor.getSpeed() == 0) {
         GameResources.rightMotor.backward();
-      }
-      else if(GameResources.rightMotor.getSpeed() == 0){
+      } else if (GameResources.rightMotor.getSpeed() == 0) {
         GameResources.leftMotor.backward();
       }
     }
@@ -277,28 +266,22 @@ public class LightLocalizer {
       LightLocalizer.twoLineDetection();
       OdometryCorrection.correctValues();
       Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
-//      GameResources.odometer.setXYT(GameResources.odometer.getX(), point.y * GameResources.TILE_SIZE, 0);
       Navigation.turnTo(90, GameResources.ROTATE_SPEED_FAST);
       LightLocalizer.twoLineDetection();
       OdometryCorrection.correctValues();
-//      GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) + GameResources.OFFSET_FROM_WHEELBASE,
-//          GameResources.odometer.getY(), 90);
+
     }
     // The point is near a wall --> SPECIAL CASES
     else {
-//      System.out.println("CLOSE TO A WALL");
-      // close to top wall and right wall
+      // close to the right and top wall
       if (point.x == (GameResources.FIELD_RIGHT - 1) && point.y == (GameResources.FIELD_RIGHT - 1)) {
         Navigation.turnTo(180, GameResources.ROTATE_SPEED_FAST);
         LightLocalizer.twoLineDetection();
         OdometryCorrection.correctValues();
         Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
-//        GameResources.odometer.setXYT(GameResources.odometer.getX(), point.y * GameResources.TILE_SIZE, 180);
         Navigation.turnTo(270, GameResources.ROTATE_SPEED_FAST);
         LightLocalizer.twoLineDetection();
         OdometryCorrection.correctValues();
-//        GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) - GameResources.OFFSET_FROM_WHEELBASE,
-//            GameResources.odometer.getY(), 270);
       }
 
       // only close to right wall
@@ -307,12 +290,9 @@ public class LightLocalizer {
         LightLocalizer.twoLineDetection();
         OdometryCorrection.correctValues();
         Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
-//        GameResources.odometer.setXYT(GameResources.odometer.getX(), point.y * GameResources.TILE_SIZE, 0);
         Navigation.turnTo(270, GameResources.ROTATE_SPEED_FAST);
         LightLocalizer.twoLineDetection();
         OdometryCorrection.correctValues();
-//        GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) - GameResources.OFFSET_FROM_WHEELBASE,
-//            GameResources.odometer.getY(), 270);
 
       }
       // only close to top wall
@@ -321,12 +301,9 @@ public class LightLocalizer {
         LightLocalizer.twoLineDetection();
         OdometryCorrection.correctValues();
         Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
-//        GameResources.odometer.setXYT(GameResources.odometer.getX(), point.y * GameResources.TILE_SIZE, 0);
         Navigation.turnTo(90, GameResources.ROTATE_SPEED_FAST);
         LightLocalizer.twoLineDetection();
         OdometryCorrection.correctValues();
-//        GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) + GameResources.OFFSET_FROM_WHEELBASE,
-//            GameResources.odometer.getY(), 90);
       }
       // either close to left wall or to bottom wall --> general procedure
       else if (point.x == 1 || point.y == 1) {
@@ -334,23 +311,20 @@ public class LightLocalizer {
         LightLocalizer.twoLineDetection();
         OdometryCorrection.correctValues();
         Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
-//        GameResources.odometer.setXYT(GameResources.odometer.getX(), point.y * GameResources.TILE_SIZE, 0);
         Navigation.turnTo(90, GameResources.ROTATE_SPEED_FAST);
         LightLocalizer.twoLineDetection();
         OdometryCorrection.correctValues();
-//        GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) + GameResources.OFFSET_FROM_WHEELBASE,
-//            GameResources.odometer.getY(), 90);
       }
 
     }
-    if(position) {
+    if (position) {
       Navigation.travelTo(point.x, point.y, GameResources.FORWARD_SPEED_NORMAL);
     }
   }
 
   /**
    * Method used to perform the initial light localization in the starting corner. 4 different cases of initial
-   * localization are implemented depending on which corner number is inputted.
+   * localization are implemented depending on which corner number is inputted. F
    * 
    * @param: point is the starting corner point used to set the odometer x and y values properly
    * 
@@ -360,13 +334,14 @@ public class LightLocalizer {
 
     switch (corner) {
       case 0:
-        //Navigation.turnTo(0, GameResources.ROTATE_SPEED_FAST);
+        Navigation.turnTo(0, GameResources.ROTATE_SPEED_FAST);
         twoLineDetection();
         Navigation.backUp(GameResources.OFFSET_FROM_WHEELBASE, GameResources.FORWARD_SPEED_FAST);
         GameResources.odometer.setXYT(GameResources.odometer.getX(), (point.y * GameResources.TILE_SIZE), 0);
         Navigation.turnTo(90, GameResources.ROTATE_SPEED_FAST);
         twoLineDetection();
-        GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) + GameResources.OFFSET_FROM_WHEELBASE, GameResources.odometer.getY(), 90);
+        GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) + GameResources.OFFSET_FROM_WHEELBASE,
+            GameResources.odometer.getY(), 90);
         break;
       case 1:
         Navigation.turnTo(0, GameResources.ROTATE_SPEED_FAST);
@@ -375,7 +350,8 @@ public class LightLocalizer {
         GameResources.odometer.setXYT(GameResources.odometer.getX(), (point.y * GameResources.TILE_SIZE), 0);
         Navigation.turnTo(270, GameResources.ROTATE_SPEED_FAST);
         twoLineDetection();
-        GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) - GameResources.OFFSET_FROM_WHEELBASE, GameResources.odometer.getY(), 270);
+        GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) - GameResources.OFFSET_FROM_WHEELBASE,
+            GameResources.odometer.getY(), 270);
         break;
       case 2:
         Navigation.turnTo(180, GameResources.ROTATE_SPEED_FAST);
@@ -384,7 +360,8 @@ public class LightLocalizer {
         GameResources.odometer.setXYT(GameResources.odometer.getX(), (point.y * GameResources.TILE_SIZE), 180);
         Navigation.turnTo(270, GameResources.ROTATE_SPEED_FAST);
         twoLineDetection();
-        GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) - GameResources.OFFSET_FROM_WHEELBASE, GameResources.odometer.getY(), 270);
+        GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) - GameResources.OFFSET_FROM_WHEELBASE,
+            GameResources.odometer.getY(), 270);
         break;
       case 3:
         Navigation.turnTo(180, GameResources.ROTATE_SPEED_FAST);
@@ -393,10 +370,11 @@ public class LightLocalizer {
         GameResources.odometer.setXYT(GameResources.odometer.getX(), (point.y * GameResources.TILE_SIZE), 180);
         Navigation.turnTo(90, GameResources.ROTATE_SPEED_FAST);
         twoLineDetection();
-        GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) + GameResources.OFFSET_FROM_WHEELBASE, GameResources.odometer.getY(), 90);
+        GameResources.odometer.setXYT((point.x * GameResources.TILE_SIZE) + GameResources.OFFSET_FROM_WHEELBASE,
+            GameResources.odometer.getY(), 90);
         break;
     }
-    
+
   }
 
 
