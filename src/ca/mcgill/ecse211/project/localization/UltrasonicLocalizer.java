@@ -37,9 +37,10 @@ public class UltrasonicLocalizer {
       distances = GameResources.ultrasonicPoller.getFrontUsController().getDistances();
       currentDistance = distances[0];
       lastDistance = distances[1];
-      
-      if (lastDistance > (GameResources.FALLINGEDGE_D + GameResources.FALLINGEDGE_K) && currentDistance < (GameResources.FALLINGEDGE_D - GameResources.FALLINGEDGE_K)) {
-//        System.out.println("differential: "+(lastDistance-currentDistance));
+
+      if (lastDistance > (GameResources.FALLINGEDGE_D + GameResources.FALLINGEDGE_K)
+          && currentDistance < (GameResources.FALLINGEDGE_D - GameResources.FALLINGEDGE_K)) {
+        // System.out.println("differential: "+(lastDistance-currentDistance));
         this.alpha = GameResources.odometer.getTheta();
         Navigation.stopMotors();
         break;
@@ -54,7 +55,8 @@ public class UltrasonicLocalizer {
       currentDistance = distances[0];
       lastDistance = distances[1];
       // if (ultrasonicPoller.getDistance() < COMMON_D - FALLINGEDGE_K) {
-      if (lastDistance > (GameResources.FALLINGEDGE_D + GameResources.FALLINGEDGE_K) && currentDistance < (GameResources.FALLINGEDGE_D - GameResources.FALLINGEDGE_K)) {
+      if (lastDistance > (GameResources.FALLINGEDGE_D + GameResources.FALLINGEDGE_K)
+          && currentDistance < (GameResources.FALLINGEDGE_D - GameResources.FALLINGEDGE_K)) {
         this.beta = GameResources.odometer.getTheta();
         Navigation.stopMotors();
         break;
@@ -66,12 +68,12 @@ public class UltrasonicLocalizer {
     GameResources.odometer.update(0, 0, angleAdjustment);
     Navigation.turnTo(0, rotateSpeed);
     // set theta depending on the starting corner
-    switch(GameResources.CORNER_NUMBER) {
+    switch (GameResources.CORNER_NUMBER) {
       // lower left corner
       case 0:
         GameResources.odometer.setTheta(0);
         break;
-        // lower right corner
+      // lower right corner
       case 1:
         GameResources.odometer.setTheta(270);
         break;
@@ -84,14 +86,14 @@ public class UltrasonicLocalizer {
         GameResources.odometer.setTheta(90);
         break;
     }
-    
+
 
   }
 
 
   /**
-   * Computes the heading to add to the odometer current angle considering the two angles obtained by falling
-   * edge routine
+   * Computes the heading to add to the odometer current angle considering the two angles obtained by falling edge
+   * routine
    * 
    * @return : the heading to add to the odometer
    */

@@ -7,7 +7,8 @@ import ca.mcgill.ecse211.project.game.GameResources.REGION;
 import ca.mcgill.ecse211.project.game.GameState;
 
 /**
- * Ultrasonic poller class implementing a median filter. Polls data from the ultrasonic sensor in an independent thread
+ * Ultrasonic poller class. Polls data from the ultrasonic sensors in an independent thread. Depending on the game
+ * state, the poller polls from either the front sensor, or the left sensor.
  */
 public class UltrasonicPoller implements Runnable {
   /**

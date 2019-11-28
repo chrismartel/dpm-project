@@ -10,7 +10,7 @@ public class ObstacleAvoider {
 
   /**
    * STRATEGY 1 : WALL FOLLOWER Robot avoids obstacle by wall following around them, wall following stops when the robot
-   * points to its goal coordinate point
+   * points to its goal coordinate point.
    */
 
   /**
@@ -116,7 +116,7 @@ public class ObstacleAvoider {
   /**
    * Method indicating if the orientation of the robot is correct or not during the wall following process
    * 
-   * @return true if the orientation of the robot is facing its navigation goal coordinates and if there no object in
+   * @return : true if the orientation of the robot is facing its navigation goal coordinates and if there no object in
    *         front of the robot, false if the orientation is not facing the goal coordinates or if there is an object in
    *         front of the robot
    */
@@ -140,14 +140,10 @@ public class ObstacleAvoider {
     }
     // if the orientation is with 1 degree from the expected navigation orientation and that there are no objects in
     // front of the robot --> return true
-    if (Math.abs(rotation) <= GameResources.ORIENTATION_CHECK_ERROR
-    // &&
-    // GameResources.ultrasonicPoller.getFrontUsController().getDistance() > 1.5 *
-    // GameResources.OBSTACLE_DETECTION_DISTANCE
-    ) {
+    if (Math.abs(rotation) <= GameResources.ORIENTATION_CHECK_ERROR && GameResources.ultrasonicPoller
+        .getFrontUsController().getDistance() > 1.5 * GameResources.OBSTACLE_DETECTION_DISTANCE) {
       return true;
     }
-    // System.out.println(rotation);
     return false;
   }
 
@@ -241,7 +237,6 @@ public class ObstacleAvoider {
     System.out.println("island height: " + islandHeight);
     System.out.println("island middle x: " + islandMiddleX);
     System.out.println("island middle y: " + islandMiddleY);
-    boolean xFirst = true;
 
     // coordinates of the robots position
     double x = GameResources.odometer.getX() / GameResources.TILE_SIZE;
@@ -251,7 +246,6 @@ public class ObstacleAvoider {
     if ((theta >= 360 - GameResources.THETA_RANGE && theta <= 360)
         || (theta >= 0 && theta <= GameResources.THETA_RANGE)) {
       System.out.println("HEADING UP");
-      xFirst = true;
       // robot is in the right part of the island--> avoid left
       if (x >= islandMiddleX) {
         // GameNavigation.squareNavigation(x - GameResources.SHIFT_DISTANCE, y, true,false);
@@ -270,7 +264,6 @@ public class ObstacleAvoider {
     // heading approximately towards 90 degrees
     else if (theta >= 90 - GameResources.THETA_RANGE && theta <= 90 + GameResources.THETA_RANGE) {
       System.out.println("HEADING RIGHT");
-      xFirst = false;
       // robot is in the top part of the island --> avoid bottom
       if (y >= islandMiddleY) {
         // GameNavigation.squareNavigation(x, y - GameResources.SHIFT_DISTANCE, false,false);
@@ -287,7 +280,6 @@ public class ObstacleAvoider {
     // heading approximately towards 180 degrees
     else if (theta >= 180 - GameResources.THETA_RANGE && theta <= 180 + GameResources.THETA_RANGE) {
       System.out.println("HEADING DOWN");
-      xFirst = true;
       if (x >= islandMiddleX) {
 
         // GameNavigation.squareNavigation(x - GameResources.SHIFT_DISTANCE, y, true,false);
@@ -304,7 +296,6 @@ public class ObstacleAvoider {
     // heading approximately towards 270 degrees
     else if (theta >= 270 - GameResources.THETA_RANGE && theta <= 270 + GameResources.THETA_RANGE) {
       System.out.println("HEADING LEFT");
-      xFirst = false;
       // robot is in the top part of the island --> avoid bottom
       if (y >= islandMiddleY) {
         // GameNavigation.squareNavigation(x, y - GameResources.SHIFT_DISTANCE, false,false);
