@@ -439,6 +439,11 @@ public class GameResources {
    */
   public static final double MINIMAL_AVOID_DISTANCE = 45;
 
+  /*
+   * Maximum value of the obstacle detection counter
+   */
+  public static final int OBSTACLE_DETECTION_COUNTER_MAX = 5;
+
 
 
   // ****************************** ENUMERATIONS******************************** //
