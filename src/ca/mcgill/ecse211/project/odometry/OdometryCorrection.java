@@ -27,6 +27,7 @@ public class OdometryCorrection {
    * correct to. Afterwards, corrects either X or Y and the Theta.
    */
   public static void correctValues() {
+    // This is to ensure that even if the robot is not exactly straight it will still detect its general heading.
     double lowerBound = GameResources.odometer.getTheta() - GameResources.THETA_RANGE;
     double upperBound = GameResources.odometer.getTheta() + GameResources.THETA_RANGE;
 
@@ -36,12 +37,14 @@ public class OdometryCorrection {
         || (lowerBound >= (360 - (2 * GameResources.THETA_RANGE)) && upperBound <= (360 + GameResources.THETA_RANGE))) {
       // The robot is going forward
 
+      //This if statement is in case the robot detects the crack in-between two boards.
       if ((((GameResources.odometer.getY() - GameResources.OFFSET_FROM_WHEELBASE) / GameResources.TILE_SIZE <= 4.6
           && (GameResources.odometer.getY() - GameResources.OFFSET_FROM_WHEELBASE) / GameResources.TILE_SIZE >= 4.4))) {
         GameResources.odometer.setTheta(0);
         return;
 
       }
+      // The current Y position of the light sensor
       double currentYLine = GameResources.odometer.getY() - GameResources.OFFSET_FROM_WHEELBASE;
       int lineCount = (int) Math.round(currentYLine / GameResources.TILE_SIZE);
       GameResources.odometer.setY(lineCount * GameResources.TILE_SIZE + GameResources.OFFSET_FROM_WHEELBASE);
@@ -51,29 +54,35 @@ public class OdometryCorrection {
     else if (lowerBound >= (90 - (2 * GameResources.THETA_RANGE))
         && upperBound <= (90 + (2 * GameResources.THETA_RANGE))) {
       // going right
+      // The current X position of the light sensor
       double currentXLine = GameResources.odometer.getX() - GameResources.OFFSET_FROM_WHEELBASE;
+      // The current line count given the X position
       int lineCount = (int) Math.round(currentXLine / GameResources.TILE_SIZE);
       GameResources.odometer.setX(lineCount * GameResources.TILE_SIZE + GameResources.OFFSET_FROM_WHEELBASE);
       GameResources.odometer.setTheta(90);
 
     } else if (lowerBound >= (180 - (2 * GameResources.THETA_RANGE))
         && upperBound <= (180 + (2 * GameResources.THETA_RANGE))) {
-      // going backward
-
+      
+      //This if statement is in case the robot detects the crack in-between two boards.
       if ((((GameResources.odometer.getY() + GameResources.OFFSET_FROM_WHEELBASE) / GameResources.TILE_SIZE <= 4.6
           && (GameResources.odometer.getY() + GameResources.OFFSET_FROM_WHEELBASE) / GameResources.TILE_SIZE >= 4.4))) {
         GameResources.odometer.setTheta(180);
         return;
 
       }
+      // The current Y position of the light sensor
       double currentYLine = GameResources.odometer.getY() + GameResources.OFFSET_FROM_WHEELBASE;
+      // The current line count given the Y position
       int lineCount = (int) Math.round(currentYLine / GameResources.TILE_SIZE);
       GameResources.odometer.setY(lineCount * GameResources.TILE_SIZE - GameResources.OFFSET_FROM_WHEELBASE);
       GameResources.odometer.setTheta(180);
     } else if (lowerBound >= (270 - (2 * GameResources.THETA_RANGE))
         && upperBound <= (270 + (2 * GameResources.THETA_RANGE))) {
       // going left
+      // The current X position of the light sensor
       double currentXLine = GameResources.odometer.getX() + GameResources.OFFSET_FROM_WHEELBASE;
+      // The current line count given the X position
       int lineCount = (int) Math.round(currentXLine / GameResources.TILE_SIZE);
       GameResources.odometer.setX(lineCount * GameResources.TILE_SIZE - GameResources.OFFSET_FROM_WHEELBASE);
       GameResources.odometer.setTheta(270);
