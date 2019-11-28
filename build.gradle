@@ -38,6 +38,8 @@ dependencies {
     
     // Used by spotbugs
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.9.0'
+
+	implementation files('lib/EV3WiFiClient.jar')
 }
 
 application {
