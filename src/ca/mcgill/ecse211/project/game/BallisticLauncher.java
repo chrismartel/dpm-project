@@ -13,7 +13,6 @@ public class BallisticLauncher {
 
   public void launch(double distance) {
     // sleeps 5 seconds before launch
-    System.out.println("DISTANCE FROM BIN: " + distance);
     try {
       Thread.sleep(GameResources.LAUNCH_SLEEP);
     } catch (InterruptedException e) {

@@ -2,7 +2,6 @@ package ca.mcgill.ecse211.project.game;
 
 import ca.mcgill.ecse211.project.Resources;
 import ca.mcgill.ecse211.project.Resources.Point;
-import ca.mcgill.ecse211.project.odometry.Odometer;
 
 public class ObstacleAvoider {
 
@@ -143,7 +142,7 @@ public class ObstacleAvoider {
     // if the orientation is with 1 degree from the expected navigation orientation and that there are no objects in
     // front of the robot --> return true
     if (Math.abs(rotation) <= GameResources.ORIENTATION_CHECK_ERROR && GameResources.ultrasonicPoller
-        .getFrontUsController().getDistance() > 1.5 * GameResources.OBSTACLE_DETECTION_DISTANCE) {
+        .getFrontUsController().getDistance() > GameResources.OBSTACLE_DETECTION_DISTANCE) {
       return true;
     }
     return false;

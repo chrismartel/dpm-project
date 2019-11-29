@@ -161,7 +161,6 @@ public class Navigation {
     while (!GameResources.isObstacleDetected()) {
       dX = Math.abs(GameResources.odometer.getX() - lastX);
       dY = Math.abs(GameResources.odometer.getY() - lastY);
-      // TODO: if game state is in tunnel--> check if the wall is too close and adjust
       // Reached goal coordinates condition
       if (Math.pow(dX, 2) + Math.pow(dY, 2) >= Math.pow(travelDistance, 2)) {
         // navigation is considered completed when the distance is reached while being in navigation state
