@@ -113,7 +113,7 @@ public class UltrasonicController {
   /**
    * method to filter the aberrant values processed by the controller
    * 
-   * @param the distance in cm to filter
+   * @param distance : the distance in cm to filter
    */
   public void filter(int distance) {
     if (distance >= 255 && filterControl < GameResources.FILTER_OUT) {

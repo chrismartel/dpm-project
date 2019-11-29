@@ -253,8 +253,8 @@ public class LightLocalizer {
    * axis until both its sensors detect a line and adjust the x value and the theta of its odometer. If the point is
    * near a wall: special cases are applied
    * 
-   * @param: point used to set the x and y values of the odometer during light localization
-   * @param: boolean position indicates if the robot has to position its center to the localized point or not
+   * @param point used to set the x and y values of the odometer during light localization
+   * @param position indicates if the robot has to position its center to the localized point or not
    */
   public static void lightLocalize(Point point, boolean position) {
     // check if the point is near a wall
@@ -326,9 +326,9 @@ public class LightLocalizer {
    * Method used to perform the initial light localization in the starting corner. 4 different cases of initial
    * localization are implemented depending on which corner number is inputted. F
    * 
-   * @param: point is the starting corner point used to set the odometer x and y values properly
+   * @param point is the starting corner point used to set the odometer x and y values properly
    * 
-   * @param: corner is the starting corner number
+   * @param corner is the starting corner number
    */
   public static void initialLightLocalize(Point point, int corner) {
 

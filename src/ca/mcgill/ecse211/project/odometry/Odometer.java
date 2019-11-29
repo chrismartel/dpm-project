@@ -221,9 +221,9 @@ public class Odometer implements Runnable {
   /**
    * Adds dx, dy and dtheta to the current values of x, y and theta, respectively. Useful for odometry.
    * 
-   * @param dx
-   * @param dy
-   * @param dtheta
+   * @param dx : increases the odometer by dx.
+   * @param dy : increases the odometer by dy.
+   * @param dtheta : increases the odometer by dTheta.
    */
   public void update(double dx, double dy, double dtheta) {
     lock.lock();
@@ -314,6 +314,8 @@ public class Odometer implements Runnable {
 
   /**
    * return the rightMotorTachoCount
+   * 
+   * @return: return the tacho count of the right motor.
    */
   public int getRightMotorTachoCount() {
     synchronized (lock) {
@@ -323,6 +325,8 @@ public class Odometer implements Runnable {
 
   /**
    * return the leftMotorTachoCount
+   * 
+   * @return: return the tacho count of the left motor.
    */
   public int getLeftMotorTachoCount() {
     synchronized (lock) {
@@ -332,6 +336,8 @@ public class Odometer implements Runnable {
 
   /**
    * set the rightMotorTachoCount
+   * 
+   * @param rightMotorTachoCount: set the right motor tacho count.
    */
   public void setRightMotorTachoCount(int rightMotorTachoCount) {
     synchronized (lock) {
@@ -341,6 +347,8 @@ public class Odometer implements Runnable {
 
   /**
    * set the leftMotorTachoCount
+   * 
+   * @param leftMotorTachoCount: return the left motor tacho count.
    */
   public void setLeftMotorTachoCount(int leftMotorTachoCount) {
     synchronized (lock) {

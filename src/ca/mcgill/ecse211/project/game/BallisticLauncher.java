@@ -6,9 +6,9 @@ package ca.mcgill.ecse211.project.game;
 public class BallisticLauncher {
 
   /**
-   * Method implementing the behaviour of the ballistic motors during launch
+   * Method implementing the behaviour of the ballistic motors during launch.
    * 
-   * @param : the distance we want the ball to travel in cm
+   * @param distance we want the ball to travel in cm.
    */
 
   public void launch(double distance) {
@@ -38,7 +38,7 @@ public class BallisticLauncher {
   /**
    * Method used to test the ballistic launcher at different motor speeds in order to determine the launch coefficient
    * 
-   * @param : the motor speed to apply to the launching motors
+   * @param motorSpeed indicates the speed to apply to the launching motors
    */
   public void launchTest(int motorSpeed) {
     // sleeps 5 seconds before launch
@@ -78,6 +78,8 @@ public class BallisticLauncher {
 
   /**
    * Method implementing multiple launches and reload depending on how many balls the robot is carrying
+   * 
+   * @param distance the distance from the robot to the bin location.
    */
   public void multipleLaunch(double distance) {
     for (int i = 0; i < GameResources.NUMBER_OF_BALLS; i++) {
@@ -90,7 +92,7 @@ public class BallisticLauncher {
    * Method used to compute the motor speed needed to launch to a particular distance using the launching equation
    * relating the motor speed to the distance.
    * 
-   * @param : the distance in centimeters the ball needs to be launched
+   * @param distance is the distance in centimeters the ball needs to be launched.
    * 
    * @return : the motor speed needed to launch the ball to the inputted distance
    */

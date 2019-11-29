@@ -42,6 +42,7 @@ public class Navigation {
    * 
    * @param x : x coordinate of the current way point
    * @param y : y coordinate of the current way point
+   * @param speed : the speed with which the robot will travel
    */
   public static void travelTo(double x, double y, int speed) {
     // Convert the coordinates to centimeters
@@ -86,7 +87,8 @@ public class Navigation {
   /**
    * This method causes the robot to turn to a specific orientation using the minimum angle possible
    * 
-   * @param theta :
+   * @param theta : the angle at which the robot will turn. If it is negative, the robot will turn left, else it will turn right.
+   * @param speed : the speed at which the robot will turn.
    */
   public static void turnTo(double theta, int speed) {
     double currentTheta = GameResources.odometer.getTheta();
@@ -133,6 +135,7 @@ public class Navigation {
    * 
    * @param x : the x distance to travel
    * @param y : the y distance to travel
+   * @param speed : the speed at which the robot will travel.
    */
   public static void travel(double x, double y, int speed) {
     travel(Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)), speed);
@@ -142,6 +145,7 @@ public class Navigation {
    * Method causing the robot to travel forward a until the odometer reaches the travel distance
    * 
    * @param travelDistance : the magnitude of the distance to travel in cm
+   * @param speed : the speed that the robot will travel at.
    */
   public static void travel(double travelDistance, int speed) {
     double dX, dY;
@@ -184,6 +188,7 @@ public class Navigation {
    * Method causing the robot to travel backward a until the odometer reaches the travel distance
    * 
    * @param travelDistance : the magnitude of the distance to travel
+   * @param speed : the speed at which the robot will backup.
    */
   public static void backUp(double travelDistance, int speed) {
     double dX, dY;
@@ -215,6 +220,8 @@ public class Navigation {
 
   /**
    * set both motors forward
+   * 
+   * @param speed : the speed at which the robot will travel forward
    */
   public static void travelForward(int speed) {
 
@@ -227,6 +234,8 @@ public class Navigation {
 
   /**
    * Set both motors backward
+   * 
+   * @param speed: the speed at which the robot will travel backward.
    */
   public static void travelBackward(int speed) {
     GameResources.leftMotor.setSpeed(speed);
@@ -238,7 +247,9 @@ public class Navigation {
   /**
    * Turn by a certain amount of degrees
    * 
-   * @param : angle to turn to. If theta < 0, the robot turns counter clock wise if theta >0, the robot turns clock wise
+   * @param theta : angle to turn to. If theta less than 0, the robot turns counter clock wise. 
+   * Otherwise, the robot turns clock wise
+   * @param speed : the speed at which the robot will turn
    */
   public static void turn(double theta, int speed) {
     GameResources.leftMotor.setSpeed(speed);
@@ -251,7 +262,8 @@ public class Navigation {
   /**
    * Rotate continuously in one direction
    * 
-   * @param direction Direction which the robot needs to turn (CLOCK_WISE, COUNTER_CLOCK_WISE)
+   * @param direction : Direction which the robot needs to turn (CLOCK_WISE, COUNTER_CLOCK_WISE).
+   * @param speed : the speed at which the robot will rotate.
    * 
    */
   public static void rotate(Turn direction, int speed) {

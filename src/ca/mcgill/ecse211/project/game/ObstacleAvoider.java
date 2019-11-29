@@ -15,6 +15,8 @@ public class ObstacleAvoider {
 
   /**
    * Method describing the wall following process using P-Controller
+   * 
+   * @param speed : the speed at which the robot will perform wall follower.
    */
   public void wallFollower(int speed) {
     // initial positioning
@@ -327,7 +329,7 @@ public class ObstacleAvoider {
   /**
    * Setter Method for the goal point
    * 
-   * @param: the current goal point
+   * @param goalPoint : the current goal point
    */
   public void setGoalPoint(Point goalPoint) {
     this.goalPoint = goalPoint;

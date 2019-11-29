@@ -24,7 +24,10 @@ public class UltrasonicLocalizer {
    * Method performs the falling edge localization. Robot always completes an clockwise rotation around its center of
    * rotation to record the value for alpha. Then it rotates in the anti-clockwise direction to record value for beta.
    * Using the values recorded, the robot will then appropriately orient itself accordingly along the 0 degree y-axis.
+   * 
+   * @param rotateSpeed controls the speed at which to execute falling edge.
    */
+  
   public void fallingEdge(int rotateSpeed) {
 
     double angleAdjustment = 0;

@@ -59,7 +59,7 @@ public class Display implements Runnable {
   /**
    * Sets the timeout in ms.
    * 
-   * @param timeout
+   * @param timeout period for display
    */
   public void setTimeout(long timeout) {
     this.timeout = timeout;

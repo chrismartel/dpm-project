@@ -57,10 +57,10 @@ public class GameNavigation {
    * Each time this method is called, the localized static boolean is set to false. This method has 2 options: either it
    * travels on the x axis first or either it travels on the y axis first.
    * 
-   * @param : x is the goal coordinate on the x axis
-   * @param : y is the goal coordinate on the y axis
-   * @param : xFirst, if true, the method travels on the x axis first, if false, the method travels on the y axis first.
-   * @param : correction, if true, navigate with correction, if false, navigate without correction
+   * @param x the goal coordinate on the x axis
+   * @param y the goal coordinate on the y axis
+   * @param xFirst boolean if true, the method travels on the x axis first, if false, the method travels on the y axis first.
+   * @param correction boolean if true, navigate with correction, if false, navigate without correction
    */
   public static void squareNavigation(double x, double y, boolean xFirst, boolean correction) {
     GameResources.setLocalized(false);
@@ -87,7 +87,7 @@ public class GameNavigation {
   /**
    * Method implementing the navigation to the tunnel entrance and the turn towards the tunnel traversal orientation
    * 
-   * @param : xFirst indicates if the navigation travels on the x or the y axis first
+   * @param xFirst indicates if the navigation travels on the x or the y axis first
    */
   public void navigateToTunnelEntrance(boolean xFirst) {
     squareNavigation(tunnelEntrance.x, tunnelEntrance.y, xFirst, true);
@@ -96,7 +96,7 @@ public class GameNavigation {
   /**
    * Method implementing the navigation to the tunnel entrance and the turn towards the tunnel traversal orientation
    * 
-   * @param : xFirst indicates if the navigation travels on the x or the y axis first
+   * @param xFirst indicates if the navigation travels on the x or the y axis first
    */
   public void navigateToTunnelExit(boolean xFirst) {
     squareNavigation(tunnelExit.x, tunnelExit.y, xFirst, true);
@@ -105,7 +105,7 @@ public class GameNavigation {
   /**
    * Method implementing the navigation to the launch and the turn towards the bin
    * 
-   * @param : xFirst indicates if the navigation travels on the x or the y axis first
+   * @param xFirst indicates if the navigation travels on the x or the y axis first
    */
   public void navigateToLaunchPoint(boolean xFirst) {
     boolean localized = false;
@@ -684,6 +684,8 @@ public class GameNavigation {
    * Method that checks if a point is on the border of the current zone. This method is used to filter out the
    * localization points. A localizable point can't be on a zone limit and can't be in the restricted points array.
    * 
+   * 
+   * @param point : the point at which the robot will localize to.
    * @return: true if the point is not on any border and is localizable, false if the point is on a border and is not
    *          localizable
    */
@@ -816,7 +818,7 @@ public class GameNavigation {
   /**
    * Setter Method of the tunnel entrance
    * 
-   * @param: the coordinate point of the tunnel entrance
+   * @param tunnelEntrance is the coordinate point of the tunnel entrance
    */
   public void setTunnelEntrance(Point tunnelEntrance) {
     this.tunnelEntrance = tunnelEntrance;
@@ -825,7 +827,7 @@ public class GameNavigation {
   /**
    * Setter Method of the tunnel exit
    * 
-   * @param: the coordinate point of the tunnel exit
+   * @param tunnelExit is the coordinate point of the tunnel exit
    */
   public void setTunnelExit(Point tunnelExit) {
     this.tunnelExit = tunnelExit;
@@ -834,7 +836,7 @@ public class GameNavigation {
   /**
    * Setter Method for the tunnel entrance traversal orientation
    * 
-   * @param: the orientation needed to traverse the tunnel from the exit
+   * @param tunnelEntranceTraversalOrientation is the orientation needed to traverse the tunnel from the exit
    */
   public void setTunnelEntranceTraversalOrientation(double tunnelEntranceTraversalOrientation) {
     this.tunnelEntranceTraversalOrientation = tunnelEntranceTraversalOrientation;
@@ -843,7 +845,7 @@ public class GameNavigation {
   /**
    * Setter Method for the tunnel exit traversal orientation
    * 
-   * @param: the orientation needed to traverse the tunnel from the exit
+   * @param tunnelExitTraversalOrientation is the orientation needed to traverse the tunnel from the exit
    */
   public void setTunnelExitTraversalOrientation(double tunnelExitTraversalOrientation) {
     this.tunnelExitTraversalOrientation = tunnelExitTraversalOrientation;
@@ -861,7 +863,7 @@ public class GameNavigation {
   /**
    * Setter Method for the launch point
    * 
-   * @param: the current launching point
+   * @param launchPoint is the current launching point
    */
   public void setLaunchPoint(Point launchPoint) {
     this.launchPoint = launchPoint;
